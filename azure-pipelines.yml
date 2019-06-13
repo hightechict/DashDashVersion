@@ -15,23 +15,14 @@ variables:
   buildConfiguration: 'Release'
 
 steps:
+- task: PowerShell@1
+  inputs:
+    inlineScript: 'dotnet tool install --global coverlet.console'
 - task: NuGetToolInstaller@1
   inputs:
     versionSpec: '5.1.0'
     checkLatest: true
 
-- task: NuGetCommand@2
+- task: PowerShell@2
   inputs:
-    restoreSolution: '$(solution)'
-
-- task: VSBuild@1
-  inputs:
-    solution: '$(solution)'
-    msbuildArgs: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:DesktopBuildPackageLocation="$(build.artifactStagingDirectory)\WebApp.zip" /p:DeployIisAppPath="Default Web Site"'
-    platform: '$(buildPlatform)'
-    configuration: '$(buildConfiguration)'
-
-- task: VSTest@2
-  inputs:
-    platform: '$(buildPlatform)'
-    configuration: '$(buildConfiguration)'
+    filePath: 'build.ps1'
