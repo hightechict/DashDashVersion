@@ -1,0 +1,26 @@
+<Project>
+
+  <PropertyGroup>
+    <DebugType>embedded</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+    <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
+    <TreatSpecificWarningsAsErrors />
+    <RestoreProjectStyle>PackageReference</RestoreProjectStyle>
+    <GenerateAssemblyFileVersionAttribute>false</GenerateAssemblyFileVersionAttribute>
+    <GenerateAssemblyInformationalVersionAttribute>false</GenerateAssemblyInformationalVersionAttribute>
+    <GenerateAssemblyVersionAttribute>false</GenerateAssemblyVersionAttribute>
+    <PackageOutputPath>..\..\built</PackageOutputPath>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <Copyright>Copyright 2019 Hightech ICT</Copyright>
+    <Authors>Hightech ICT and authors</Authors>
+    <PackageIconUrl>http://www.divverence.com/divverencelogo.png</PackageIconUrl>
+  </PropertyGroup>
+
+  <!-- PACKAGE AND VERSION CREATION -->
+  <ItemGroup>
+    <Compile Include="..\..\built\SharedAssemblyInfo*.cs" Link="SharedAssemblyInfo.cs" />
+  </ItemGroup>
+</Project>

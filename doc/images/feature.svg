@@ -1,0 +1,102 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-10 -10 553 510" width="553" height="510">
+<style type="text/css"><![CDATA[
+.branch {
+	fill: none;
+	stroke-width: 10;
+	stroke-linecap: round;
+}
+.commit {
+	fill: #fff;
+	stroke-width: 5;
+}
+.label-tag {
+	fill: #333;
+}
+.label-rect {
+	stroke: none;
+}
+.label-text {
+	font-family: Inconsolata, Consolas, monospace;
+	font-size: 14px;
+	fill: #fff;
+	stroke: none;
+}
+.branch-master {stroke: #002b36; fill: #002b36}
+.branch-develop {stroke: #268bd2; fill: #268bd2}
+.branch-feature-issue-37 {stroke: #859900; fill: #859900}
+]]></style>
+<g class="merge">
+	<g class="branch-feature-issue-37">
+		<path class="branch" d="M50,150 C100,150 100,150 100,200" />
+		<path class="branch" d="M50,400 C100,400 100,400 100,350" />
+	</g>
+	<g class="branch-develop">
+		<path class="branch" d="M0,50 C50,50 50,50 50,100" />
+		<path class="branch" d="M100,350 C50,350 50,350 50,250" />
+	</g>
+	<g class="branch-master">
+		<path class="branch" d="M0,0 C0,0 0,0 0,50" />
+	</g>
+</g>
+<g class="branch-feature-issue-37">
+	<path class="branch" d="M100,200 L100,350" />
+	<circle class="commit" cx="100" cy="200" r="7.5" />
+	<circle class="commit" cx="100" cy="300" r="7.5" />
+	<circle class="commit" cx="100" cy="350" r="7.5" />
+	<g class="label-tag" transform="translate(150,200)">
+		<rect x="0" y="-14" width="164" height="24" rx="3" class="label-rect" />
+		<text x="5" y="2" textLength="154" class="label-text">0.1.0-dev.2.issue-37.1</text>
+	</g>
+	<g class="label-tag" transform="translate(150,300)">
+		<rect x="0" y="-14" width="164" height="24" rx="3" class="label-rect" />
+		<text x="5" y="2" textLength="154" class="label-text">0.1.0-dev.2.issue-37.2</text>
+	</g>
+	<g class="label-tag" transform="translate(150,350)">
+		<rect x="0" y="-14" width="164" height="24" rx="3" class="label-rect" />
+		<text x="5" y="2" textLength="154" class="label-text">0.1.0-dev.3.issue-37.3</text>
+	</g>
+	<g class="label-branch" transform="translate(324,350)">
+		<rect x="0" y="-14" width="122" height="24" rx="3" class="label-rect" />
+		<text x="5" y="2" textLength="112" class="label-text">feature/issue-37</text>
+	</g>
+</g>
+<g class="branch-develop">
+	<path class="branch" d="M50,100 L50,400" />
+	<circle class="commit" cx="50" cy="100" r="7.5" />
+	<circle class="commit" cx="50" cy="150" r="7.5" />
+	<circle class="commit" cx="50" cy="250" r="7.5" />
+	<circle class="commit" cx="50" cy="400" r="7.5" />
+	<g class="label-tag" transform="translate(150,100)">
+		<rect x="0" y="-14" width="87" height="24" rx="3" class="label-rect" />
+		<text x="5" y="2" textLength="77" class="label-text">0.1.0-dev.1</text>
+	</g>
+	<g class="label-tag" transform="translate(150,150)">
+		<rect x="0" y="-14" width="87" height="24" rx="3" class="label-rect" />
+		<text x="5" y="2" textLength="77" class="label-text">0.1.0-dev.2</text>
+	</g>
+	<g class="label-tag" transform="translate(150,250)">
+		<rect x="0" y="-14" width="87" height="24" rx="3" class="label-rect" />
+		<text x="5" y="2" textLength="77" class="label-text">0.1.0-dev.3</text>
+	</g>
+	<g class="label-tag" transform="translate(150,400)">
+		<rect x="0" y="-14" width="87" height="24" rx="3" class="label-rect" />
+		<text x="5" y="2" textLength="77" class="label-text">0.1.0-dev.4</text>
+	</g>
+	<g class="label-branch" transform="translate(247,400)">
+		<rect x="0" y="-14" width="59" height="24" rx="3" class="label-rect" />
+		<text x="5" y="2" textLength="49" class="label-text">develop</text>
+	</g>
+</g>
+<g class="branch-master">
+	<path class="branch" d="M0,50 L0,50" />
+	<circle class="commit" cx="0" cy="50" r="7.5" />
+	<g class="label-tag" transform="translate(150,50)">
+		<rect x="0" y="-14" width="45" height="24" rx="3" class="label-rect" />
+		<text x="5" y="2" textLength="35" class="label-text">0.0.0</text>
+	</g>
+	<g class="label-branch" transform="translate(205,50)">
+		<rect x="0" y="-14" width="52" height="24" rx="3" class="label-rect" />
+		<text x="5" y="2" textLength="42" class="label-text">master</text>
+	</g>
+</g>
+</svg>
