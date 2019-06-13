@@ -8,6 +8,7 @@ Contributions can take many forms like submitting issues, writing documentation 
   * Clearly describe the issue including the steps to reproduce when it is a bug.
   * Make sure you fill in the earliest version that you know has the issue.
 * Fork the repository on GitHub, then clone it using your Git client.
+* Make sure you have [coverlet](https://github.com/tonerdo/coverlet) installed for code coverage.
 * Make sure the project builds and all tests pass on your machine.
 * Make sure to use [git flow](https://atlassian.com/git/tutorials/comparing-workflows/gitflow-workflow)
 

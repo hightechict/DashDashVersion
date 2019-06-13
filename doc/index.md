@@ -84,14 +84,14 @@ the output of `git-flow-version` will be:
 For a feature branch a version number will be calculated for the branch-off point from `origin/develop` or `develop` if there is no `origin/develop`. The number of commits on the feature branch is counted and these pieces are glued together.
 For example with a feature named `featureA` with 5 commits since branching from `origin/develop` with version number `0.1.0-dev.12` the calculated version number would be `0.1.0-dev.12.featureA.5`.
 If a second feature is started from the `feature/featureA` branch named `featureB` the number of commits since branching from `origin/develop` will be used, so the version number would be `0.1.0-dev.12-featureB.6`, if only a single commit is made on branch `featureB`.  
-![feature branch](./doc/images/feature.svg)
+![feature branch](https://github.com/hightechict/DashDashVersion/doc/images/feature.svg)
 
 ### On a `release/` branch
 
 Release candidates use a simple `+1` strategy, if the `release/0.2.0` branch has just been created and has no commits yet, the version number will be `0.2.0-rc.1`.
 If there exists a tag on the release branch that has the form `0.2.0-rc.<a=highest rc number>` the calculated version number will be `0.2.0-rc.<a+1>`.
 So if the last tag was `0.2.0-rc.4` the next version number would be `0.2.0-rc.5`.  
-![release branch](./doc/images/release.svg)
+![release branch](https://github.com/hightechict/DashDashVersion/develop/doc/images/release.svg)
 
 ### On `master`
 
