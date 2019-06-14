@@ -149,6 +149,18 @@ namespace DashDashVersionTests
             secondVersion.Should().BeLessOrEqualTo(firstVersion);
         }
 
+        [Theory]
+        [InlineData(1, 0, 0, "1.0.0.0")]
+        [InlineData(0, 0, 0, "0.0.0.0")]
+        [InlineData(1, 1, 0, "1.1.0.0")]
+        [InlineData(1, 0, 1, "1.0.1.0")]
+        public void AssemblyVersionGeneration(uint major, uint minor, uint patch, string expected)
+        {
+            var version = new VersionNumber(major,minor,patch);
+            version.AssemblyVersion.Should()
+                .Be(expected);
+        }
+
         public static IEnumerable<object[]> VersionNumberCompareEqualsTestCases
         {
             get

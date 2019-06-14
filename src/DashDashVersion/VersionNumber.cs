@@ -111,7 +111,7 @@ namespace DashDashVersion
             return 0;
         }
 
-        public string AssemblyVersion => $"{Major}{Constants.ParticleDelimiter}{Minor}{Constants.ParticleDelimiter}{Patch}{Constants.ParticleDelimiter}{PreReleaseLabel?.CalculatedRevision}";
+        public string AssemblyVersion => $"{Major}{Constants.ParticleDelimiter}{Minor}{Constants.ParticleDelimiter}{Patch}{Constants.ParticleDelimiter}{PreReleaseLabel?.CalculatedRevision ?? 0}";
 
         public override string ToString() => FullSemVer;
 
