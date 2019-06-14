@@ -4,7 +4,14 @@
 # https://docs.microsoft.com/azure/devops/pipelines/languages/dotnet-core
 
 trigger:
-- master
+  branches:
+    include:
+    - develop
+    - feature/*
+    - hotfix/*
+    - releases/*
+    exclude:
+    - master
 
 pool:
   vmImage: 'windows-latest'
@@ -21,7 +28,7 @@ steps:
 
 - task: PowerShell@1
   inputs:
-    inlineScript: 'dotnet tool install --global coverlet.console'
+    inlineScript: 'dotnet tool install --global git-flow-version'
 
 - task: NuGetToolInstaller@1
   inputs:
@@ -36,7 +43,3 @@ steps:
   inputs:
     workingdir: '$(SYSTEM.DEFAULTWORKINGDIRECTORY)'
     tag: '$(env:versionShort)'
-
-- task: DocFxTask@0
-  inputs:
-    solution: './doc'
