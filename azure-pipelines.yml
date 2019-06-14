@@ -33,7 +33,6 @@ steps:
     inlineScript: 'dotnet tool install --global git-flow-version'
   env:
     NuGet_APIKEY: $(nuget.APIKEY)
-    
 
 - task: NuGetToolInstaller@1
   inputs:
@@ -43,8 +42,3 @@ steps:
 - task: PowerShell@2
   inputs:
     filePath: 'build.ps1'
-
-- task: GitTag@5
-  inputs:
-    workingdir: '$(SYSTEM.DEFAULTWORKINGDIRECTORY)'
-    tag: '$(env:versionShort)'
