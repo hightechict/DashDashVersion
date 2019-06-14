@@ -2,7 +2,7 @@
   "profiles": {
     "git-flow-version": {
       "commandName": "Project",
-      "workingDirectory": "D:\\Repos\\Hightech\\DashDashVersion"
+      "workingDirectory": "D:\\Repos\\temp"
     }
   }
 }
