@@ -1,0 +1,23 @@
+image:
+- Visual Studio 2017
+- Ubuntu1804
+
+nuget:
+  disable_publish_on_pr: true
+
+before_build:
+  - ps: |
+        choco install docfx
+        dotnet tool install --global coverlet.console
+        dotnet tool install --global git-flow-version
+build_script:
+  - ps: build.ps1
+after_build:
+  - ps: |
+      Update-AppveyorBuild -Version $env:version
+build_success:
+  -ps: |
+      git tag $env:versionShort
+      git push --verbose origin $env:versionShort;
+build:
+  verbosity: minimal
