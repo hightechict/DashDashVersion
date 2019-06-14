@@ -158,9 +158,16 @@ namespace DashDashVersion.RepositoryAbstraction
             throw new ArgumentException($"No commit found with sha: '{sha}'.", nameof(sha));
         }
 
-        private static BranchInfo FindCurrentBranch(IEnumerable<GitBranch> branches) =>
-            BranchInfoFactory.CreateBranchInfo(branches
+        private static BranchInfo FindCurrentBranch(IEnumerable<GitBranch> branches)
+        {
+            var name = branches
                 .Where(f => f.IsCurrentRepositoryHead)
-                .Select(f => f.FriendlyName).FirstOrDefault());
+                .Select(f => f.FriendlyName).FirstOrDefault();
+            if (name == null)
+            {
+                throw new InvalidOperationException("The repository is on a detached HEAD, this is not supported.");
+            }
+            return BranchInfoFactory.CreateBranchInfo(name);
+        }
     }
 }
