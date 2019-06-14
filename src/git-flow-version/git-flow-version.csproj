@@ -21,9 +21,10 @@ along with DashDashVersion. If not, see<https://www.gnu.org/licenses/>.
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp2.2</TargetFramework>
+    <Title>git-flow-version</Title>
+    <Description>git-flow-version creates predictable and opinionated SemVer 2.0.0 version numbers for git flow repositories.</Description>
     <IsPackable>true</IsPackable>
     <PackAsTool>true</PackAsTool>
-    <PackageLicenseExpression>LGPL-3.0-or-later</PackageLicenseExpression>
     <LangVersion>8.0</LangVersion>
     <NullableContextOptions>enable</NullableContextOptions>
   </PropertyGroup>
