@@ -16,7 +16,7 @@
   <PropertyGroup>
     <Copyright>Copyright 2019 Hightech ICT</Copyright>
     <Authors>Hightech ICT and authors</Authors>
-    <PackageIconUrl>http://www.divverence.com/divverencelogo.png</PackageIconUrl>
+    <PackageIconUrl>https://raw.githubusercontent.com/hightechict/DashDashVersion/develop/doc/images/HightechICT.png</PackageIconUrl>
   </PropertyGroup>
 
   <!-- PACKAGE AND VERSION CREATION -->
