@@ -1,5 +1,5 @@
 image:
-- Visual Studio 2019
+- Visual Studio 2019 Preview
 - Ubuntu1804
 
 nuget:
@@ -28,4 +28,4 @@ after_build:
   - ps: |
       Update-AppveyorBuild -Version $env:version
 build:
-  verbosity: detailed
+  verbosity: normal
