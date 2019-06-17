@@ -154,5 +154,55 @@ namespace DashDashVersionTests
 
             return new GitRepository(branches, featureBCommits, tags);
         }
+
+        internal static GitRepository MasterAheadOfDevelopRepository()
+        {
+            var masterCommits = new List<GitCommit>
+            {
+                new GitCommit("a"),
+                new GitCommit("c")
+            };
+            var developCommits = new List<GitCommit>
+            {
+                new GitCommit("b"),
+                new GitCommit("a")
+            };
+            var branches = new List<GitBranch>
+            {
+                new GitBranch(false,"",Constants.MasterBranchName,false,masterCommits),
+                new GitBranch(false,"",Constants.DevelopBranchName,true,developCommits)
+            };
+            var tags = new List<GitTag>
+            {
+                new GitTag("0.0.0", "a"),
+                new GitTag("0.1.0", "c")
+            };
+
+            return new GitRepository(branches, developCommits, tags);
+        }
+
+        internal static GitRepository RemoteDevelopRepository()
+        {
+            var masterCommits = new List<GitCommit>
+            {
+                new GitCommit("a")
+            };
+            var developCommits = new List<GitCommit>
+            {
+                new GitCommit("b"),
+                new GitCommit("a")
+            };
+            var branches = new List<GitBranch>
+            {
+                new GitBranch(false,"",Constants.MasterBranchName,false,masterCommits),
+                new GitBranch(true,"","origin/"+Constants.DevelopBranchName,true,developCommits)
+            };
+            var tags = new List<GitTag>
+            {
+                new GitTag("0.0.0", "a")
+            };
+
+            return new GitRepository(branches, developCommits, tags);
+        }
     }
 }

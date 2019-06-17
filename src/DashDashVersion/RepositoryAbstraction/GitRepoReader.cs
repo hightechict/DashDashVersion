@@ -55,8 +55,14 @@ namespace DashDashVersion.RepositoryAbstraction
         internal GitRepoReader(IGitRepository repo)
         {
             _repository = repo;
-            CurrentBranch = FindCurrentBranch();
-            CurrentReleaseVersion = VersionNumber.Parse(HighestReleaseVersionTag(_repository.Tags).FriendlyName);
+            GitBranch branch;
+            CurrentBranch = FindCurrentBranch(out branch);
+            var tags = repo.Tags.Where(tag => branch.Commits.Any(commit => commit.Sha == tag.Sha));
+            var highestReleaseVersionTag = HighestReleaseVersionTag(tags);
+            CurrentReleaseVersion = VersionNumber.Parse(highestReleaseVersionTag.FriendlyName);
+            CommitCountSinceLastReleaseVersion = FindAncestor(
+                highestReleaseVersionTag.Sha,
+                _repository.Commits);
             var hash = _repository.Commits.FirstOrDefault();
             HeadCommitHash = hash?.Sha ?? throw new InvalidOperationException("Git repositories without commits are not supported.");
         }
@@ -66,6 +72,7 @@ namespace DashDashVersion.RepositoryAbstraction
         public VersionNumber CurrentReleaseVersion { get; }
 
         public BranchInfo CurrentBranch { get; }
+        public uint CommitCountSinceLastReleaseVersion { get; }
 
         public VersionNumber? HighestMatchingTagForReleaseCandidate
         {
@@ -82,11 +89,6 @@ namespace DashDashVersion.RepositoryAbstraction
                 return returnTag == null ? null : VersionNumber.Parse(returnTag);
             }
         }
-
-        public uint CommitCountSinceLastReleaseVersion =>
-            FindAncestor(
-                HighestReleaseVersionTag(_repository.Tags).Sha,
-                _repository.Commits);
 
         public uint CommitCountSinceBranchOfFromDevelop
         {
@@ -133,7 +135,6 @@ namespace DashDashVersion.RepositoryAbstraction
 
         private static bool IsOriginDevelop(GitBranch branch) =>
             branch.IsRemote &&
-            branch.RemoteName == Constants.DefaultRemoteName &&
             branch.FriendlyName.Equals(Constants.OriginDevelop);
 
         private static GitTag HighestReleaseVersionTag(IEnumerable<GitTag> tags) =>
@@ -158,12 +159,14 @@ namespace DashDashVersion.RepositoryAbstraction
             throw new ArgumentException($"No commit found with sha: '{sha}'.", nameof(sha));
         }
 
-        private BranchInfo FindCurrentBranch()
+        private BranchInfo FindCurrentBranch(out GitBranch branch)
         {
-            var name = _repository.Branches
+            string branchName;
+            branch = _repository.Branches
                 .Where(f => f.IsCurrentRepositoryHead)
-                .Select(f => f.FriendlyName).FirstOrDefault();
-            if (name == null)
+                .Select(f => f).FirstOrDefault();
+
+            if (branch == null)
             {
                 var currentCommit = _repository.Commits.FirstOrDefault();
                 if (currentCommit == null)
@@ -180,9 +183,21 @@ namespace DashDashVersion.RepositoryAbstraction
                 {
                     throw new InvalidOperationException("The repository is on a detached HEAD, and the current commit is on multiple branches.");
                 }
-                name = matchingBranches.First().FriendlyName;
+                branch = matchingBranches.First();
             }
-            return BranchInfoFactory.CreateBranchInfo(name);
+
+            if (branch.IsRemote)
+            {
+                var splitLocation = branch.FriendlyName.IndexOf(Constants.BranchNameInfoDelimiter);
+                splitLocation++;
+                branchName = branch.FriendlyName.Substring(splitLocation);
+            }
+            else
+            {
+                branchName = branch.FriendlyName;
+            }
+
+            return BranchInfoFactory.CreateBranchInfo(branchName);
         }
     }
 }

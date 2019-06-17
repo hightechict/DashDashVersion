@@ -35,9 +35,30 @@ namespace DashDashVersionTests
         }
 
         [Fact]
+        public void MasterPastDevelopTest()
+        {
+            var repoReader = new GitRepoReader(TestRepositories.MasterAheadOfDevelopRepository());
+            repoReader.CurrentBranch.Name.Should().Be(DashDashVersion.Constants.DevelopBranchName);
+            repoReader.CommitCountSinceLastReleaseVersion.Should().Be(1);
+            repoReader.HeadCommitHash.Should().Be("b");
+            repoReader.CurrentReleaseVersion.SemVer.Should().Be("0.0.0");
+        }
+
+        [Fact]
         public void DevelopRepoTest()
         {
             var repoReader = new GitRepoReader(TestRepositories.TwoCommitsOnDevelopRepository());
+            repoReader.CommitCountSinceBranchOfFromDevelop.Should().Be(0);
+            repoReader.CommitCountSinceLastReleaseVersion.Should().Be(1);
+            repoReader.CurrentBranch.Name.Should().Be(DashDashVersion.Constants.DevelopBranchName);
+            repoReader.CurrentReleaseVersion.SemVer.Should().Be("0.0.0");
+            repoReader.HeadCommitHash.Should().Be("b");
+        }
+
+        [Fact]
+        public void RemoteDevelopRepoTest()
+        {
+            var repoReader = new GitRepoReader(TestRepositories.RemoteDevelopRepository());
             repoReader.CommitCountSinceBranchOfFromDevelop.Should().Be(0);
             repoReader.CommitCountSinceLastReleaseVersion.Should().Be(1);
             repoReader.CurrentBranch.Name.Should().Be(DashDashVersion.Constants.DevelopBranchName);
