@@ -56,3 +56,4 @@ steps:
     filePath: '$(Build.SourcesDirectory)/build.ps1'
   env:
     NuGet_APIKEY: $(nuget.APIKEY)
+    
