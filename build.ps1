@@ -11,8 +11,8 @@ $gitBranch = git rev-parse --abbrev-ref HEAD;
 if($env:Build.Reason -ne "PullRequest")
 {
     $temp = git-flow-version | ConvertFrom-Json
-    $env:version = $temp.FullSemVer
-    $env:versionShort = $temp.SemVer
+    $env:fullSemVer = $temp.FullSemVer
+    $env:semVer = $temp.SemVer
     $env:assemblyVersion = $temp.AssemblyVersion
 
     $assemblyInfoContent = @"
@@ -22,7 +22,7 @@ using System.Runtime.InteropServices;
 
 [assembly: AssemblyVersionAttribute("$($env:assemblyVersion)")]
 [assembly: AssemblyFileVersionAttribute("$($env:assemblyVersion)")]
-[assembly: AssemblyInformationalVersionAttribute("$($env:version)")]
+[assembly: AssemblyInformationalVersionAttribute("$($env:fullSemVer)")]
 "@
 
     if (-not (Test-Path "built")) {
@@ -30,15 +30,15 @@ using System.Runtime.InteropServices;
     }
 
     $assemblyInfoContent | Out-File -Encoding utf8 (Join-Path "built" "SharedAssemblyInfo.cs") -Force
-    dotnet pack /p:PackageVersion=$env:version /p:NoPackageAnalysis=true
+    dotnet pack /p:PackageVersion=$env:fullSemVer /p:NoPackageAnalysis=true
 
 
     if ($env:TF_BUILD -eq "True" ) {
 
         if ($gitBranch -ne "master") {
 		    git remote set-url origin git@github.com:hightechict/DashDashVersion.git
-            git tag $env:versionShort
-            git push --verbose origin $env:versionShort
+            git tag $env:semVer
+            git push --verbose origin $env:semVer -ErrorAction SilentlyContinue  
         }
 
         if ($gitBranch -notlike "feature/*") {
