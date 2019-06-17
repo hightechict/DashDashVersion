@@ -60,9 +60,3 @@ steps:
     filePath: '$(Build.SourcesDirectory)/build.ps1'
   env:
     NuGet_APIKEY: $(nuget.APIKEY)
-    
-- task: DocFxTask@0
-  inputs:
-    solution: './doc/docfx.json'
-    useTemplate: true
-    templatePath: './doc/templates/custom'
