@@ -36,6 +36,7 @@ using System.Runtime.InteropServices;
     if ($env:TF_BUILD -eq "True" ) {
 
         if ($gitBranch -ne "master") {
+		    git remote set-url origin git@github.com:hightechict/DashDashVersion.git
             git tag $env:versionShort
             git push --verbose origin $env:versionShort
         }
