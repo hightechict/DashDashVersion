@@ -38,7 +38,7 @@ using System.Runtime.InteropServices;
         if ($gitBranch -ne "master") {
 		    git remote set-url origin git@github.com:hightechict/DashDashVersion.git
             git tag $env:semVer
-            git push --verbose origin $env:semVer -ErrorAction SilentlyContinue  
+            Start-Process -Wait -ErrorAction SilentlyContinue git -ArgumentList "push", "--verbose", "origin", "$($env:semVer)"            
         }
 
         if ($gitBranch -notlike "feature/*") {
