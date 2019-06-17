@@ -55,7 +55,7 @@ namespace DashDashVersion.RepositoryAbstraction
         internal GitRepoReader(IGitRepository repo)
         {
             _repository = repo;
-            CurrentBranch = FindCurrentBranch(_repository.Branches);
+            CurrentBranch = FindCurrentBranch();
             CurrentReleaseVersion = VersionNumber.Parse(HighestReleaseVersionTag(_repository.Tags).FriendlyName);
             var hash = _repository.Commits.FirstOrDefault();
             HeadCommitHash = hash?.Sha ?? throw new InvalidOperationException("Git repositories without commits are not supported.");
@@ -158,14 +158,29 @@ namespace DashDashVersion.RepositoryAbstraction
             throw new ArgumentException($"No commit found with sha: '{sha}'.", nameof(sha));
         }
 
-        private static BranchInfo FindCurrentBranch(IEnumerable<GitBranch> branches)
+        private BranchInfo FindCurrentBranch()
         {
-            var name = branches
+            var name = _repository.Branches
                 .Where(f => f.IsCurrentRepositoryHead)
                 .Select(f => f.FriendlyName).FirstOrDefault();
             if (name == null)
             {
-                throw new InvalidOperationException("The repository is on a detached HEAD, this is not supported.");
+                var currentCommit = _repository.Commits.FirstOrDefault();
+                if (currentCommit == null)
+                {
+                    throw new InvalidOperationException("The repository is on a detached HEAD, and no commits where found.");
+                }
+                var matchingBranches = _repository.Branches.Where(branch => branch.Commits.Any(c => c.Sha.Equals(currentCommit.Sha)));
+                var count = matchingBranches.Count();
+                if (count == 0)
+                {
+                    throw new InvalidOperationException("The repository is on a detached HEAD, and the current commit is not present in any of the branches.");
+                }
+                if (count > 1)
+                {
+                    throw new InvalidOperationException("The repository is on a detached HEAD, and the current commit is on multiple branches.");
+                }
+                name = matchingBranches.First().FriendlyName;
             }
             return BranchInfoFactory.CreateBranchInfo(name);
         }
