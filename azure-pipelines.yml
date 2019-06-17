@@ -26,8 +26,8 @@ steps:
 - task: DotNetCoreInstaller@0
   inputs:
     packageType: 'sdk'
-    version: '3.0.100-preview3-010431' 
-  displayName: Install .NET Core 3
+    version: '2.x' 
+  displayName: Install .NET Core 2 latest
 
 - task: PowerShell@2
   inputs:
