@@ -5,6 +5,13 @@ image:
 nuget:
   disable_publish_on_pr: true
 
+install: 
+  - ps: $key = $env:github.PrivateKey #just the key contents, copied from notepad, into the environment variable on the UI 
+  - ps: $fileContent = "-----BEGIN RSA PRIVATE KEY-----" + "`n" 
+  - ps: for ($i = 0; $i -lt $key.Length / 64; $i++) { $min = [math]::min(64, $key.Length - ($i * 64)); $fileContent += $key.substring($i*64, $min) + "`n"; } 
+  - ps: $fileContent += "-----END RSA PRIVATE KEY-----" + "`n" 
+  - ps: Set-Content c:\users\appveyor\.ssh\id_rsa $fileContent
+
 before_build:
   - ps: |
         choco install docfx
@@ -15,9 +22,5 @@ build_script:
 after_build:
   - ps: |
       Update-AppveyorBuild -Version $env:version
-build_success:
-  -ps: |
-      git tag $env:versionShort
-      git push --verbose origin $env:versionShort;
 build:
   verbosity: minimal
