@@ -28,4 +28,4 @@ after_build:
   - ps: |
       Update-AppveyorBuild -Version $env:version
 build:
-  verbosity: minimal
+  verbosity: detailed
