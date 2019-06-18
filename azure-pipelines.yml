@@ -37,6 +37,7 @@ steps:
     targetType: inline
     pwsh: true
     script: 'choco install -y docfx'
+  displayName: Install docfx
 
 - task: PowerShell@2
   condition: eq(variables.imageName, 'windows-latest')
@@ -44,6 +45,7 @@ steps:
     targetType: inline
     pwsh: true
     script: 'choco install codecov'
+  displayName: Install codecov
 
 - task: DotNetCoreInstaller@0
   inputs:
@@ -54,6 +56,7 @@ steps:
    DOTNET_CLI_TELEMETRY_OPTOUT: false
    DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
 
+
 - task: PowerShell@2
   inputs:
     targetType: inline
@@ -61,6 +64,7 @@ steps:
     script: 'dotnet tool install --global coverlet.console'
   env:
    DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
+  displayName: Install coverlet
 
 - task: PowerShell@2
   inputs:
@@ -69,6 +73,7 @@ steps:
     script: 'dotnet tool install --global git-flow-version'
   env:
    DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
+  displayName: Install git-flow-version
 
 
 - task: NuGetToolInstaller@1
@@ -77,6 +82,7 @@ steps:
     checkLatest: true
   env:
    DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
+  displayName: Install NuGet
 
 - task: InstallSSHKey@0
   condition: eq(variables.imageName, 'windows-latest')
@@ -84,6 +90,7 @@ steps:
     knownHostsEntry: 'github.com,140.82.118.3 ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAq2A7hRGmdnm9tUDbO9IDSwBK6TbQa+PXYPCPy6rbTrTtw7PHkccKrpp0yVhp5HdEIcKr6pLlVDBfOLX9QUsyCOV0wzfjIJNlGEYsdlLJizHhbn2mUjvSAHQqZETYP81eFzLQNnPHt4EVVUh7VfDESU84KezmD5QlWpXLmvU31/yMf+Se8xhHTvKSCZIFImWwoG6mbUoWf9nzpIoaSjB+weqqUUmpaaasXVal72J+UX2B+2RPW3RcT0eOzQgqlJL3RKrTJvdsjE3JEAvGq3lGHSZXy28G3skua2SmVi/w4yCE6gbODqnTWlg7+wC604ydGXA8VJiS5ap43JXiUFFAaQ=='
     sshPublicKey: 'ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIF6/HvdVdOqxei+waWEWBR9u3zwx9TZtyeYuIqs2uBL0 Azure-pipeline'
     sshKeySecureFile: 'GithubDeploymentKey'
+  displayName: Install sshKey
 
 - task: PowerShell@2
   inputs:
@@ -94,6 +101,7 @@ steps:
     NuGet_APIKEY: $(nuget.APIKEY)
     imageName: $(imageName)
     DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
+  displayName: Run build
 
 - task: PowerShell@2
   condition: eq(variables.imageName, 'windows-latest')
@@ -104,3 +112,4 @@ steps:
   env:
     CodecovToken: $(CodecovToken)
     DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
+  displayName: Publish code coverage
