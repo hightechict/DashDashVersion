@@ -36,27 +36,28 @@ using System.Runtime.InteropServices;
     dotnet pack /p:PackageVersion=$env:fullSemVer /p:NoPackageAnalysis=true
 
 
-    if ($env:TF_BUILD -eq "True") {
+    if ($env:TF_BUILD -eq "True" -and $env:imageName -eq "windows-latest") {
+        
         if ($gitCurrentTag -notlike $env:semVer) {
 		    git remote set-url origin git@github.com:hightechict/DashDashVersion.git
             git tag $env:semVer
             Start-Process -Wait -ErrorAction SilentlyContinue git -ArgumentList "push", "--verbose", "origin", "$($env:semVer)"            
         }
 
-        if ($env:imageName -eq "windows-latest"){
-            if ($gitBranch -notlike "feature/*") {
-                pushd built
-                dotnet nuget push --api-key $env:NuGet_APIKEY *.nupkg
-                popd
-            }
-            if($gitBranch -like "master"){
-                Copy-Item README.md doc/index.md
-                docfx ./doc/docfx.json
-            }
+        if ($gitBranch -notlike "feature/*") {
+            pushd built
+            dotnet nuget push --api-key $env:NuGet_APIKEY *.nupkg
+            popd
         }
+
+        if($gitBranch -like "master"){
+            Copy-Item README.md doc/index.md
+            docfx ./doc/docfx.json
+        }
+
     }
-    else{
-        Copy-Item README.md doc/index.md
-        docfx ./doc/docfx.json
-    }
+}
+else{
+    Copy-Item README.md doc/index.md
+    docfx ./doc/docfx.json
 }
