@@ -37,9 +37,7 @@ using System.Runtime.InteropServices;
 
 
     if ($env:TF_BUILD -eq "True") {
-        write-verbose "Tagging"
-        write-verbose $gitCurrentTag
-        if ($gitCurrentTag -eq $env:semVer) {
+        if ($gitCurrentTag -notlike $env:semVer) {
 		    git remote set-url origin git@github.com:hightechict/DashDashVersion.git
             git tag $env:semVer
             Start-Process -Wait -ErrorAction SilentlyContinue git -ArgumentList "push", "--verbose", "origin", "$($env:semVer)"            
