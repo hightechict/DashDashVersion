@@ -1,4 +1,6 @@
-# DashDashVersion 
+# DashDashVersion
+
+[![Build Status](https://dev.azure.com/basbossink0470/DashDashVersion/_apis/build/status/hightechict.DashDashVersion?branchName=feature/azure-pipeline)](https://dev.azure.com/basbossink0470/DashDashVersion/_build/latest?definitionId=1&branchName=feature/azure-pipeline)
 
 DashDashVersion creates predictable and opinionated [SemVer 2.0.0 version][SemVer2] numbers for [git flow][gitFlow] repositories.
 
