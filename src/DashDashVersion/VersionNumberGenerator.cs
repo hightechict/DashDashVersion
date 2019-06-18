@@ -50,8 +50,8 @@ namespace DashDashVersion
                 {
                     case FeatureBranchInfo feature:
                         preReleaseLabel = feature.DeterminePreReleaseLabel(
-                            _repoReader.CommitCountSinceLastReleaseVersion - _repoReader.CommitCountSinceBranchOfFromDevelop,
-                            _repoReader.CommitCountSinceBranchOfFromDevelop);
+                            _repoReader.CommitCountSinceLastReleaseVersion - _repoReader.CommitCountSinceBranchOffFromDevelop,
+                            _repoReader.CommitCountSinceBranchOffFromDevelop);
                         return new VersionNumber(
                             _repoReader.CurrentReleaseVersion.Major,
                             _repoReader.CurrentReleaseVersion.Minor + 1,

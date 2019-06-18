@@ -90,12 +90,23 @@ namespace DashDashVersion.RepositoryAbstraction
             }
         }
 
-        public uint CommitCountSinceBranchOfFromDevelop
+        public uint CommitCountSinceBranchOffFromDevelop
         {
             get
             {
-                var commitSha = LastCommitHashOfDevelop(_repository.Branches);
-                return FindAncestor(commitSha, _repository.Commits);
+                var developCommits = OriginDevelopOrDevelopCommits(_repository.Branches).ToArray();
+                uint toReturn = 0;
+                foreach (var commit in _repository.Commits)
+                {
+                    if (developCommits.Any(developCommit => commit.Sha.Equals(developCommit.Sha)))
+                    {
+                        return toReturn;
+                    }
+
+                    toReturn++;
+                }
+                throw new InvalidOperationException(
+                    $"Git repository does not contain a common ancestor between '{Constants.DevelopBranchName}' and the current HEAD.");
             }
         }
 
@@ -108,9 +119,8 @@ namespace DashDashVersion.RepositoryAbstraction
                     .OrderByDescending(t => VersionNumber.Parse(t.FriendlyName))
                     .FirstOrDefault()?.FriendlyName;
 
-        private static string LastCommitHashOfDevelop(IEnumerable<GitBranch> branches)
+        private static IEnumerable<GitCommit> OriginDevelopOrDevelopCommits(IEnumerable<GitBranch> branches)
         {
-            // ReSharper disable once PossibleMultipleEnumeration
             var develop = branches.FirstOrDefault(IsOriginDevelop);
             if (develop == null)
             {
@@ -118,16 +128,19 @@ namespace DashDashVersion.RepositoryAbstraction
                 develop = branches.FirstOrDefault(IsDevelop);
                 if (develop == null)
                 {
-                    throw new InvalidOperationException($"Git repository does not contain a branch named '{Constants.DevelopBranchName}' or '{Constants.OriginDevelop}'.");
+                    throw new InvalidOperationException(
+                        $"Git repository does not contain a branch named '{Constants.DevelopBranchName}' or '{Constants.OriginDevelop}'.");
                 }
             }
 
-            if (!develop.Commits.Any())
+            var developCommits = develop.Commits;
+            if (!developCommits.Any())
             {
-                throw new InvalidOperationException($"Git repository does not contain any commits on '{Constants.DevelopBranchName}' or '{Constants.OriginDevelop}'.");
+                throw new InvalidOperationException(
+                    $"Git repository does not contain any commits on '{Constants.DevelopBranchName}' or '{Constants.OriginDevelop}'.");
             }
 
-            return develop.Commits.First().Sha;
+            return developCommits;
         }
 
         private static bool IsDevelop(GitBranch branch) =>
