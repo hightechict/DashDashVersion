@@ -15,6 +15,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with DashDashVersion. If not, see<https://www.gnu.org/licenses/>.
 
+using System;
 using System.Collections.Generic;
 using DashDashVersion.RepositoryAbstraction;
 using FluentAssertions;
@@ -27,7 +28,7 @@ namespace DashDashVersionTests
         [Fact]
         public void MasterRepoTest()
         {
-            var repoReader = new GitRepoReader(TestRepositories.MasterOnlyRepository());
+            var repoReader = new GitRepoReader(TestRepositories.MasterOnlyRepository(), string.Empty);
             repoReader.CurrentBranch.Name.Should().Be(DashDashVersion.Constants.MasterBranchName);
             repoReader.CommitCountSinceLastReleaseVersion.Should().Be(0);
             repoReader.HeadCommitHash.Should().Be("a");
@@ -37,7 +38,7 @@ namespace DashDashVersionTests
         [Fact]
         public void MasterPastDevelopTest()
         {
-            var repoReader = new GitRepoReader(TestRepositories.MasterAheadOfDevelopRepository());
+            var repoReader = new GitRepoReader(TestRepositories.MasterAheadOfDevelopRepository(), string.Empty);
             repoReader.CurrentBranch.Name.Should().Be(DashDashVersion.Constants.DevelopBranchName);
             repoReader.CommitCountSinceLastReleaseVersion.Should().Be(1);
             repoReader.HeadCommitHash.Should().Be("b");
@@ -47,7 +48,7 @@ namespace DashDashVersionTests
         [Fact]
         public void DevelopRepoTest()
         {
-            var repoReader = new GitRepoReader(TestRepositories.TwoCommitsOnDevelopRepository());
+            var repoReader = new GitRepoReader(TestRepositories.TwoCommitsOnDevelopRepository(), string.Empty);
             repoReader.CommitCountSinceBranchOffFromDevelop.Should().Be(0);
             repoReader.CommitCountSinceLastReleaseVersion.Should().Be(1);
             repoReader.CurrentBranch.Name.Should().Be(DashDashVersion.Constants.DevelopBranchName);
@@ -58,7 +59,7 @@ namespace DashDashVersionTests
         [Fact]
         public void RemoteDevelopRepoTest()
         {
-            var repoReader = new GitRepoReader(TestRepositories.RemoteDevelopRepository());
+            var repoReader = new GitRepoReader(TestRepositories.RemoteDevelopRepository(), string.Empty);
             repoReader.CommitCountSinceBranchOffFromDevelop.Should().Be(0);
             repoReader.CommitCountSinceLastReleaseVersion.Should().Be(1);
             repoReader.CurrentBranch.Name.Should().Be(DashDashVersion.Constants.DevelopBranchName);
@@ -69,7 +70,7 @@ namespace DashDashVersionTests
         [Fact]
         public void ReleaseRepoWithoutTagTest()
         {
-            var repoReader = new GitRepoReader(TestRepositories.ReleaseBranchRepositoryWithoutTag());
+            var repoReader = new GitRepoReader(TestRepositories.ReleaseBranchRepositoryWithoutTag(), string.Empty);
             repoReader.CommitCountSinceBranchOffFromDevelop.Should().Be(1);
             repoReader.CommitCountSinceLastReleaseVersion.Should().Be(2);
             repoReader.HeadCommitHash.Should().Be("c");
@@ -81,7 +82,7 @@ namespace DashDashVersionTests
         [Fact]
         public void ReleaseRepoWithTagTest()
         {
-            var repoReader = new GitRepoReader(TestRepositories.ReleaseBranchRepositoryWithTaggedRc());
+            var repoReader = new GitRepoReader(TestRepositories.ReleaseBranchRepositoryWithTaggedRc(), string.Empty);
             repoReader.CommitCountSinceBranchOffFromDevelop.Should().Be(3);
             repoReader.CommitCountSinceLastReleaseVersion.Should().Be(4);
             repoReader.HeadCommitHash.Should().Be("e");
@@ -93,7 +94,7 @@ namespace DashDashVersionTests
         [Fact]
         public void FeatureRepoTest()
         {
-            var repoReader = new GitRepoReader(TestRepositories.FeatureBranchOnFeatureBranchRepository());
+            var repoReader = new GitRepoReader(TestRepositories.FeatureBranchOnFeatureBranchRepository(), string.Empty);
             repoReader.CommitCountSinceBranchOffFromDevelop.Should().Be(2);
             repoReader.CommitCountSinceLastReleaseVersion.Should().Be(3);
             repoReader.HeadCommitHash.Should().Be("d");

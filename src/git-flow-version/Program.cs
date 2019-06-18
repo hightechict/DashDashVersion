@@ -16,7 +16,9 @@
 // along with DashDashVersion. If not, see<https://www.gnu.org/licenses/>.
 
 using System;
+using System.Collections.Generic;
 using DashDashVersion;
+using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 
 namespace GitFlowVersion
@@ -28,7 +30,12 @@ namespace GitFlowVersion
         {
             try
             {
-                var toWrite = GenerateJson(VersionNumberGenerator.GenerateVersionNumber(Environment.CurrentDirectory));
+                var builder = new ConfigurationBuilder();
+                builder.AddCommandLine(
+                    args, 
+                    new Dictionary<string, string> {{"-b", "branch"}});
+                var configuration = builder.Build();
+                var toWrite = GenerateJson(VersionNumberGenerator.GenerateVersionNumber(Environment.CurrentDirectory, configuration["branch"]));
                 Console.WriteLine(toWrite);
                 return 0;
             }
@@ -48,7 +55,7 @@ namespace GitFlowVersion
                 version.AssemblyVersion
             };
 
-            return JsonConvert.SerializeObject(toReturn);
+            return JsonConvert.SerializeObject(toReturn, Formatting.Indented);
         }
     }
 }

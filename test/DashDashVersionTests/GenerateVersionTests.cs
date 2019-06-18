@@ -151,6 +151,7 @@ namespace DashDashVersionTests
         private static VersionNumberGenerator CreateVersionNumberGenerator(IGitRepository gitRepository) =>
             new VersionNumberGenerator(
                 new GitRepoReader(
-                    gitRepository));
+                    gitRepository, 
+                    string.Empty));
     }
 }
