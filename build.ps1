@@ -35,9 +35,9 @@ using System.Runtime.InteropServices;
     dotnet pack /p:PackageVersion=$env:fullSemVer /p:NoPackageAnalysis=true
 
 
-    if ($env:TF_BUILD -eq "True" -or $env:APPVEYOR -ieq "True") {
+    if ($env:TF_BUILD -eq "True") {
 
-        if ($gitBranch -ne "master") {
+        if ((git describe --exact-match --tags $(git log -n1 --pretty='%h')) -eq $env:semVer) {
 		    git remote set-url origin git@github.com:hightechict/DashDashVersion.git
             git tag $env:semVer
             Start-Process -Wait -ErrorAction SilentlyContinue git -ArgumentList "push", "--verbose", "origin", "$($env:semVer)"            
