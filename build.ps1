@@ -48,7 +48,7 @@ using System.Runtime.InteropServices;
         if ($env:Build_SourceBranch -notlike "*/feature/*") {
             Write-Host "Publishing NuGet package"
             pushd built
-            dotnet nuget push --api-key $env:NuGet_APIKEY *.nupkg -source https://api.nuget.org/v3/index.json
+            dotnet nuget push --api-key $env:NuGet_APIKEY *.nupkg --source https://api.nuget.org/v3/index.json
             popd
         }
 
