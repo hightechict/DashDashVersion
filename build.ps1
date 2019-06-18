@@ -48,7 +48,12 @@ using System.Runtime.InteropServices;
             dotnet nuget push --api-key $env:NuGet_APIKEY *.nupkg
             popd
         }
-
+        if ($env:imageName -eq "windows-latest" -and $gitBranch -like "master"){
+            Copy-Item README.md doc/index.md
+            docfx ./doc/docfx.json
+        }
+    }
+    else{
         Copy-Item README.md doc/index.md
         docfx ./doc/docfx.json
     }

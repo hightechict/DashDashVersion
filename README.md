@@ -2,7 +2,8 @@
 
 [![Build Status](https://dev.azure.com/basbossink0470/DashDashVersion/_apis/build/status/hightechict.DashDashVersion?branchName=feature/azure-pipeline)](https://dev.azure.com/basbossink0470/DashDashVersion/_build/latest?definitionId=1&branchName=feature/azure-pipeline)
 [![codecov](https://codecov.io/gh/hightechict/DashDashVersion/branch/azure-pipeline/graph/badge.svg)](https://codecov.io/gh/hightechict/DashDashVersion)
-![DashDashVersion](https://img.shields.io/nuget/v/dashdashversion.svg)
+[![nuget](https://img.shields.io/nuget/v/git-flow-version.svg)](https://www.nuget.org/packages/git-flow-version/)
+[![docs](https://img.shields.io/badge/-docs-blue.svg)](https://www.dashdashversion.net/)
 
 DashDashVersion creates predictable and opinionated [SemVer 2.0.0 version][SemVer2] numbers for [git flow][gitFlow] repositories.
 
