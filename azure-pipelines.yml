@@ -52,23 +52,31 @@ steps:
   displayName: Install .NET Core 2 latest
   env:
    DOTNET_CLI_TELEMETRY_OPTOUT: false
+   DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
 
 - task: PowerShell@2
   inputs:
     targetType: inline
     pwsh: true
     script: 'dotnet tool install --global coverlet.console'
+  env:
+   DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
 
 - task: PowerShell@2
   inputs:
     targetType: inline
     pwsh: true
     script: 'dotnet tool install --global git-flow-version'
+  env:
+   DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
+
 
 - task: NuGetToolInstaller@1
   inputs:
     versionSpec: '5.1.0'
     checkLatest: true
+  env:
+   DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
 
 - task: InstallSSHKey@0
   condition: eq(variables.imageName, 'windows-latest')
@@ -85,6 +93,7 @@ steps:
   env:
     NuGet_APIKEY: $(nuget.APIKEY)
     imageName: $(imageName)
+    DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
 
 - task: PowerShell@2
   condition: eq(variables.imageName, 'windows-latest')
@@ -94,3 +103,4 @@ steps:
     script: 'codecov -f "./built/DashDashVersion.xml" -t $env:CodecovToken'
   env:
     CodecovToken: $(CodecovToken)
+    DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
