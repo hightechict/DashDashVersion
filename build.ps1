@@ -8,7 +8,6 @@ dotnet restore
 
 dotnet test /p:CollectCoverage=true /p:Exclude=[xunit.*]* /p:CoverletOutput='../../built/DashDashVersion.xml' /p:CoverletOutputFormat=cobertura
 
-$gitBranch = git rev-parse --abbrev-ref HEAD
 $gitCurrentTag = git describe --tags --abbrev=0
 
 if($env:Build.Reason -ne "PullRequest")
@@ -44,13 +43,13 @@ using System.Runtime.InteropServices;
             Start-Process -Wait -ErrorAction SilentlyContinue git -ArgumentList "push", "--verbose", "origin", "$($env:semVer)"            
         }
 
-        if ($gitBranch -notlike "feature/*") {
+        if ($env:Build.SourceBranchName -notlike "feature/*") {
             pushd built
             dotnet nuget push --api-key $env:NuGet_APIKEY *.nupkg
             popd
         }
 
-        if($gitBranch -like "master"){
+        if($env:Build.SourceBranchName -like "master"){
             Copy-Item README.md doc/index.md
             docfx ./doc/docfx.json
         }
