@@ -27,7 +27,7 @@ It will return a JSON string with the following properties:
 
 * `SemVer` = a [SemVer 2.0.0][SemVer2] compliant version number without metadata
 * `FullSemVer` = a [SemVer 2.0.0][SemVer2] compliant version number with build metadata
-* `AssemblyVersion` = an [`AssemblyVersionAttribute`](https://docs.microsoft.com/en-us/dotnet/api/system.reflection.assemblyversionattribute?view=netstandard-2.0) compatible version with the format `<major>.<minor>.<patch>.<revison>`.
+* `AssemblyVersion` = an [`AssemblyVersionAttribute`](https://docs.microsoft.com/en-us/dotnet/api/system.reflection.assemblyversionattribute?view=netstandard-2.0) compatible version with the format `<major>.<minor>.<patch>.<revison>`
 
 For example:
 ```bash

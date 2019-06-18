@@ -6,14 +6,7 @@ Remove-Item doc/obj -Force -Recurse -ErrorAction SilentlyContinue
 dotnet clean 
 dotnet restore
 
-if ($env:TF_BUILD -eq "True" -or $env:APPVEYOR -ieq "True")
-{
-    dotnet test 
-}
-else
-{
-    dotnet test /p:CollectCoverage=true /p:Exclude=[xunit.*]* /p:CoverletOutput='../../built/coverage.cobertura.xml' /p:CoverletOutputFormat=cobertura
-}
+dotnet test /p:CollectCoverage=true /p:Exclude=[xunit.*]* /p:CoverletOutput='../../built/DashDashVersion.xml' /p:CoverletOutputFormat=cobertura
 
 $gitBranch = git rev-parse --abbrev-ref HEAD;
 
