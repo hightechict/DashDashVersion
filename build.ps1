@@ -37,7 +37,7 @@ using System.Runtime.InteropServices;
 
     if ($env:TF_BUILD -eq "True") {
 
-        if ((git describe --exact-match --tags $(git log -n1 --pretty='%h')) -eq $env:semVer) {
+        if ((git describe --tags --abbrev=0) -eq $env:semVer) {
 		    git remote set-url origin git@github.com:hightechict/DashDashVersion.git
             git tag $env:semVer
             Start-Process -Wait -ErrorAction SilentlyContinue git -ArgumentList "push", "--verbose", "origin", "$($env:semVer)"            
