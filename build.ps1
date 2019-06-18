@@ -4,8 +4,17 @@ Remove-Item doc/index.md -Force -Recurse -ErrorAction SilentlyContinue
 Remove-Item doc/_site -Force -Recurse -ErrorAction SilentlyContinue
 Remove-Item doc/obj -Force -Recurse -ErrorAction SilentlyContinue    
 dotnet clean 
-dotnet restore 
-dotnet test /p:CollectCoverage=true /p:Exclude=[xunit.*]* /p:CoverletOutput='../../built/coverage.cobertura.xml' /p:CoverletOutputFormat=cobertura
+dotnet restore
+
+if ($env:TF_BUILD -eq "True" -or $env:APPVEYOR -ieq "True")
+{
+    dotnet test 
+}
+else
+{
+    dotnet test /p:CollectCoverage=true /p:Exclude=[xunit.*]* /p:CoverletOutput='../../built/coverage.cobertura.xml' /p:CoverletOutputFormat=cobertura
+}
+
 $gitBranch = git rev-parse --abbrev-ref HEAD;
 
 if($env:Build.Reason -ne "PullRequest")
@@ -33,7 +42,7 @@ using System.Runtime.InteropServices;
     dotnet pack /p:PackageVersion=$env:fullSemVer /p:NoPackageAnalysis=true
 
 
-    if ($env:TF_BUILD -eq "True" ) {
+    if ($env:TF_BUILD -eq "True" -or $env:APPVEYOR -ieq "True") {
 
         if ($gitBranch -ne "master") {
 		    git remote set-url origin git@github.com:hightechict/DashDashVersion.git
