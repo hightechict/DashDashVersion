@@ -25,11 +25,13 @@ steps:
 - task: PowerShell@2
   inputs:
     targetType: inline
+    pwsh: true
     script: 'choco install -y docfx'
 
 - task: PowerShell@2
   inputs:
     targetType: inline
+    pwsh: true
     script: 'choco install codecov'
 
 - task: DotNetCoreInstaller@0
@@ -43,11 +45,13 @@ steps:
 - task: PowerShell@2
   inputs:
     targetType: inline
+    pwsh: true
     script: 'dotnet tool install --global coverlet.console'
 
 - task: PowerShell@2
   inputs:
     targetType: inline
+    pwsh: true
     script: 'dotnet tool install --global git-flow-version'
 
 - task: NuGetToolInstaller@1
@@ -64,6 +68,7 @@ steps:
 - task: PowerShell@2
   inputs:
     targetType: filePath
+    pwsh: true
     filePath: '$(Build.SourcesDirectory)/build.ps1'
   env:
     NuGet_APIKEY: $(nuget.APIKEY)
@@ -71,6 +76,7 @@ steps:
 - task: PowerShell@2
   inputs:
     targetType: inline
+    pwsh: true
     script: 'codecov -f "./built/DashDashVersion.xml" -t $env:CodecovToken'
   env:
-    NuGet_APIKEY: $(CodecovToken)
+    CodecovToken: $(CodecovToken)
