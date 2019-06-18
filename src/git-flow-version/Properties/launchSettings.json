@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "git-flow-version": {
+      "commandName": "Project",
+      "workingDirectory": "D:\\Repos\\temp"
+    }
+  }
+}
