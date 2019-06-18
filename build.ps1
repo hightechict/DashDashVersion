@@ -43,14 +43,16 @@ using System.Runtime.InteropServices;
             Start-Process -Wait -ErrorAction SilentlyContinue git -ArgumentList "push", "--verbose", "origin", "$($env:semVer)"            
         }
 
-        if ($gitBranch -notlike "feature/*") {
-            pushd built
-            dotnet nuget push --api-key $env:NuGet_APIKEY *.nupkg
-            popd
-        }
-        if ($env:imageName -eq "windows-latest" -and $gitBranch -like "master"){
-            Copy-Item README.md doc/index.md
-            docfx ./doc/docfx.json
+        if ($env:imageName -eq "windows-latest"){
+            if ($gitBranch -notlike "feature/*") {
+                pushd built
+                dotnet nuget push --api-key $env:NuGet_APIKEY *.nupkg
+                popd
+            }
+            if($gitBranch -like "master"){
+                Copy-Item README.md doc/index.md
+                docfx ./doc/docfx.json
+            }
         }
     }
     else{
