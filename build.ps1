@@ -13,7 +13,6 @@ $gitCurrentTag = git describe --tags --abbrev=0
 if($env:Build_Reason -ne "PullRequest")
 {
     Write-Host "Calculating version"
-    Write-Host "Build reason: $env:Build_Reason"
     $temp = git-flow-version | ConvertFrom-Json
     $env:fullSemVer = $temp.FullSemVer
     $env:semVer = $temp.SemVer
@@ -46,10 +45,8 @@ using System.Runtime.InteropServices;
             Start-Process -Wait -ErrorAction SilentlyContinue git -ArgumentList "push", "--verbose", "origin", "$($env:semVer)"            
         }
 
-        if ($env:Build_SourceBranchName -notlike "feature/*") {
+        if ($env:Build_SourceBranch -notlike "*/feature/*") {
             Write-Host "Publishing NuGet package"
-            Write-Host "Branch name: $env:Build_SourceBranchName"
-            Write-Host "Branch : $env:Build_SourceBranch"
             pushd built
             dotnet nuget push --api-key $env:NuGet_APIKEY *.nupkg 
             popd
