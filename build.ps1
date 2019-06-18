@@ -12,6 +12,7 @@ $gitCurrentTag = git describe --tags --abbrev=0
 
 if($env:Build.Reason -ne "PullRequest")
 {
+    Write-Host "Calculating version"
     $temp = git-flow-version | ConvertFrom-Json
     $env:fullSemVer = $temp.FullSemVer
     $env:semVer = $temp.SemVer
@@ -36,16 +37,20 @@ using System.Runtime.InteropServices;
 
 
     if ($env:TF_BUILD -eq "True" -and $env:imageName -eq "windows-latest") {
-        
+        Write-Host "Windows build detected"
         if ($gitCurrentTag -notlike $env:semVer) {
+            Write-Host "Tagging build"
 		    git remote set-url origin git@github.com:hightechict/DashDashVersion.git
             git tag $env:semVer
             Start-Process -Wait -ErrorAction SilentlyContinue git -ArgumentList "push", "--verbose", "origin", "$($env:semVer)"            
         }
 
         if ($env:Build.SourceBranchName -notlike "feature/*") {
+            Write-Host "Publishing NuGet package"
+            Write-Host $env:Build.SourceBranch
+            Write-Host $env:Build.SourceBranchName
             pushd built
-            dotnet nuget push --api-key $env:NuGet_APIKEY *.nupkg
+            dotnet nuget push --api-key $env:NuGet_APIKEY *.nupkg 
             popd
         }
 
