@@ -10,9 +10,10 @@ dotnet test /p:CollectCoverage=true /p:Exclude=[xunit.*]* /p:CoverletOutput='../
 
 $gitCurrentTag = git describe --tags --abbrev=0
 
-if($env:Build.Reason -ne "PullRequest")
+if($env:Build_Reason -ne "PullRequest")
 {
     Write-Host "Calculating version"
+    Write-Host "Build reason: $env:Build_Reason"
     $temp = git-flow-version | ConvertFrom-Json
     $env:fullSemVer = $temp.FullSemVer
     $env:semVer = $temp.SemVer
@@ -45,10 +46,10 @@ using System.Runtime.InteropServices;
             Start-Process -Wait -ErrorAction SilentlyContinue git -ArgumentList "push", "--verbose", "origin", "$($env:semVer)"            
         }
 
-        if ($env:Build.SourceBranchName -notlike "feature/*") {
+        if ($env:Build_SourceBranchName -notlike "feature/*") {
             Write-Host "Publishing NuGet package"
-            Write-Host $env:Build.SourceBranch
-            Write-Host $env:Build.SourceBranchName
+            Write-Host "Branch name: $env:Build_SourceBranchName"
+            Write-Host "Branch : $env:Build_SourceBranch"
             pushd built
             dotnet nuget push --api-key $env:NuGet_APIKEY *.nupkg 
             popd
