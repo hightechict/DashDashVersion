@@ -22,8 +22,8 @@ trigger:
     - feature/*
     - hotfix/*
     - releases/*
-    exclude:
     - master
+
 
 variables:
   solution: '**/*.sln'
