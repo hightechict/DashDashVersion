@@ -124,6 +124,7 @@ namespace DashDashVersionTests
             };
             var developCommits = new List<GitCommit>
             {
+                new GitCommit("e"),
                 new GitCommit("b"),
                 new GitCommit("a")
             };
