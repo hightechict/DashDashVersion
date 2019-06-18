@@ -3,6 +3,18 @@
 # Add steps that publish symbols, save build artifacts, and more:
 # https://docs.microsoft.com/azure/devops/pipelines/languages/dotnet-core
 
+strategy:
+  matrix:
+    linux:
+      imageName: 'ubuntu-latest'
+    mac:
+      imageName: 'macos-latest'
+    windows:
+      imageName: 'windows-latest'
+
+pool:
+  vmImage: $(imageName)
+  
 trigger:
   branches:
     include:
@@ -12,9 +24,6 @@ trigger:
     - releases/*
     exclude:
     - master
-
-pool:
-  vmImage: 'windows-latest'
 
 variables:
   solution: '**/*.sln'
