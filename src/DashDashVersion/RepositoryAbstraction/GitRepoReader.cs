@@ -90,7 +90,7 @@ namespace DashDashVersion.RepositoryAbstraction
             }
         }
 
-        public uint CommitCountSinceBranchOfFromDevelop
+        public uint CommitCountSinceBranchOffFromDevelop
         {
             get
             {
