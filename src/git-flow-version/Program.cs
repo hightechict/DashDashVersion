@@ -16,7 +16,9 @@
 // along with DashDashVersion. If not, see<https://www.gnu.org/licenses/>.
 
 using System;
+using System.Reflection;
 using DashDashVersion;
+using Microsoft.Extensions.CommandLineUtils;
 using Newtonsoft.Json;
 
 namespace GitFlowVersion
@@ -26,17 +28,35 @@ namespace GitFlowVersion
         // ReSharper disable once UnusedParameter.Local
         private static int Main(string[] args)
         {
-            try
+            var app = new CommandLineApplication
             {
-                var toWrite = GenerateJson(VersionNumberGenerator.GenerateVersionNumber(Environment.CurrentDirectory));
-                Console.WriteLine(toWrite);
-                return 0;
-            }
-            catch (Exception e)
+                Name = "git-flow-version"
+            };
+            app.HelpOption("-?|-h|--help");
+
+            var optionBranch = app.Option("-b|--branch", "Manualy tell what branch has to be used as HEAD", CommandOptionType.SingleValue);
+            var optionVersion = app.Option("--version", "Returns the currently installed version of git-flow-version", CommandOptionType.NoValue);
+            app.OnExecute(() =>
             {
-                Console.Error.WriteLine(e.Message);
-                return -1;
-            }
+                if(optionVersion.Value() == "on")
+                {
+                    WriteGitFlowVersion();
+                    return -1;
+                }
+                try
+                {
+                    Console.WriteLine(GenerateJson(VersionNumberGenerator.GenerateVersionNumber(Environment.CurrentDirectory, optionBranch.Value())));
+                    return 0;
+                }
+                catch (Exception e)
+                {
+                    Console.Error.WriteLine(e.Message);
+                    return -1;
+                }
+            });
+
+            app.Execute(args);
+            return -1;
         }
 
         private static string GenerateJson(VersionNumber version)
@@ -48,7 +68,17 @@ namespace GitFlowVersion
                 version.AssemblyVersion
             };
 
-            return JsonConvert.SerializeObject(toReturn);
+            return JsonConvert.SerializeObject(toReturn, Formatting.Indented);
+        }
+
+        private static void WriteGitFlowVersion()
+        {
+            var version = Attribute
+               .GetCustomAttribute(
+                   Assembly.GetEntryAssembly(),
+                   typeof(AssemblyInformationalVersionAttribute))
+               as AssemblyInformationalVersionAttribute;
+            Console.WriteLine(version?.InformationalVersion ?? "Unkown Version");
         }
     }
 }

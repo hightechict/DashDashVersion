@@ -46,7 +46,7 @@ namespace DashDashVersion
                 {
                     return new FeatureBranchInfo(name, name.Split(Constants.BranchNameInfoDelimiter)[1]);
                 }
-                throw new ArgumentException($"This branch : {name} is 'feature' branch, only feature branches of the format '{Constants.FeatureBranchName}/<name>' are supported.", nameof(name));
+                throw new ArgumentException($"This branch : {name} is a 'feature' branch, only feature branches of the format '{Constants.FeatureBranchName}/<name>' are supported.", nameof(name));
             }
 
             if (name.Equals(Constants.MasterBranchName) || name.StartsWith(Constants.SupportBranchName))

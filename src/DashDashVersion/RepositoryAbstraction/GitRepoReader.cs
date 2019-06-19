@@ -30,7 +30,9 @@ namespace DashDashVersion.RepositoryAbstraction
     {
         private readonly IGitRepository _repository;
 
-        internal static GitRepoReader Load(string path)
+        internal static GitRepoReader Load(
+            string path, 
+            string currentBranch)
         {
             if (string.IsNullOrEmpty(path))
             {
@@ -49,15 +51,17 @@ namespace DashDashVersion.RepositoryAbstraction
             return new GitRepoReader(
                 GitRepository.FromRepository(
                     new Repository(
-                        repoPath)));
+                        repoPath)), currentBranch);
         }
 
-        internal GitRepoReader(IGitRepository repo)
+        internal GitRepoReader(
+            IGitRepository repo, 
+            string currentBranchName)
         {
             _repository = repo;
-            GitBranch branch;
-            CurrentBranch = FindCurrentBranch(out branch);
-            var tags = repo.Tags.Where(tag => branch.Commits.Any(commit => commit.Sha == tag.Sha));
+            var (currentBranch, branch) = FindCurrentBranch(currentBranchName);
+            CurrentBranch = currentBranch;
+            var tags = TagsOnBranch(branch);
             var highestReleaseVersionTag = HighestReleaseVersionTag(tags);
             CurrentReleaseVersion = VersionNumber.Parse(highestReleaseVersionTag.FriendlyName);
             CommitCountSinceLastReleaseVersion = FindAncestor(
@@ -72,6 +76,7 @@ namespace DashDashVersion.RepositoryAbstraction
         public VersionNumber CurrentReleaseVersion { get; }
 
         public BranchInfo CurrentBranch { get; }
+
         public uint CommitCountSinceLastReleaseVersion { get; }
 
         public VersionNumber? HighestMatchingTagForReleaseCandidate
@@ -172,45 +177,52 @@ namespace DashDashVersion.RepositoryAbstraction
             throw new ArgumentException($"No commit found with sha: '{sha}'.", nameof(sha));
         }
 
-        private BranchInfo FindCurrentBranch(out GitBranch branch)
+        private (BranchInfo BranchInfo, GitBranch Branch) FindCurrentBranch(string branchName)
         {
-            string branchName;
-            branch = _repository.Branches
-                .Where(f => f.IsCurrentRepositoryHead)
-                .Select(f => f).FirstOrDefault();
-
-            if (branch == null)
+            if (string.IsNullOrWhiteSpace(branchName))
             {
-                var currentCommit = _repository.Commits.FirstOrDefault();
-                if (currentCommit == null)
+                var branch = BranchForRepositoryHead();
+                if (branch == null)
                 {
-                    throw new InvalidOperationException("The repository is on a detached HEAD, and no commits where found.");
+                    throw new InvalidOperationException(
+                        "The repository is on a detached HEAD, please specify the name of the branch for which the version should be calculated using the --branch command-line argument.");
                 }
-                var matchingBranches = _repository.Branches.Where(branch => branch.Commits.Any(c => c.Sha.Equals(currentCommit.Sha)));
-                var count = matchingBranches.Count();
-                if (count == 0)
-                {
-                    throw new InvalidOperationException("The repository is on a detached HEAD, and the current commit is not present in any of the branches.");
-                }
-                if (count > 1)
-                {
-                    throw new InvalidOperationException("The repository is on a detached HEAD, and the current commit is on multiple branches.");
-                }
-                branch = matchingBranches.First();
-            }
+                branchName = TrimRemoteName(branch);
 
-            if (branch.IsRemote)
-            {
-                var splitLocation = branch.FriendlyName.IndexOf(Constants.BranchNameInfoDelimiter);
-                splitLocation++;
-                branchName = branch.FriendlyName.Substring(splitLocation);
+                return (BranchInfoFactory.CreateBranchInfo(branchName), branch);
             }
             else
             {
-                branchName = branch.FriendlyName;
+                var branch = FindBranch(branchName);
+                if (branch == null)
+                {
+                    throw new ArgumentException($"The branch '{branchName}' could not be found in the repository.", nameof(branchName));
+                }
+                return (BranchInfoFactory.CreateBranchInfo(branchName), branch);
             }
-
-            return BranchInfoFactory.CreateBranchInfo(branchName);
         }
+
+        private static string TrimRemoteName(GitBranch branch)
+        {
+            if (!branch.IsRemote)
+            {
+                return branch.FriendlyName;
+            }
+            var splitLocation = branch.FriendlyName.IndexOf(Constants.BranchNameInfoDelimiter);
+            splitLocation++;
+            return branch.FriendlyName.Substring(splitLocation);
+        }
+
+        private GitBranch BranchForRepositoryHead() =>
+            _repository.Branches
+                .Where(f => f.IsCurrentRepositoryHead)
+                .Select(f => f).FirstOrDefault();
+
+        private GitBranch FindBranch(string branchName) =>
+            _repository.Branches.FirstOrDefault(b => b.FriendlyName.Equals(branchName));
+
+        private IEnumerable<GitTag> TagsOnBranch(
+            GitBranch branch) => 
+                _repository.Tags.Where(tag => branch.Commits.Any(commit => commit.Sha == tag.Sha));
     }
 }
