@@ -217,10 +217,16 @@ namespace DashDashVersionTests
                 new GitCommit("b"),
                 new GitCommit("a")
             };
+            var featureCommits = new List<GitCommit>
+            {
+                new GitCommit("b"),
+                new GitCommit("a")
+            };
             var branches = new List<GitBranch>
             {
                 new GitBranch(false,"",Constants.MasterBranchName,false,masterCommits),
                 new GitBranch(false,"",Constants.DevelopBranchName,false,developCommits),
+                new GitBranch(false,"",Constants.FeatureBranchName +Constants.BranchNameInfoDelimiter+"FeatureA",false,developCommits)
             };
             var tags = new List<GitTag>
             {

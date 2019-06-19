@@ -34,7 +34,7 @@ namespace GitFlowVersion
             };
             app.HelpOption("-?|-h|--help");
 
-            var optionBranch = app.Option("-b|--branch", "Manualy tell what branch has to be used as HEAD", CommandOptionType.SingleValue);
+            var optionBranch = app.Option("-b|--branch", "Manualy tell what branch has to be used as HEAD, this can be the full branch name or a partial one \n\t\tFor feature/newFeature it can be feature/newFeature or just newFeature", CommandOptionType.SingleValue);
             var optionVersion = app.Option("--version", "Returns the currently installed version of git-flow-version", CommandOptionType.NoValue);
             app.OnExecute(() =>
             {

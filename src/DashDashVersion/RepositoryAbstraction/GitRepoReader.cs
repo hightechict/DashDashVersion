@@ -193,12 +193,20 @@ namespace DashDashVersion.RepositoryAbstraction
             }
             else
             {
-                var branch = FindBranch(branchName);
+                GitBranch branch;
+                try
+                {
+                    branch = FindBranch(branchName);
+                }
+                catch
+                {
+                    throw new ArgumentException($"This partial branch name: '{branchName}' is not unique in the repository", nameof(branchName));
+                }
                 if (branch == null)
                 {
                     throw new ArgumentException($"The branch '{branchName}' could not be found in the repository.", nameof(branchName));
                 }
-                return (BranchInfoFactory.CreateBranchInfo(branchName), branch);
+                return (BranchInfoFactory.CreateBranchInfo(branch.FriendlyName), branch);
             }
         }
 
@@ -208,8 +216,7 @@ namespace DashDashVersion.RepositoryAbstraction
             {
                 return branch.FriendlyName;
             }
-            var splitLocation = branch.FriendlyName.IndexOf(Constants.BranchNameInfoDelimiter);
-            splitLocation++;
+            var splitLocation = branch.FriendlyName.IndexOf(Constants.BranchNameInfoDelimiter) +1;
             return branch.FriendlyName.Substring(splitLocation);
         }
 
@@ -219,7 +226,7 @@ namespace DashDashVersion.RepositoryAbstraction
                 .Select(f => f).FirstOrDefault();
 
         private GitBranch FindBranch(string branchName) =>
-            _repository.Branches.FirstOrDefault(b => b.FriendlyName.Equals(branchName));
+            _repository.Branches.SingleOrDefault(b => b.FriendlyName.Equals(branchName) || b.FriendlyName.Split(Constants.BranchNameInfoDelimiter).Last().Equals(branchName));
 
         private IEnumerable<GitTag> TagsOnBranch(
             GitBranch branch) => 

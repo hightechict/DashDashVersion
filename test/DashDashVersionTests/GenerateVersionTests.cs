@@ -164,6 +164,23 @@ namespace DashDashVersionTests
         }
 
         [Fact]
+        public void RepoWithoutHeadPartualBranchNameTest()
+        {
+            var versionNumberGenerator = CreateVersionNumberGenerator(TestRepositories.DeteachedHeadRepo(), "FeatureA");
+            versionNumberGenerator.VersionNumber.SemVer.Should().Be("0.2.0-dev.0.FeatureA.0");
+        }
+
+        [Fact]
+        public void RepoWithoutHeadIncorrectPartialBranchNameTest()
+        {
+            Action action = () =>
+            {
+                _ = CreateVersionNumberGenerator(TestRepositories.DeteachedHeadRepo(), "A");
+            };
+            action.Should().Throw<ArgumentException>();
+        }
+
+        [Fact]
         public void RepoWithoutHeadIncorrectBranchTest()
         {
             Action action = () =>
@@ -172,6 +189,7 @@ namespace DashDashVersionTests
             };
             action.Should().Throw<ArgumentException>();
         }
+
         [Fact]
         public void RepoWithoutHeadNoBranchTest()
         {

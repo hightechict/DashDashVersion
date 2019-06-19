@@ -21,7 +21,14 @@ if($env:Build_Reason -ne "PullRequest") {
     }
     else {
 
-        $temp = git-flow-version | ConvertFrom-Json
+        if($env:TF_BUILD -eq "True") {
+
+            $temp = git-flow-version --branch $env:Build_SourceBranchName | ConvertFrom-Json
+        }
+        else {
+
+            $temp = git-flow-version | ConvertFrom-Json
+        }
         $env:fullSemVer = $temp.FullSemVer
         $env:semVer = $temp.SemVer
         $env:assemblyVersion = $temp.AssemblyVersion
