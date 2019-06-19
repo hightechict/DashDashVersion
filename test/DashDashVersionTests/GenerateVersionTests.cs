@@ -20,6 +20,7 @@ using FluentAssertions;
 using DashDashVersion;
 using DashDashVersion.RepositoryAbstraction;
 using Moq;
+using System;
 
 namespace DashDashVersionTests
 {
@@ -148,10 +149,34 @@ namespace DashDashVersionTests
             versionNumberGenerator.VersionNumber.SemVer.Should().Be("1.0.0-rc.3");
         }
 
-        private static VersionNumberGenerator CreateVersionNumberGenerator(IGitRepository gitRepository) =>
+        [Fact]
+        public void RepoWithoutHeadDevelopTest()
+        {
+            var versionNumberGenerator = CreateVersionNumberGenerator(TestRepositories.DeteachedHeadRepo(),"develop");
+            versionNumberGenerator.VersionNumber.SemVer.Should().Be("0.2.0-dev.0");
+        }
+
+        [Fact]
+        public void RepoWithoutHeadMasterTest()
+        {
+            var versionNumberGenerator = CreateVersionNumberGenerator(TestRepositories.DeteachedHeadRepo(), "master");
+            versionNumberGenerator.VersionNumber.SemVer.Should().Be("0.1.0");
+        }
+
+        [Fact]
+        public void RepoWithoutHeadIncorrectBranchTest()
+        {
+            Action action = () =>
+            {
+                _ = CreateVersionNumberGenerator(TestRepositories.DeteachedHeadRepo(), "feature/a");
+            };
+            action.Should().Throw<ArgumentException>();
+        }
+
+        private static VersionNumberGenerator CreateVersionNumberGenerator(IGitRepository gitRepository, string branchName = "") =>
             new VersionNumberGenerator(
                 new GitRepoReader(
-                    gitRepository, 
-                    string.Empty));
+                    gitRepository,
+                    branchName));
     }
 }
