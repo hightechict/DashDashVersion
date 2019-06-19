@@ -172,6 +172,15 @@ namespace DashDashVersionTests
             };
             action.Should().Throw<ArgumentException>();
         }
+        [Fact]
+        public void RepoWithoutHeadNoBranchTest()
+        {
+            Action action = () =>
+            {
+                _ = CreateVersionNumberGenerator(TestRepositories.DeteachedHeadRepo());
+            };
+            action.Should().Throw<InvalidOperationException>();
+        }
 
         private static VersionNumberGenerator CreateVersionNumberGenerator(IGitRepository gitRepository, string branchName = "") =>
             new VersionNumberGenerator(

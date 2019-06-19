@@ -2,8 +2,10 @@
 
 [![Build Status](https://dev.azure.com/basbossink0470/DashDashVersion/_apis/build/status/hightechict.DashDashVersion?branchName=master)](https://dev.azure.com/basbossink0470/DashDashVersion/_build/latest?definitionId=1&branchName=master)
 [![codecov](https://codecov.io/gh/hightechict/DashDashVersion/branch/master/graph/badge.svg)](https://codecov.io/gh/hightechict/DashDashVersion)
-[![nuget](https://img.shields.io/nuget/v/git-flow-version.svg)](https://www.nuget.org/packages/git-flow-version/)
+[![nuget](https://img.shields.io/nuget/v/git-flow-version.svg?=color=green)](https://www.nuget.org/packages/git-flow-version/)
+[licenceTag](https://img.shields.io/github/license/hightechict/DashDashVersion.svg?color=purple)
 [![docs](https://img.shields.io/badge/-docs-blue.svg)](https://www.dashdashversion.net/)
+[![docs](https://img.shields.io/badge/-repository-green.svg)](https://github.com/hightechict/DashDashVersion)
 
 DashDashVersion creates predictable and opinionated [SemVer 2.0.0 version][SemVer2] numbers for [git flow][gitFlow] repositories.
 
