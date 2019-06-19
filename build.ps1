@@ -23,7 +23,7 @@ if($env:Build_Reason -ne "PullRequest") {
 
         if($env:TF_BUILD -eq "True") {
 
-            $temp = (git-flow-version --branch $env:Build_SourceBranchName) | ConvertFrom-Json
+            $temp = git-flow-version --branch $env:Build_SourceBranchName | ConvertFrom-Json
         }
         else {
 
@@ -71,7 +71,7 @@ using System.Runtime.InteropServices;
             popd
         }
 
-        if($env:Build.SourceBranchName -like "master"){
+        if($env:Build_SourceBranchName -like "master"){
             Copy-Item README.md doc/index.md
             docfx ./doc/docfx.json
         }
