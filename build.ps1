@@ -23,7 +23,7 @@ if($env:Build_Reason -ne "PullRequest") {
 
         if($env:TF_BUILD -eq "True") {
 
-            $temp = git-flow-version --branch $env:Build_SourceBranchName | ConvertFrom-Json
+            $temp = (git-flow-version --branch $env:Build_SourceBranchName) | ConvertFrom-Json
         }
         else {
 
