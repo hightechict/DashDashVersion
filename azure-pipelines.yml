@@ -32,6 +32,13 @@ variables:
 
 steps:
 - task: PowerShell@2
+  inputs:
+    targetType: inline
+    pwsh: true
+    script: 'ls env:'
+  displayName: Debug list envirement variables
+
+- task: PowerShell@2
   condition: eq(variables.imageName, 'windows-latest')
   inputs:
     targetType: inline
