@@ -27,9 +27,9 @@ namespace DashDashVersion
     {
         private readonly IGitRepoReader _repoReader;
 
-        public static VersionNumber GenerateVersionNumber(string path)
+        public static VersionNumber GenerateVersionNumber(string path, string branch)
         {
-            var repo = GitRepoReader.Load(path);
+            var repo = GitRepoReader.Load(path, branch);
             var versionNumberGenerator = new VersionNumberGenerator(repo);
             return versionNumberGenerator.VersionNumber;
         }
@@ -43,14 +43,15 @@ namespace DashDashVersion
             {
                 PreReleaseLabel preReleaseLabel;
                 var currentBranch = _repoReader.CurrentBranch;
-                var headCommitHash = _repoReader.HeadCommitHash.Length > Constants.BuildMetadataHashLength ?
-                    _repoReader.HeadCommitHash.Substring(0, Constants.BuildMetadataHashLength) :
-                    _repoReader.HeadCommitHash;
+                var headCommitHash = _repoReader.HeadCommitHash.Length > Constants.BuildMetadataHashLength
+                    ? _repoReader.HeadCommitHash.Substring(0, Constants.BuildMetadataHashLength)
+                    : _repoReader.HeadCommitHash;
                 switch (currentBranch)
                 {
                     case FeatureBranchInfo feature:
                         preReleaseLabel = feature.DeterminePreReleaseLabel(
-                            _repoReader.CommitCountSinceLastReleaseVersion - _repoReader.CommitCountSinceBranchOffFromDevelop,
+                            _repoReader.CommitCountSinceLastReleaseVersion -
+                            _repoReader.CommitCountSinceBranchOffFromDevelop,
                             _repoReader.CommitCountSinceBranchOffFromDevelop);
                         return new VersionNumber(
                             _repoReader.CurrentReleaseVersion.Major,
@@ -59,7 +60,8 @@ namespace DashDashVersion
                             preReleaseLabel,
                             headCommitHash);
                     case ReleaseCandidateBranchInfo releaseCandidate:
-                        var ordinal = _repoReader.HighestMatchingTagForReleaseCandidate?.PreReleaseLabel?.BranchLabel.Ordinal + 1;
+                        var ordinal = _repoReader.HighestMatchingTagForReleaseCandidate?.PreReleaseLabel?.BranchLabel
+                                          .Ordinal + 1;
                         preReleaseLabel = releaseCandidate.DeterminePreReleaseLabel(ordinal ?? 1);
                         var version = releaseCandidate.VersionFromName;
                         return new VersionNumber(
@@ -70,11 +72,11 @@ namespace DashDashVersion
                             headCommitHash);
                     case DevelopBranchInfo develop:
                         return new VersionNumber(
-                                _repoReader.CurrentReleaseVersion.Major,
-                                _repoReader.CurrentReleaseVersion.Minor + 1,
-                                0,
-                                develop.DeterminePreReleaseLabel(_repoReader.CommitCountSinceLastReleaseVersion),
-                                headCommitHash);
+                            _repoReader.CurrentReleaseVersion.Major,
+                            _repoReader.CurrentReleaseVersion.Minor + 1,
+                            0,
+                            develop.DeterminePreReleaseLabel(_repoReader.CommitCountSinceLastReleaseVersion),
+                            headCommitHash);
                 }
 
                 if (_repoReader.CommitCountSinceLastReleaseVersion == 0)
@@ -82,7 +84,8 @@ namespace DashDashVersion
                     return _repoReader.CurrentReleaseVersion;
                 }
 
-                throw new ArgumentOutOfRangeException($"{currentBranch.Name} is not a branch that is supported for automated version generation, please tag the commit manualy.",
+                throw new ArgumentOutOfRangeException(
+                    $"{currentBranch.Name} is not a branch that is supported for automated version generation, please tag the commit manualy.",
                     nameof(currentBranch.Name));
             }
         }
