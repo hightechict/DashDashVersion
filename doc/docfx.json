@@ -51,7 +51,9 @@
       }
     ],
     "dest": "_site",
-    "globalMetadataFiles": [],
+    "globalMetadataFiles": [
+		"globalMetadata.json"
+	],
     "fileMetadataFiles": [],
     "template": [
       "templates/custom"
@@ -62,5 +64,6 @@
     "keepFileLink": false,
     "cleanupCacheHistory": false,
     "disableGitFeatures": false
+	
   }
 }
