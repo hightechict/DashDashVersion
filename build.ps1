@@ -15,8 +15,8 @@ function Get-Version() {
         else {
             $version = git-flow-version | ConvertFrom-Json
         }
-        $version
     }
+    $version
 }
 
 function New-SharedAssemblyInfo($version) {
@@ -70,7 +70,7 @@ function Set-Tag($version) {
 
 function New-Package($version) {
     New-SharedAssemblyInfo $version
-    dotnet pack /p:PackageVersion=$version.FullSemVer /p:NoPackageAnalysis=true
+    dotnet pack /p:PackageVersion="$($version.FullSemVer)" /p:NoPackageAnalysis=true
 } 
 
 function Export-Package() {
