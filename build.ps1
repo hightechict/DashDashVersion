@@ -41,7 +41,7 @@ function Test-CIBuild() {
 }
 
 function Test-WindowsCIBuild() {
-    Test-CIBuild -and $env:imageName -eq "windows-latest"
+    (Test-CIBuild) -and ($env:imageName -eq "windows-latest")
 }
 
 function New-Documentation() {
@@ -50,11 +50,11 @@ function New-Documentation() {
 }
 
 function Test-PullRequest() {
-    Test-Path $env:Build_Reason -and $env:Build_Reason -eq "PullRequest"
+    (Test-Path $env:Build_Reason) -and ($env:Build_Reason -eq "PullRequest")
 }
 
 function Test-FeatureBranch() {
-    Test-Path $env:BUILD_SOURCEBRANCH -and $env:BUILD_SOURCEBRANCH -like "*/feature/*"
+    (Test-Path $env:BUILD_SOURCEBRANCH) -and ($env:BUILD_SOURCEBRANCH -like "*/feature/*")
 }
 
 function Test-MasterBranch() {
@@ -62,12 +62,10 @@ function Test-MasterBranch() {
 }
 
 function Set-Tag($version) {
-    if ($gitCurrentTag -notlike $version.SemVer) {
-        Write-Host "Tagging build"
-		git remote set-url origin git@github.com:hightechict/DashDashVersion.git
-        git tag $version.SemVer
-        Start-Process -Wait -ErrorAction SilentlyContinue git -ArgumentList "push", "--verbose", "origin", "$($version.SemVer)"            
-    }
+    Write-Host "Tagging build"
+	git remote set-url origin git@github.com:hightechict/DashDashVersion.git
+    git tag $version.SemVer
+    Start-Process -Wait -ErrorAction SilentlyContinue git -ArgumentList "push", "--verbose", "origin", "$($version.SemVer)"                
 }
 
 function New-Package($version) {
@@ -90,7 +88,6 @@ dotnet clean
 dotnet restore
 dotnet test /p:CollectCoverage=true /p:Exclude=[xunit.*]* /p:CoverletOutput='../../built/DashDashVersion.xml' /p:CoverletOutputFormat=cobertura
 
-$gitCurrentTag = git describe --tags --abbrev=0
 
 $version = Get-Version
 Write-Host "calculated version:"
@@ -100,7 +97,11 @@ New-Package $version
 if (Test-CIBuild) {
     if(-not (Test-PullRequest) -and (Test-WindowsCIBuild)) {
         Write-Host "Windows build detected"
-        Set-Tag $version
+        $gitCurrentTag = git describe --tags --abbrev=0
+        Write-Host "Current tag: [$($gitCurrentTag)]"
+        if ($gitCurrentTag -ne $version.SemVer) {
+            Set-Tag $version
+        }
 
         if (-not (Test-FeatureBranch)) {
             Export-Package
