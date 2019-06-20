@@ -207,27 +207,17 @@ namespace DashDashVersionTests
         }
         internal static GitRepository DeteachedHeadRepo()
         {
-            var masterCommits = new List<GitCommit>
-            {
-                new GitCommit("b"),
-                new GitCommit("a")
-            };
-            var developCommits = new List<GitCommit>
-            {
-                new GitCommit("b"),
-                new GitCommit("a")
-            };
-            var featureCommits = new List<GitCommit>
+            var commits = new List<GitCommit>
             {
                 new GitCommit("b"),
                 new GitCommit("a")
             };
             var branches = new List<GitBranch>
             {
-                new GitBranch(false,"",Constants.MasterBranchName,false,masterCommits),
-                new GitBranch(false,"",Constants.DevelopBranchName,false,developCommits),
-                new GitBranch(false,"",Constants.FeatureBranchName +Constants.BranchNameInfoDelimiter+"Feature-develop",false,developCommits),
-                new GitBranch(true,"",Constants.DefaultRemoteName+Constants.BranchNameInfoDelimiter+Constants.FeatureBranchName +Constants.BranchNameInfoDelimiter+"FeatureA",false,developCommits)
+                new GitBranch(false,"",Constants.MasterBranchName,false,commits),
+                new GitBranch(false,"",Constants.DevelopBranchName,false,commits),
+                new GitBranch(false,"",Constants.FeatureBranchName +Constants.BranchNameInfoDelimiter+"Feature-develop",false,commits),
+                new GitBranch(true,"",Constants.DefaultRemoteName+Constants.BranchNameInfoDelimiter+Constants.FeatureBranchName +Constants.BranchNameInfoDelimiter+"FeatureA",false,commits)
             };
             var tags = new List<GitTag>
             {
@@ -235,7 +225,7 @@ namespace DashDashVersionTests
                 new GitTag("0.0.0", "a")
             };
 
-            return new GitRepository(branches, masterCommits, tags);
+            return new GitRepository(branches, commits, tags);
         }
     }
 }

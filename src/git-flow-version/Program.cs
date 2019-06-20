@@ -34,7 +34,7 @@ namespace GitFlowVersion
             };
             app.HelpOption("-?|-h|--help");
 
-            var optionBranch = app.Option("-b|--branch", "Manually set the branch to use, for determining type and pre-release label. This can be a full or partial name.", CommandOptionType.SingleValue);
+            var optionBranch = app.Option("-b|--branch", "Manually set the branch to use, for determining the branch 'type' and pre-release label. This can be a full or partial name.", CommandOptionType.SingleValue);
             var optionVersion = app.Option("-v|--version", "Returns the currently installed version of git-flow-version.", CommandOptionType.NoValue);
 
             app.OnExecute(() =>
