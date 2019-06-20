@@ -59,9 +59,8 @@ namespace DashDashVersion.RepositoryAbstraction
             string currentBranchName)
         {
             _repository = repo;
-            var (currentBranch, branch) = FindCurrentBranch(currentBranchName);
-            CurrentBranch = currentBranch;
-            var tags = TagsOnBranch(branch);
+            CurrentBranch = FindCurrentBranch(currentBranchName);
+            var tags = TagsOnBranch(repo.Commits);
             var highestReleaseVersionTag = HighestReleaseVersionTag(tags);
             CurrentReleaseVersion = VersionNumber.Parse(highestReleaseVersionTag.FriendlyName);
             CommitCountSinceLastReleaseVersion = FindAncestor(
@@ -177,43 +176,25 @@ namespace DashDashVersion.RepositoryAbstraction
             throw new ArgumentException($"No commit found with sha: '{sha}'.", nameof(sha));
         }
 
-        private (BranchInfo BranchInfo, GitBranch Branch) FindCurrentBranch(string branchName)
+        private BranchInfo FindCurrentBranch(string branchName)
         {
+            GitBranch branch;
             if (string.IsNullOrWhiteSpace(branchName))
             {
-                var branch = BranchForRepositoryHead();
+                branch = BranchForRepositoryHead();
                 if (branch == null)
                 {
                     throw new InvalidOperationException(
                         "The repository is on a detached HEAD, please specify the name of the branch for which the version should be calculated using the --branch command-line argument.");
                 }
-                branchName = TrimRemoteName(branch);
-
-                return (BranchInfoFactory.CreateBranchInfo(branchName), branch);
             }
             else
             {
-                GitBranch branch;
-                branchName = TrimFullBranchPath(branchName);
                 branch = FindBranch(branchName);
-
-                if (branch == null)
-                {
-                    throw new ArgumentException($"The branch '{branchName}' could not be found in the repository.", nameof(branchName));
-                }
-                branchName = TrimRemoteName(branch);
-                return (BranchInfoFactory.CreateBranchInfo(branchName), branch);
             }
-        }
-
-        private static string TrimFullBranchPath(string branchName)
-        {
-            var match = Patterns.IsFullGitBranchPath.Match(branchName);
-            if(match.Success)
-            {
-                return match.Groups["branchName"].Captures[0].Value;
-            }
-            return branchName;
+       
+            branchName = TrimRemoteName(branch);
+            return BranchInfoFactory.CreateBranchInfo(branchName);
         }
 
         private static string TrimRemoteName(GitBranch branch)
@@ -231,11 +212,36 @@ namespace DashDashVersion.RepositoryAbstraction
                 .Where(f => f.IsCurrentRepositoryHead)
                 .Select(f => f).FirstOrDefault();
 
-        private GitBranch FindBranch(string branchName) =>
-            _repository.Branches.SingleOrDefault(b => b.FriendlyName.Equals(branchName));
+        private GitBranch FindBranch(string branchName)
+        {
+            var perfectMatch = _repository.Branches.FirstOrDefault(b => b.FriendlyName.Equals(branchName));
+            if(perfectMatch != null)
+            {
+                return perfectMatch;
+            }
+
+            var branches = _repository.Branches.Where(b => b.FriendlyName.EndsWith(branchName));
+            if (!branches.Any())
+            {
+                throw new ArgumentException($"The branch '{branchName}' could not be found in the repository.", nameof(branchName));
+            }
+
+            string branchType = Patterns.DetermineBranchType.Match(branches.First().FriendlyName).Groups["branchType"].Captures[0]?.Value ?? 
+                throw new ArgumentException($"The branch '{branchName}' has a match but no valid type like master or feature", nameof(branchName)); 
+
+            foreach(var branch in branches)
+            {
+                if(branchType != Patterns.DetermineBranchType.Match(branch.FriendlyName).Groups["branchType"].Captures[0]?.Value)
+                {
+                    throw new ArgumentException($"This partial branch name: '{branchName}' is not unique in the repository", nameof(branchName));
+                }
+            }
+
+            return branches.First();
+        }
 
         private IEnumerable<GitTag> TagsOnBranch(
-            GitBranch branch) => 
-                _repository.Tags.Where(tag => branch.Commits.Any(commit => commit.Sha == tag.Sha));
+            IEnumerable<GitCommit> commits) => 
+                _repository.Tags.Where(tag => commits.Any(commit => commit.Sha == tag.Sha));
     }
 }

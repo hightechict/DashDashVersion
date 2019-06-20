@@ -226,7 +226,7 @@ namespace DashDashVersionTests
             {
                 new GitBranch(false,"",Constants.MasterBranchName,false,masterCommits),
                 new GitBranch(false,"",Constants.DevelopBranchName,false,developCommits),
-                new GitBranch(false,"",Constants.FeatureBranchName +Constants.BranchNameInfoDelimiter+"FeatureA",false,developCommits),
+                new GitBranch(false,"",Constants.FeatureBranchName +Constants.BranchNameInfoDelimiter+"Feature-develop",false,developCommits),
                 new GitBranch(true,"",Constants.DefaultRemoteName+Constants.BranchNameInfoDelimiter+Constants.FeatureBranchName +Constants.BranchNameInfoDelimiter+"FeatureA",false,developCommits)
             };
             var tags = new List<GitTag>

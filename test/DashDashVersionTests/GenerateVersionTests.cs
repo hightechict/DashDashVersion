@@ -166,14 +166,14 @@ namespace DashDashVersionTests
         [Fact]
         public void RepoWithoutHeadFullPathTest()
         {
-            var versionNumberGenerator = CreateVersionNumberGenerator(TestRepositories.DeteachedHeadRepo(), "refs/heads/feature/FeatureA");
-            versionNumberGenerator.VersionNumber.SemVer.Should().Be("0.2.0-dev.0.FeatureA.0");
+            var versionNumberGenerator = CreateVersionNumberGenerator(TestRepositories.DeteachedHeadRepo(), "Feature-develop");
+            versionNumberGenerator.VersionNumber.SemVer.Should().Be("0.2.0-dev.0.Feature-develop.0");
         }
 
         [Fact]
         public void RepoWithoutHeadFullRemotePathTest()
         {
-            var versionNumberGenerator = CreateVersionNumberGenerator(TestRepositories.DeteachedHeadRepo(), "refs/remotes/origin/feature/FeatureA");
+            var versionNumberGenerator = CreateVersionNumberGenerator(TestRepositories.DeteachedHeadRepo(), "A");
             versionNumberGenerator.VersionNumber.SemVer.Should().Be("0.2.0-dev.0.FeatureA.0");
         }
 
@@ -182,7 +182,7 @@ namespace DashDashVersionTests
         {
             Action action = () =>
             {
-                _ = CreateVersionNumberGenerator(TestRepositories.DeteachedHeadRepo(), "A");
+                _ = CreateVersionNumberGenerator(TestRepositories.DeteachedHeadRepo(), "evelop");
             };
             action.Should().Throw<ArgumentException>();
         }
