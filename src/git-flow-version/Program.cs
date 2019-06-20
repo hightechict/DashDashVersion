@@ -34,8 +34,9 @@ namespace GitFlowVersion
             };
             app.HelpOption("-?|-h|--help");
 
-            var optionBranch = app.Option("-b|--branch", "Manually tell what branch to use for determining type and pre-release label, this can be a full or partial name", CommandOptionType.SingleValue);
-            var optionVersion = app.Option("--version", "Returns the currently installed version of git-flow-version", CommandOptionType.NoValue);
+            var optionBranch = app.Option("-b|--branch", "Manually set the branch to use, for determining type and pre-release label. This can be a full or partial name.", CommandOptionType.SingleValue);
+            var optionVersion = app.Option("-v|--version", "Returns the currently installed version of git-flow-version.", CommandOptionType.NoValue);
+
             app.OnExecute(() =>
             {
                 if(optionVersion.Value() == "on")
@@ -78,7 +79,7 @@ namespace GitFlowVersion
                    Assembly.GetEntryAssembly(),
                    typeof(AssemblyInformationalVersionAttribute))
                as AssemblyInformationalVersionAttribute;
-            Console.WriteLine(version?.InformationalVersion ?? "Unkown Version");
+            Console.WriteLine(version?.InformationalVersion ?? "Unknown Version");
         }
     }
 }
