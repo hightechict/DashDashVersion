@@ -23,7 +23,7 @@ if($env:Build_Reason -ne "PullRequest") {
 
         if($env:TF_BUILD -eq "True") {
 
-            $temp = git-flow-version --branch $env:BUILD_SOURCEBRANCHNAME | ConvertFrom-Json
+            $temp = git-flow-version --branch $env:BUILD_SOURCEBRANCH | ConvertFrom-Json
         }
         else {
 
@@ -64,14 +64,14 @@ using System.Runtime.InteropServices;
             Start-Process -Wait -ErrorAction SilentlyContinue git -ArgumentList "push", "--verbose", "origin", "$($env:semVer)"            
         }
 
-        if ($env:Build_SourceBranch -notlike "*/feature/*") {
+        if ($env:BUILD_SOURCEBRANCH -notlike "*/feature/*") {
             Write-Host "Publishing NuGet package"
             pushd built
             dotnet nuget push *.nupkg --api-key $env:NuGet_APIKEY --no-symbols true --source https://api.nuget.org/v3/index.json 
             popd
         }
 
-        if($env:Build_SourceBranchName -like "master"){
+        if($env:BUILD_SOURCEBRANCHNAME -like "master"){
             Copy-Item README.md doc/index.md
             docfx ./doc/docfx.json
         }

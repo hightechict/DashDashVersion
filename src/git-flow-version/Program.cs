@@ -34,14 +34,14 @@ namespace GitFlowVersion
             };
             app.HelpOption("-?|-h|--help");
 
-            var optionBranch = app.Option("-b|--branch", "Manualy tell what branch has to be used as HEAD, this can be the full branch name or a partial one \n\t\tFor feature/newFeature it can be feature/newFeature or just newFeature", CommandOptionType.SingleValue);
+            var optionBranch = app.Option("-b|--branch", "Manualy tell what branch to use, this can be the full branch name or a git path like 'refs/heads/master'", CommandOptionType.SingleValue);
             var optionVersion = app.Option("--version", "Returns the currently installed version of git-flow-version", CommandOptionType.NoValue);
             app.OnExecute(() =>
             {
                 if(optionVersion.Value() == "on")
                 {
                     WriteGitFlowVersion();
-                    return -1;
+                    return 0;
                 }
                 try
                 {

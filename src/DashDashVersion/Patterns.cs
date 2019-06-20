@@ -32,6 +32,8 @@ namespace DashDashVersion
 
         internal static Regex ValidVersionNumber = new Regex(
             @"^(?<Major>\d+)\.(?<Minor>\d+)\.(?<Patch>\d+)(-(?<PreReleaseLabel>(?<PreReleaseLabelBase>[a-zA-Z0-9-]+\.\d+)(\.(?<PreReleaseLabelFeature>[a-zA-Z0-9-]+\.\d+))?))?(\+(?<BuildMetadata>[a-zA-Z0-9-]+))?$", RegexOptions.Compiled);
+
+        internal static Regex IsFullGitBranchPath = new Regex(@$"^refs\{Constants.BranchNameInfoDelimiter}(heads|remotes)\{Constants.BranchNameInfoDelimiter}(?<branchName>.*)",RegexOptions.Compiled);
     }
 
 }
