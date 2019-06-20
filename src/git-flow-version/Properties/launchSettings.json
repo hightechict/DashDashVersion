@@ -2,8 +2,8 @@
   "profiles": {
     "git-flow-version": {
       "commandName": "Project",
-      "commandLineArgs": "-h",
-      "workingDirectory": "D:\\Repos\\Hightech\\GithubDashDashVersion\\DashDashVersion"
+      "commandLineArgs": "-b refs/heads/develop",
+      "workingDirectory": "D:\\Repos\\temp"
     }
   }
 }
