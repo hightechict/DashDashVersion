@@ -50,11 +50,11 @@ function New-Documentation() {
 }
 
 function Test-PullRequest() {
-    (Test-Path $env:Build_Reason) -and ($env:Build_Reason -eq "PullRequest")
+    (Test-Path env:Build_Reason) -and ($env:Build_Reason -eq "PullRequest")
 }
 
 function Test-FeatureBranch() {
-    (Test-Path $env:BUILD_SOURCEBRANCH) -and ($env:BUILD_SOURCEBRANCH -like "*/feature/*")
+    (Test-Path env:BUILD_SOURCEBRANCH) -and ($env:BUILD_SOURCEBRANCH -like "*/feature/*")
 }
 
 function Test-MasterBranch() {
