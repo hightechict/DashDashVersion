@@ -45,6 +45,7 @@ function Test-WindowsCIBuild() {
 }
 
 function New-Documentation() {
+    Write-Host "Generating Documentation"
     Copy-Item README.md doc/index.md
     docfx ./doc/docfx.json
 }
@@ -80,6 +81,20 @@ function Export-Package() {
     popd
 }
 
+function Publish-Documentation($version) {
+    Write-Host "Publishing documentation"
+    $PathOfOrigin = Get-Location;
+    cd ..
+    git clone git@github.com:hightechict/DashDashVersion_site.git --branch develop
+    cd DashDashVersion_site
+    $PathToDocumentationFolder = Get-Location;
+    Remove-Item -recurse "$(Get-Location)\*" -exclude CNAME,*.git
+    Copy-Item "$($PathOfOrigin)\doc\_site\*" -Destination $PathToDocumentationFolder -recurse -Force
+    git add .
+    git commit -m "New documentation generated for version: $($version.SemVer)"
+    git push
+}
+
 Remove-Item built -Force -Recurse -ErrorAction SilentlyContinue
 Remove-Item doc/index.md -Force -Recurse -ErrorAction SilentlyContinue  
 Remove-Item doc/_site -Force -Recurse -ErrorAction SilentlyContinue
@@ -97,20 +112,23 @@ New-Package $version
 if (Test-CIBuild) {
     if(-not (Test-PullRequest) -and (Test-WindowsCIBuild)) {
         Write-Host "Windows build detected"
-        $gitCurrentTag = git describe --tags --abbrev=0
-        Write-Host "Current tag: [$($gitCurrentTag)]"
-        if ($gitCurrentTag -ne $version.SemVer) {
+        if (Test-Path "./.git/refs/tags$($version.SemVer)") {
             Set-Tag $version
+        }
+        else
+        {
+            Write-Host "Tag: $($version.SemVer) is already pressent in the repository!"
         }
 
         if (-not (Test-FeatureBranch)) {
             Export-Package
         }
 
-        if(Test-MasterBranch){
-            New-Documentation
-        }
+        New-Documentation
+        Publish-Documentation $version
+        
     }
 } else {
     New-Documentation
+    Publish-Documentation $version
 }
