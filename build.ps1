@@ -89,18 +89,26 @@ function Publish-Documentation($version) {
     try
     {
         git clone git@github.com:hightechict/DashDashVersion_site.git --branch develop
+        Write-Host "Git Repo cloned"
+        cd DashDashVersion_site
+        Write-Host "Git Repo Selected"
+        $PathToDocumentationFolder = Get-Location;
+        Remove-Item -recurse "$(Get-Location)\*" -exclude CNAME,*.git
+        Write-Host "Git Repo Cleared"
+        Copy-Item "$($PathOfOrigin)\doc\_site\*" -Destination $PathToDocumentationFolder -recurse -Force
+        Write-Host "Files added to repo"
+        git add .
+        git commit -m "New documentation generated for version: $($version.SemVer)"
+        Write-Host "Git commit complete"
+        git push
     }
     catch [Exception]
     {
         Write-Host $_.Exception.Message
     }
     cd DashDashVersion_site
-    $PathToDocumentationFolder = Get-Location;
-    Remove-Item -recurse "$(Get-Location)\*" -exclude CNAME,*.git
-    Copy-Item "$($PathOfOrigin)\doc\_site\*" -Destination $PathToDocumentationFolder -recurse -Force
-    git add .
-    git commit -m "New documentation generated for version: $($version.SemVer)"
-    git push
+
+
 }
 
 Remove-Item built -Force -Recurse -ErrorAction SilentlyContinue
