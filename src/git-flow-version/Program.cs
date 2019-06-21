@@ -63,9 +63,9 @@ namespace GitFlowVersion
         {
             var toReturn = new
             {
+                version.AssemblyVersion,
                 version.FullSemVer,
-                version.SemVer,
-                version.AssemblyVersion
+                version.SemVer  
             };
 
             return JsonConvert.SerializeObject(toReturn, Formatting.Indented);

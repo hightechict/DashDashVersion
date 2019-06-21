@@ -61,7 +61,7 @@ namespace DashDashVersion.RepositoryAbstraction
             _repository = repo;
             CurrentBranch = FindCurrentBranch(currentBranchName);
             var tags = VisibleTags(repo.Commits);
-            var highestReleaseVersionTag = HighestReleaseVersionTag(tags);
+            var highestReleaseVersionTag = HighestReleaseVersionLowestPatchTag(tags);
             CurrentReleaseVersion = VersionNumber.Parse(highestReleaseVersionTag.FriendlyName);
             CommitCountSinceLastReleaseVersion = FindAncestor(
                 highestReleaseVersionTag.Sha,
@@ -147,13 +147,27 @@ namespace DashDashVersion.RepositoryAbstraction
             return developCommits;
         }
 
-        private static GitTag HighestReleaseVersionTag(IEnumerable<GitTag> tags) =>
-            tags.Where(
-                    tag => Patterns.IsReleaseVersionTag.IsMatch(tag.FriendlyName))
-                .OrderByDescending(
-                    t => VersionNumber.Parse(t.FriendlyName))
-                .FirstOrDefault() ??
-            throw new InvalidOperationException($"There is no tag with in the '<major>.<minor>.<patch>' format in this repository looking from the HEAD down: {Patterns.IsReleaseVersionTag}.");
+        private static GitTag HighestReleaseVersionLowestPatchTag(IEnumerable<GitTag> tags)
+        {
+            var releaseTagsAndVersions = tags
+                .Where(tag => Patterns.IsReleaseVersionTag.IsMatch(tag.FriendlyName))
+                .Select(tag => (Tag: tag, VersionNumber: VersionNumber.Parse(tag.FriendlyName)));
+
+            if (!releaseTagsAndVersions.Any())
+                throw new InvalidOperationException($"There is no tag with in the '<major>.<minor>.<patch>' format in this repository looking from the HEAD down: {Patterns.IsReleaseVersionTag}.");
+
+            var highestVersion = releaseTagsAndVersions
+                .Select(pair => pair.VersionNumber)
+                .Max();
+
+            return releaseTagsAndVersions
+                .Where(
+                    pair => pair.VersionNumber.Major == highestVersion.Major && 
+                    pair.VersionNumber.Minor == highestVersion.Minor)
+                .OrderBy(pair => pair.VersionNumber)
+                .First().Tag;
+            
+        }
 
         private static uint FindAncestor(
             string sha,
