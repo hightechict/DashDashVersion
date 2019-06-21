@@ -85,10 +85,9 @@ function Publish-Documentation($version) {
     Write-Host "Publishing documentation"
     $PathOfOrigin = Get-Location;
     cd ..
-    git clone git@github.com:hightechict/DashDashVersion_site.git
+    git clone git@github.com:hightechict/DashDashVersion_site.git --branch develop
     cd DashDashVersion_site
     $PathToDocumentationFolder = Get-Location;
-    git checkout develop
     Remove-Item -recurse "$(Get-Location)\*" -exclude CNAME,*.git
     Copy-Item "$($PathOfOrigin)\doc\_site\*" -Destination $PathToDocumentationFolder -recurse -Force
     git add .
