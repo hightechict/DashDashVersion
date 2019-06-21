@@ -169,24 +169,6 @@ namespace DashDashVersion.RepositoryAbstraction
             throw new ArgumentException($"No commit found with sha: '{sha}'.", nameof(sha));
         }
 
-        private GitBranch FindCurrentGitBranch(string branchName)
-        {
-            if (string.IsNullOrWhiteSpace(branchName))
-            {
-                var branch = BranchForRepositoryHead();
-                if (branch == null)
-                {
-                    throw new InvalidOperationException(
-                        "The repository is on a detached HEAD, please specify the name of the branch for which the version should be calculated using the --branch command-line argument.");
-                }
-                return branch;
-            }
-            else
-            {
-                return FindBranch(branchName);
-            }
-        }
-
         private static string TrimRemoteName(GitBranch branch)
         {
             if (!branch.IsRemote)
@@ -220,6 +202,11 @@ namespace DashDashVersion.RepositoryAbstraction
             return branches.First();
         }
 
+        private GitBranch FindCurrentGitBranch(string branchName) => 
+            string.IsNullOrWhiteSpace(branchName) ? 
+                BranchForRepositoryHead() : 
+                FindBranch(branchName);
+
         private IEnumerable<GitTag> VisibleTags(
             IEnumerable<GitCommit> commits) =>
                 _repository.Tags.Where(tag => commits.Any(commit => commit.Sha == tag.Sha));
@@ -234,7 +221,10 @@ namespace DashDashVersion.RepositoryAbstraction
         private GitBranch BranchForRepositoryHead() =>
             _repository.Branches
                 .Where(f => f.IsCurrentRepositoryHead)
-                .Select(f => f).FirstOrDefault();
+                .Select(f => f)
+                .FirstOrDefault() ??
+            throw new InvalidOperationException(
+                "The repository is on a detached HEAD, please specify the name of the branch for which the version should be calculated using the --branch command-line argument.");
 
         private BranchInfo FindCurrentBranch(string branchName) =>
             BranchInfoFactory.CreateBranchInfo(
