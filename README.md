@@ -65,7 +65,7 @@ Matching of the branch name is performed using the following strategy:
 The number of command-line parameters and/or options supported by `git-flow-version` is very limited, however below you find them explained in detail:
 
 | Option                   | Value       | Description |
-| ------------------------ | ----------- | ----------- |
+| :----------------------- | :---------- | :---------- |
 | `-?` \| `-h` \| `--help` |             | Show the help information. |
 | `-b` \| `--branch`       | branch name | Use the branch in the repository with the name that matches the supplied value to determine the _type_ of the branch. |
 | `-v` \| `--version`      |             | Output only the version of the invoked `git-flow-version` executable. |
