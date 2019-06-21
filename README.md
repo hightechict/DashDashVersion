@@ -60,17 +60,39 @@ Matching of the branch name is performed using the following strategy:
   * if all of these branches have the same _type_ use that _type_, otherwise,
   * if all of these branches have more than one different _type_ generate an error.
 
-## Command-Line reference
+### Command-Line reference
 
-The number of command-line parameters and/or options supported by `git-flow-version` is very limited, however below you find them explained in detail:
+The number of command-line parameters and/or options supported by `git-flow-version** is very limited, however below you find them explained in detail:
 
-| Option                   | Value       | Description |
-| :----------------------- | :---------- | :---------- |
-| `‑?` \| `‑h` \| `‑‑help` |             | Show the help information. |
-| `‑b` \| `‑‑branch`       | branch name | Use the branch in the repository with the name that matches the supplied value to determine the _type_ of the branch. |
-| `‑v` \| `‑‑version`      |             | Output only the version of the invoked `git‑flow‑version` executable. |
+#### Help information
 
-### Requirements
+To show the help information, use any of the following command-line switches:
+
+```bash
+$ git-flow-wersion -?
+$ git-flow-version -h
+$ git-flow-version --help
+```
+
+#### Setting the branch name
+
+To use the branch in the repository with the name that matches the supplied value to determine the _type_ of the branch, add either the `‑b` or the `‑‑branch` command-line parameter followed by the name of the branch.
+
+```bash
+$ git-flow-version -b develop
+$ git-flow-version --branch feature/issue-1234-improve-error-handling
+```
+
+#### Version information
+
+To list the version of `git‑flow‑version` use either the `‑v` or `‑‑version` command-line switches.
+
+```bash
+$ git-flow-version -v
+$ git-flow-version --version
+```
+
+## Requirements
 
 DashDashVersion only supports repositories that strictly follow the [git flow][gitFlow] conventions with the branch names:
 
