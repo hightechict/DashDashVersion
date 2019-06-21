@@ -87,7 +87,7 @@ function Publish-Documentation($version) {
     cd $env:Build_ArtifactStagingDirectory
     try
     {
-        git clone git@github.com:hightechict/DashDashVersion_site.git --branch develop -d
+        git clone git@github.com:hightechict/DashDashVersion_site.git --branch develop
     }
     catch [Exception]
     {
