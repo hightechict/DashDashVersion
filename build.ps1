@@ -85,7 +85,14 @@ function Publish-Documentation($version) {
     Write-Host "Publishing documentation"
     $PathOfOrigin = Get-Location;
     cd $env:Build_ArtifactStagingDirectory
-    git clone git@github.com:hightechict/DashDashVersion_site.git --branch develop
+    try
+    {
+        git clone git@github.com:hightechict/DashDashVersion_site.git --branch develop -d
+    }
+    catch [Exception]
+    {
+        Write-Host $_.Exception.Message
+    }
     cd DashDashVersion_site
     $PathToDocumentationFolder = Get-Location;
     Remove-Item -recurse "$(Get-Location)\*" -exclude CNAME,*.git
