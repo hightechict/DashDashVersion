@@ -56,8 +56,7 @@ namespace GitFlowVersion
                 }
             });
 
-            app.Execute(args);
-            return -1;
+            return app.Execute(args);
         }
 
         private static string GenerateJson(VersionNumber version)
