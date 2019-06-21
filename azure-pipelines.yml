@@ -45,6 +45,14 @@ steps:
   inputs:
     targetType: inline
     pwsh: true
+    script: 'ls :env'
+  displayName: Install docfx
+
+- task: PowerShell@2
+  condition: eq(variables.imageName, 'windows-latest')
+  inputs:
+    targetType: inline
+    pwsh: true
     script: 'choco install codecov'
   displayName: Install codecov
 
