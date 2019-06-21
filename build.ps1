@@ -83,6 +83,7 @@ function Export-Package() {
 
 function Publish-Documentation($version) {
     Write-Host "Publishing documentation"
+    git config --global core.autocrlf false
     $PathOfOrigin = Get-Location;
     cd $env:Build_ArtifactStagingDirectory
     try
