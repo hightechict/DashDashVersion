@@ -69,7 +69,7 @@ The number of command-line parameters and/or options supported by `git-flow-vers
 To show the help information, use any of the following command-line switches:
 
 ```bash
-$ git-flow-wersion -?
+$ git-flow-version -?
 $ git-flow-version -h
 $ git-flow-version --help
 ```
