@@ -84,7 +84,7 @@ function Export-Package() {
 function Publish-Documentation($version) {
     Write-Host "Publishing documentation"
     $PathOfOrigin = Get-Location;
-    cd ..
+    cd $env:Build_ArtifactStagingDirectory
     git clone git@github.com:hightechict/DashDashVersion_site.git --branch develop
     cd DashDashVersion_site
     $PathToDocumentationFolder = Get-Location;
