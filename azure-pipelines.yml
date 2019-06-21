@@ -88,7 +88,7 @@ steps:
 - task: InstallSSHKey@0
   condition: eq(variables.imageName, 'windows-latest')
   inputs:
-    knownHostsEntry: 'github.com,140.82.118.3 ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAq2A7hRGmdnm9tUDbO9IDSwBK6TbQa+PXYPCPy6rbTrTtw7PHkccKrpp0yVhp5HdEIcKr6pLlVDBfOLX9QUsyCOV0wzfjIJNlGEYsdlLJizHhbn2mUjvSAHQqZETYP81eFzLQNnPHt4EVVUh7VfDESU84KezmD5QlWpXLmvU31/yMf+Se8xhHTvKSCZIFImWwoG6mbUoWf9nzpIoaSjB+weqqUUmpaaasXVal72J+UX2B+2RPW3RcT0eOzQgqlJL3RKrTJvdsjE3JEAvGq3lGHSZXy28G3skua2SmVi/w4yCE6gbODqnTWlg7+wC604ydGXA8VJiS5ap43JXiUFFAaQ=='
+    knownHostsEntry: 'github.com'
     sshPublicKey: 'ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIF6/HvdVdOqxei+waWEWBR9u3zwx9TZtyeYuIqs2uBL0 Azure-pipeline'
     sshKeySecureFile: 'GithubDeploymentKey'
   displayName: Install sshKey for tagging
@@ -96,7 +96,7 @@ steps:
 - task: InstallSSHKey@0
   condition: eq(variables.imageName, 'windows-latest')
   inputs:
-    knownHostsEntry: 'github.com,140.82.118.3 ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAq2A7hRGmdnm9tUDbO9IDSwBK6TbQa+PXYPCPy6rbTrTtw7PHkccKrpp0yVhp5HdEIcKr6pLlVDBfOLX9QUsyCOV0wzfjIJNlGEYsdlLJizHhbn2mUjvSAHQqZETYP81eFzLQNnPHt4EVVUh7VfDESU84KezmD5QlWpXLmvU31/yMf+Se8xhHTvKSCZIFImWwoG6mbUoWf9nzpIoaSjB+weqqUUmpaaasXVal72J+UX2B+2RPW3RcT0eOzQgqlJL3RKrTJvdsjE3JEAvGq3lGHSZXy28G3skua2SmVi/w4yCE6gbODqnTWlg7+wC604ydGXA8VJiS5ap43JXiUFFAaQ=='
+    knownHostsEntry: 'github.com'
     sshPublicKey: 'secdsa-sha2-nistp521 AAAAE2VjZHNhLXNoYTItbmlzdHA1MjEAAAAIbmlzdHA1MjEAAACFBAAvZmttHSrJ2SHfXJJImvVWn70vLDh9jetSBwBsjK3MEEES7CBAabuJvPtXqPLQxDngkW4GJTqbrqDzp2YDHejhTAA8trE+sbFUXHDNbC3lwFdyeLA5YD0Kmmq7V7UIpK0h3khjowu4Ivgp6yP1bXl/3iOyVBENkK+Gx6aryPVkRN9ipQ=='
     sshKeySecureFile: 'DashDashVersionSiteAzurePipeline'
   displayName: Install sshKey for documentation publishing
