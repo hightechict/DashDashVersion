@@ -1,4 +1,4 @@
-﻿$ErrorActionPreference = "Stop";
+﻿
 
 function Get-Version() {
     if(Test-Path env:manualVersion) {
