@@ -18,7 +18,15 @@ function Get-Version() {
             if(-not (Test-Path env:APPVEYOR_PULL_REQUEST_NUMBER))
             {
                 Write-Host "Appveyor pipeline: calculating version"
-                $version = git-flow-version.exe --branch $env:APPVEYOR_REPO_BRANCH | ConvertFrom-Json
+                if( $env:APPVEYOR_BUILD_WORKER_IMAGE -like "Visual Studio")
+                {
+                    $version = git-flow-version.exe --branch $env:APPVEYOR_REPO_BRANCH | ConvertFrom-Json
+                }
+                else
+                {
+                    $version = git-flow-version --branch $env:APPVEYOR_REPO_BRANCH | ConvertFrom-Json
+                }
+                
             }
         }
         else {
