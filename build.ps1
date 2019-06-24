@@ -72,7 +72,8 @@ function Set-Tag($version) {
     }
     catch [Exception]
     {
-        Write-Host $_
+        Write-host "Tagging failed"
+        PrintError $_ 
     }             
 }
 
@@ -101,11 +102,8 @@ function Publish-Documentation($version) {
     }
     catch [Exception]
     {
-        Write-Host "exception"
-        Write-Host $_
-        Write-Host "stack trace"
-        Write-Host $_.ScriptStackTrace
-        Write-Host "Fail git clone"
+        Write-host "Cloning failed"
+        PrintError $_ 
     }
     cd DashDashVersion_site
     Write-Host "Git Repo Selected"
@@ -119,6 +117,12 @@ function Publish-Documentation($version) {
     Write-Host "Git commit complete"
     git push
     cd DashDashVersion_site
+}
+
+function PrintError($Error){
+    Write-Host "Exception: $($Error.Exception)"
+    Write-Host "ErrorDetails: $($Error.ErrorDetails)"
+    Write-Host "StackTrace: $($Error.ScriptStackTrace)"
 }
 
 Remove-Item built -Force -Recurse -ErrorAction SilentlyContinue
