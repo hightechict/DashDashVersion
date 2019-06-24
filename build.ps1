@@ -15,7 +15,7 @@ function Get-Version() {
         }
         elseif($env:APPVEYOR -eq "True")
         {
-            if(($env:APPVEYOR_PULL_REQUEST_NUMBER -ge 0) -eq "False")
+            if(-not (Test-Path env:APPVEYOR_PULL_REQUEST_NUMBER))
             {
                 Write-Host "Appveyor pipeline: calculating version"
                 $version = git-flow-version --branch $env:APPVEYOR_REPO_BRANCH| ConvertFrom-Json
