@@ -12,6 +12,10 @@ function Get-Version() {
         if($env:TF_BUILD -eq "True") {
             $version = git-flow-version --branch $env:BUILD_SOURCEBRANCHNAME | ConvertFrom-Json
         }
+        elseif($env:APPVEYOR -and (Test-Path env:APPVEYOR_PULL_REQUEST_NUMBER))
+        {
+            $version = git-flow-version --branch $env:APPVEYOR_REPO_BRANCH| ConvertFrom-Json
+        }
         else {
             $version = git-flow-version | ConvertFrom-Json
         }
