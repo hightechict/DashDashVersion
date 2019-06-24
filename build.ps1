@@ -111,6 +111,10 @@ if (Test-CIBuild) {
             New-Documentation
         }
     }
-} else {
+}
+elseif($env:APPVEYOR){
+   
+}  
+else {
     New-Documentation
 }
