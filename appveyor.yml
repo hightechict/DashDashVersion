@@ -9,6 +9,5 @@ install:
 
 
 build_script:
-  - pwsh: 'Get-ChildItem Env:'
   - pwsh: ./build.ps1
   
