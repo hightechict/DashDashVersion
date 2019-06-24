@@ -13,7 +13,7 @@ function Get-Version() {
             Write-Host "Azure pipeline: calculating version"
             $version = git-flow-version --branch $env:BUILD_SOURCEBRANCHNAME | ConvertFrom-Json
         }
-        elseif($env:APPVEYOR -and (Test-Path env:APPVEYOR_PULL_REQUEST_NUMBER))
+        elseif($env:APPVEYOR -eq "True" -and (Test-Path env:APPVEYOR_PULL_REQUEST_NUMBER) -eq "True")
         {
             Write-Host "Appveyor pipeline: calculating version"
             $version = git-flow-version --branch $env:APPVEYOR_REPO_BRANCH| ConvertFrom-Json
@@ -118,7 +118,7 @@ if (Test-CIBuild) {
         }
     }
 }
-elseif($env:APPVEYOR){
+elseif($env:APPVEYOR -eq "True"){
    
 }  
 else {
