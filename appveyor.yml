@@ -7,5 +7,6 @@ install:
   - pwsh: dotnet tool install --global coverlet.console
 
 build_script:
+  - pwsh: Get-Item -Path Env:* | Get-Member
   - pwsh: ./build.ps1
   
