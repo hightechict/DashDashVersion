@@ -94,7 +94,8 @@ function Publish-Documentation($version) {
     }
     catch [Exception]
     {
-        Write-Host $_.Exception.Message
+        Write-Host $_.Exception
+        Write-Host $_.ScriptStackTrace
         Write-Host "Fail git clone"
     }
     cd DashDashVersion_site
