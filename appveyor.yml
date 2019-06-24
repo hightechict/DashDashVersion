@@ -5,8 +5,9 @@ image:
 install: 
   - pwsh: dotnet tool install --global git-flow-version
   - pwsh: dotnet tool install --global coverlet.console
-  - pwsh: Get-ChildItem Env:
+
 
 build_script:
+  - pwsh: 'Get-ChildItem Env:'
   - pwsh: ./build.ps1
   
