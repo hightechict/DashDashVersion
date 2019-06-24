@@ -95,7 +95,6 @@ dotnet clean
 dotnet restore
 dotnet test /p:CollectCoverage=true /p:Exclude=[xunit.*]* /p:CoverletOutput='../../built/DashDashVersion.xml' /p:CoverletOutputFormat=cobertura
 
-
 $version = Get-Version
 Write-Host "calculated version:"
 $version | Format-List
