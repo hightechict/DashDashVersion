@@ -134,6 +134,7 @@ function Publish-Documentation($version) {
     {
         Write-Host "Git commit complete"
         git push origin develop
+        Write-Host "Git push complete"
     }
     catch [Exception]
     {
