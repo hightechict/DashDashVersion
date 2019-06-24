@@ -2,15 +2,15 @@ image:
 - Visual Studio 2017
 - Ubuntu1804
 
-nuget:
-  disable_publish_on_pr: true
-
 install: 
   - ps: dotnet tool install --global git-flow-version
   - ps: dotnet tool install --global coverlet.console
 
+build: Script
+
 build_script:
   - ps: build.ps1
+  
 after_build:
   - ps: |
       Update-AppveyorBuild -Version $env:version
