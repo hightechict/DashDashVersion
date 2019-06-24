@@ -66,7 +66,14 @@ function Set-Tag($version) {
     Write-Host "Tagging build"
 	git remote set-url origin git@github.com:hightechict/DashDashVersion.git
     git tag $version.SemVer
-    Start-Process -Wait -ErrorAction SilentlyContinue git -ArgumentList "push", "--verbose", "origin", "$($version.SemVer)"                
+    try
+    {
+        git push --verbose origin $version.SemVer
+    }
+    catch [Exception]
+    {
+        Write-Host $_
+    }             
 }
 
 function New-Package($version) {
@@ -121,7 +128,6 @@ Remove-Item doc/obj -Force -Recurse -ErrorAction SilentlyContinue
 dotnet clean 
 dotnet restore
 dotnet test /p:CollectCoverage=true /p:Exclude=[xunit.*]* /p:CoverletOutput='../../built/DashDashVersion.xml' /p:CoverletOutputFormat=cobertura
-
 
 $version = Get-Version
 Write-Host "calculated version:"
