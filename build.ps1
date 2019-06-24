@@ -112,11 +112,37 @@ function Publish-Documentation($version) {
     Write-Host "Git Repo Cleared"
     Copy-Item "$($PathOfOrigin)\doc\_site\*" -Destination $PathToDocumentationFolder -recurse -Force
     Write-Host "Files added to repo"
-    git add .
-    git commit -m "New documentation generated for version: $($version.SemVer)"
-    Write-Host "Git commit complete"
-    git push
+    try
+    {
+        git add .
+    }
+    catch [Exception]
+    {
+        Write-host "Cloning failed"
+        PrintError $_ 
+    }
+    try
+    {
+        git commit -m "New documentation generated for version: $($version.SemVer)"
+    }
+    catch [Exception]
+    {
+        Write-host "Cloning failed"
+        PrintError $_ 
+    }
+    try
+    {
+        Write-Host "Git commit complete"
+        git push
+    }
+    catch [Exception]
+    {
+        Write-host "Cloning failed"
+        PrintError $_ 
+    }
+    Write-host "Select repo"
     cd DashDashVersion_site
+    
 }
 
 function PrintError($Error){
