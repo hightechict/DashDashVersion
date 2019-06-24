@@ -94,7 +94,9 @@ function Publish-Documentation($version) {
     }
     catch [Exception]
     {
-        Write-Host $_.Exception
+        Write-Host "exception"
+        Write-Host $_
+        Write-Host "stack trace"
         Write-Host $_.ScriptStackTrace
         Write-Host "Fail git clone"
     }
@@ -129,12 +131,12 @@ New-Package $version
 if (Test-CIBuild) {
     if(-not (Test-PullRequest) -and (Test-WindowsCIBuild)) {
         Write-Host "Windows build detected"
-        if (Test-Path "./.git/refs/tags$($version.SemVer)") {
-            Set-Tag $version
+        if (Test-Path "./.git/refs/tags/$($version.SemVer)") {
+            Write-Host "Tag: $($version.SemVer) is already pressent in the repository!"
         }
         else
         {
-            Write-Host "Tag: $($version.SemVer) is already pressent in the repository!"
+            Set-Tag $version
         }
 
         if (-not (Test-FeatureBranch)) {
@@ -142,8 +144,7 @@ if (Test-CIBuild) {
         }
 
         New-Documentation
-        Publish-Documentation $version
-        
+        Publish-Documentation $version     
     }
 } else {
     New-Documentation
