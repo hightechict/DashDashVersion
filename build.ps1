@@ -118,7 +118,7 @@ function Publish-Documentation($version) {
     }
     catch [Exception]
     {
-        Write-host "Cloning failed"
+        Write-host "adding failed"
         PrintError $_ 
     }
     try
@@ -127,21 +127,21 @@ function Publish-Documentation($version) {
     }
     catch [Exception]
     {
-        Write-host "Cloning failed"
+        Write-host "Commiting failed"
         PrintError $_ 
     }
     try
     {
         Write-Host "Git commit complete"
-        git push
+        git push origin develop
     }
     catch [Exception]
     {
         Write-host "Cloning failed"
         PrintError $_ 
     }
-    Write-host "Select repo"
-    cd DashDashVersion_site
+    Write-host "Revert selection back to DashDashVersion Repo"
+    cd $PathOfOrigin
     
 }
 
