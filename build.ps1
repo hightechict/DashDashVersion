@@ -88,27 +88,27 @@ function Publish-Documentation($version) {
     cd $env:Build_ArtifactStagingDirectory
     try
     {
+        Write-Host "Try git clone"
         git clone git@github.com:hightechict/DashDashVersion_site.git --branch develop
         Write-Host "Git Repo cloned"
-        cd DashDashVersion_site
-        Write-Host "Git Repo Selected"
-        $PathToDocumentationFolder = Get-Location;
-        Remove-Item -recurse "$(Get-Location)\*" -exclude CNAME,*.git
-        Write-Host "Git Repo Cleared"
-        Copy-Item "$($PathOfOrigin)\doc\_site\*" -Destination $PathToDocumentationFolder -recurse -Force
-        Write-Host "Files added to repo"
-        git add .
-        git commit -m "New documentation generated for version: $($version.SemVer)"
-        Write-Host "Git commit complete"
-        git push
     }
     catch [Exception]
     {
         Write-Host $_.Exception.Message
+        Write-Host "Fail git clone"
     }
     cd DashDashVersion_site
-
-
+    Write-Host "Git Repo Selected"
+    $PathToDocumentationFolder = Get-Location;
+    Remove-Item -recurse "$(Get-Location)\*" -exclude CNAME,*.git
+    Write-Host "Git Repo Cleared"
+    Copy-Item "$($PathOfOrigin)\doc\_site\*" -Destination $PathToDocumentationFolder -recurse -Force
+    Write-Host "Files added to repo"
+    git add .
+    git commit -m "New documentation generated for version: $($version.SemVer)"
+    Write-Host "Git commit complete"
+    git push
+    cd DashDashVersion_site
 }
 
 Remove-Item built -Force -Recurse -ErrorAction SilentlyContinue
