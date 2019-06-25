@@ -167,7 +167,7 @@ steps:
     command: 'pack'
     packagesToPack: '**/*.csproj'
     versioningScheme: 'byEnvVar'
-    versionEnvVar: '$(env:version.FullSemVer)'
+    versionEnvVar: '$(version.FullSemVer)'
     buildProperties: '/p:NoPackageAnalysis=true'
   displayName: Creating Package
 
