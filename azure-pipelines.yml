@@ -109,7 +109,6 @@ steps:
     sshKeySecureFile: 'DashDashVersionSiteAzurePipeline'
   displayName: Install sshKey for documentation publishing
 
--
 - task: PythonScript@0
   inputs:
     scriptSource: 'inline'
