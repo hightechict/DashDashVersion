@@ -141,7 +141,7 @@ function Publish-Documentation($version) {
     }
     try
     {
-        git commit -m "New documentation generated for version: $($version.SemVer)"
+        git commit -am "New documentation generated for version: $($version.SemVer)"
     }
     catch [Exception]
     {
@@ -156,7 +156,7 @@ function Publish-Documentation($version) {
     }
     catch [Exception]
     {
-        Write-host "Cloning failed"
+        Write-host "Git push failed"
         PrintError $_ 
     }
     Write-host "Revert selection back to DashDashVersion Repo"
