@@ -10,9 +10,27 @@ function Get-Version() {
         }
     } else {
         if($env:TF_BUILD -eq "True") {
+            Write-Host "Azure pipeline: calculating version"
             $version = git-flow-version --branch $env:BUILD_SOURCEBRANCHNAME | ConvertFrom-Json
         }
+        elseif($env:APPVEYOR -eq "True")
+        {
+            if(-not (Test-Path env:APPVEYOR_PULL_REQUEST_NUMBER))
+            {
+                Write-Host "Appveyor pipeline: calculating version"
+                if($env:APPVEYOR_BUILD_WORKER_IMAGE -like "*Visual Studio*")
+                {
+                    $version = git-flow-version.exe --branch $env:APPVEYOR_REPO_BRANCH | ConvertFrom-Json
+                }
+                else
+                {
+                    $version = git-flow-version --branch $env:APPVEYOR_REPO_BRANCH | ConvertFrom-Json
+                }
+                
+            }
+        }
         else {
+            Write-Host "Local run: calculating version"
             $version = git-flow-version | ConvertFrom-Json
         }
     }
@@ -88,7 +106,6 @@ dotnet clean
 dotnet restore
 dotnet test /p:CollectCoverage=true /p:Exclude=[xunit.*]* /p:CoverletOutput='../../built/DashDashVersion.xml' /p:CoverletOutputFormat=cobertura
 
-
 $version = Get-Version
 Write-Host "calculated version:"
 $version | Format-List
@@ -111,6 +128,10 @@ if (Test-CIBuild) {
             New-Documentation
         }
     }
-} else {
+}
+elseif($env:APPVEYOR -eq "True"){
+   
+}  
+else {
     New-Documentation
 }
