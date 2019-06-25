@@ -114,7 +114,7 @@ steps:
     scriptSource: 'inline'
     script: |
       import os
-      myCmd = ''ls -la''
+      myCmd = 'ls -la'
       os.system(myCmd)
 
 # - task: PowerShell@2
