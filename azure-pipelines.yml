@@ -32,106 +32,106 @@ variables:
 
 steps:
 
-- task: PowerShell@2
-  condition: eq(variables.imageName, 'windows-latest')
-  inputs:
-    targetType: inline
-    pwsh: true
-    script: 'choco install -y docfx'
-  displayName: Install docfx
+# - task: PowerShell@2
+  # condition: eq(variables.imageName, 'windows-latest')
+  # inputs:
+    # targetType: inline
+    # pwsh: true
+    # script: 'choco install -y docfx'
+  # displayName: Install docfx
 
-- task: PowerShell@2
-  condition: eq(variables.imageName, 'windows-latest')
-  inputs:
-    targetType: inline
-    pwsh: true
-    script: 'ls env:'
-  displayName: list envirement variables
+# - task: PowerShell@2
+  # condition: eq(variables.imageName, 'windows-latest')
+  # inputs:
+    # targetType: inline
+    # pwsh: true
+    # script: 'ls env:'
+  # displayName: list envirement variables
 
-- task: PowerShell@2
-  condition: eq(variables.imageName, 'windows-latest')
-  inputs:
-    targetType: inline
-    pwsh: true
-    script: 'choco install codecov'
-  displayName: Install codecov
+# - task: PowerShell@2
+  # condition: eq(variables.imageName, 'windows-latest')
+  # inputs:
+    # targetType: inline
+    # pwsh: true
+    # script: 'choco install codecov'
+  # displayName: Install codecov
 
-- task: DotNetCoreInstaller@0
-  inputs:
-    packageType: 'sdk'
-    version: '2.2.300' 
-  displayName: Install .NET Core 2 latest
-  env:
-   DOTNET_CLI_TELEMETRY_OPTOUT: false
-   DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
-
-
-- task: PowerShell@2
-  inputs:
-    targetType: inline
-    pwsh: true
-    script: 'dotnet tool install --global coverlet.console'
-  env:
-   DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
-  displayName: Install coverlet
-
-- task: PowerShell@2
-  inputs:
-    targetType: inline
-    pwsh: true
-    script: 'dotnet tool install --global git-flow-version'
-  env:
-   DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
-  displayName: Install git-flow-version
+# - task: DotNetCoreInstaller@0
+  # inputs:
+    # packageType: 'sdk'
+    # version: '2.2.300' 
+  # displayName: Install .NET Core 2 latest
+  # env:
+   # DOTNET_CLI_TELEMETRY_OPTOUT: false
+   # DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
 
 
-- task: NuGetToolInstaller@1
-  inputs:
-    versionSpec: '5.1.0'
-    checkLatest: true
-  env:
-   DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
-  displayName: Install NuGet
+# - task: PowerShell@2
+  # inputs:
+    # targetType: inline
+    # pwsh: true
+    # script: 'dotnet tool install --global coverlet.console'
+  # env:
+   # DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
+  # displayName: Install coverlet
 
-- task: InstallSSHKey@0
-  condition: eq(variables.imageName, 'windows-latest')
-  inputs:
-    knownHostsEntry: 'github.com, ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAq2A7hRGmdnm9tUDbO9IDSwBK6TbQa+PXYPCPy6rbTrTtw7PHkccKrpp0yVhp5HdEIcKr6pLlVDBfOLX9QUsyCOV0wzfjIJNlGEYsdlLJizHhbn2mUjvSAHQqZETYP81eFzLQNnPHt4EVVUh7VfDESU84KezmD5QlWpXLmvU31/yMf+Se8xhHTvKSCZIFImWwoG6mbUoWf9nzpIoaSjB+weqqUUmpaaasXVal72J+UX2B+2RPW3RcT0eOzQgqlJL3RKrTJvdsjE3JEAvGq3lGHSZXy28G3skua2SmVi/w4yCE6gbODqnTWlg7+wC604ydGXA8VJiS5ap43JXiUFFAaQ=='
-    sshPublicKey: 'ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIF6/HvdVdOqxei+waWEWBR9u3zwx9TZtyeYuIqs2uBL0 Azure-pipeline'
-    sshKeySecureFile: 'GithubDeploymentKey'
-  displayName: Install sshKey for tagging
+# - task: PowerShell@2
+  # inputs:
+    # targetType: inline
+    # pwsh: true
+    # script: 'dotnet tool install --global git-flow-version'
+  # env:
+   # DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
+  # displayName: Install git-flow-version
+
+
+# - task: NuGetToolInstaller@1
+  # inputs:
+    # versionSpec: '5.1.0'
+    # checkLatest: true
+  # env:
+   # DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
+  # displayName: Install NuGet
+
+# - task: InstallSSHKey@0
+  # condition: eq(variables.imageName, 'windows-latest')
+  # inputs:
+    # knownHostsEntry: 'github.com, ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAq2A7hRGmdnm9tUDbO9IDSwBK6TbQa+PXYPCPy6rbTrTtw7PHkccKrpp0yVhp5HdEIcKr6pLlVDBfOLX9QUsyCOV0wzfjIJNlGEYsdlLJizHhbn2mUjvSAHQqZETYP81eFzLQNnPHt4EVVUh7VfDESU84KezmD5QlWpXLmvU31/yMf+Se8xhHTvKSCZIFImWwoG6mbUoWf9nzpIoaSjB+weqqUUmpaaasXVal72J+UX2B+2RPW3RcT0eOzQgqlJL3RKrTJvdsjE3JEAvGq3lGHSZXy28G3skua2SmVi/w4yCE6gbODqnTWlg7+wC604ydGXA8VJiS5ap43JXiUFFAaQ=='
+    # sshPublicKey: 'ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIF6/HvdVdOqxei+waWEWBR9u3zwx9TZtyeYuIqs2uBL0 Azure-pipeline'
+    # sshKeySecureFile: 'GithubDeploymentKey'
+  # displayName: Install sshKey for tagging
   
-- task: InstallSSHKey@0
-  condition: eq(variables.imageName, 'windows-latest')
-  inputs:
-    knownHostsEntry: 'github.com, ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAq2A7hRGmdnm9tUDbO9IDSwBK6TbQa+PXYPCPy6rbTrTtw7PHkccKrpp0yVhp5HdEIcKr6pLlVDBfOLX9QUsyCOV0wzfjIJNlGEYsdlLJizHhbn2mUjvSAHQqZETYP81eFzLQNnPHt4EVVUh7VfDESU84KezmD5QlWpXLmvU31/yMf+Se8xhHTvKSCZIFImWwoG6mbUoWf9nzpIoaSjB+weqqUUmpaaasXVal72J+UX2B+2RPW3RcT0eOzQgqlJL3RKrTJvdsjE3JEAvGq3lGHSZXy28G3skua2SmVi/w4yCE6gbODqnTWlg7+wC604ydGXA8VJiS5ap43JXiUFFAaQ=='
-    sshPublicKey: 'secdsa-sha2-nistp521 AAAAE2VjZHNhLXNoYTItbmlzdHA1MjEAAAAIbmlzdHA1MjEAAACFBAAvZmttHSrJ2SHfXJJImvVWn70vLDh9jetSBwBsjK3MEEES7CBAabuJvPtXqPLQxDngkW4GJTqbrqDzp2YDHejhTAA8trE+sbFUXHDNbC3lwFdyeLA5YD0Kmmq7V7UIpK0h3khjowu4Ivgp6yP1bXl/3iOyVBENkK+Gx6aryPVkRN9ipQ=='
-    sshKeySecureFile: 'DashDashVersionSiteAzurePipeline'
-  displayName: Install sshKey for documentation publishing
+# - task: InstallSSHKey@0
+  # condition: eq(variables.imageName, 'windows-latest')
+  # inputs:
+    # knownHostsEntry: 'github.com, ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAq2A7hRGmdnm9tUDbO9IDSwBK6TbQa+PXYPCPy6rbTrTtw7PHkccKrpp0yVhp5HdEIcKr6pLlVDBfOLX9QUsyCOV0wzfjIJNlGEYsdlLJizHhbn2mUjvSAHQqZETYP81eFzLQNnPHt4EVVUh7VfDESU84KezmD5QlWpXLmvU31/yMf+Se8xhHTvKSCZIFImWwoG6mbUoWf9nzpIoaSjB+weqqUUmpaaasXVal72J+UX2B+2RPW3RcT0eOzQgqlJL3RKrTJvdsjE3JEAvGq3lGHSZXy28G3skua2SmVi/w4yCE6gbODqnTWlg7+wC604ydGXA8VJiS5ap43JXiUFFAaQ=='
+    # sshPublicKey: 'secdsa-sha2-nistp521 AAAAE2VjZHNhLXNoYTItbmlzdHA1MjEAAAAIbmlzdHA1MjEAAACFBAAvZmttHSrJ2SHfXJJImvVWn70vLDh9jetSBwBsjK3MEEES7CBAabuJvPtXqPLQxDngkW4GJTqbrqDzp2YDHejhTAA8trE+sbFUXHDNbC3lwFdyeLA5YD0Kmmq7V7UIpK0h3khjowu4Ivgp6yP1bXl/3iOyVBENkK+Gx6aryPVkRN9ipQ=='
+    # sshKeySecureFile: 'DashDashVersionSiteAzurePipeline'
+  # displayName: Install sshKey for documentation publishing
 
 - task: PythonScript@0
   inputs:
     scriptSource: 'inline'
     script: 'print("helo world")'
 
-- task: PowerShell@2
-  inputs:
-    targetType: filePath
-    pwsh: true
-    filePath: '$(Build.SourcesDirectory)/build.ps1'
-  env:
-    NuGet_APIKEY: $(nuget.APIKEY)
-    imageName: $(imageName)
-    DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
-  displayName: Run build
+# - task: PowerShell@2
+  # inputs:
+    # targetType: filePath
+    # pwsh: true
+    # filePath: '$(Build.SourcesDirectory)/build.ps1'
+  # env:
+    # NuGet_APIKEY: $(nuget.APIKEY)
+    # imageName: $(imageName)
+    # DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
+  # displayName: Run build
 
-- task: PowerShell@2
-  condition: eq(variables.imageName, 'windows-latest')
-  inputs:
-    targetType: inline
-    pwsh: true
-    script: 'codecov -f "./built/DashDashVersion.xml" -t $env:CodecovToken'
-  env:
-    CodecovToken: $(CodecovToken)
-    DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
-  displayName: Publish code coverage
+# - task: PowerShell@2
+  # condition: eq(variables.imageName, 'windows-latest')
+  # inputs:
+    # targetType: inline
+    # pwsh: true
+    # script: 'codecov -f "./built/DashDashVersion.xml" -t $env:CodecovToken'
+  # env:
+    # CodecovToken: $(CodecovToken)
+    # DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
+  # displayName: Publish code coverage
