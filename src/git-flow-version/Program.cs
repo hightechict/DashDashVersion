@@ -56,17 +56,16 @@ namespace GitFlowVersion
                 }
             });
 
-            app.Execute(args);
-            return -1;
+            return app.Execute(args);
         }
 
         private static string GenerateJson(VersionNumber version)
         {
             var toReturn = new
             {
+                version.AssemblyVersion,
                 version.FullSemVer,
-                version.SemVer,
-                version.AssemblyVersion
+                version.SemVer  
             };
 
             return JsonConvert.SerializeObject(toReturn, Formatting.Indented);

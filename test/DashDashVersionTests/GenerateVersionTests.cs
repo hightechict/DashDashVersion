@@ -207,6 +207,14 @@ namespace DashDashVersionTests
             action.Should().Throw<InvalidOperationException>();
         }
 
+        [Fact]
+        public void PatchReleaseTest()
+        {
+            
+            var versionNumberGenerator = CreateVersionNumberGenerator(TestRepositories.PatchReleaseRepository());
+            versionNumberGenerator.VersionNumber.SemVer.Should().Be("0.2.0-dev.3");
+        }
+
         private static VersionNumberGenerator CreateVersionNumberGenerator(IGitRepository gitRepository, string branchName = "") =>
             new VersionNumberGenerator(
                 new GitRepoReader(

@@ -1,6 +1,7 @@
 # DashDashVersion
 
 [![Build Status](https://dev.azure.com/basbossink0470/DashDashVersion/_apis/build/status/hightechict.DashDashVersion?branchName=master)](https://dev.azure.com/basbossink0470/DashDashVersion/_build/latest?definitionId=1&branchName=master)
+[![Appveyor Build Status](https://ci.appveyor.com/api/projects/status/fgpb3nb7honnt4xh?svg=true)](https://ci.appveyor.com/project/kees2125/dashdashversion)
 [![codecov](https://codecov.io/gh/hightechict/DashDashVersion/branch/master/graph/badge.svg)](https://codecov.io/gh/hightechict/DashDashVersion)
 [![nuget](https://img.shields.io/nuget/v/git-flow-version.svg?color=green)](https://www.nuget.org/packages/git-flow-version/)
 ![licenceTag](https://img.shields.io/github/license/hightechict/DashDashVersion.svg?color=purple)
@@ -30,17 +31,69 @@ $ dotnet add package DashDashVersion
 To use DashDashVersion run the command `git-flow-version` inside a git repository.
 It will return a JSON string with the following properties:
 
-* `SemVer` = a [SemVer 2.0.0][SemVer2] compliant version number without metadata
-* `FullSemVer` = a [SemVer 2.0.0][SemVer2] compliant version number with build metadata
-* `AssemblyVersion` = an [`AssemblyVersionAttribute`](https://docs.microsoft.com/en-us/dotnet/api/system.reflection.assemblyversionattribute?view=netstandard-2.0) compatible version with the format `<major>.<minor>.<patch>.<revison>`
+* `AssemblyVersion` = an [`AssemblyVersionAttribute`](https://docs.microsoft.com/en-us/dotnet/api/system.reflection.assemblyversionattribute?view=netstandard-2.0) compatible version with the format `<major>.<minor>.<patch>.<revison>`,
+* `FullSemVer` = a [SemVer 2.0.0][SemVer2] compliant version number with build metadata,
+* `SemVer` = a [SemVer 2.0.0][SemVer2] compliant version number without build metadata.
 
 For example:
+
 ```bash
 $ git-flow-version
-{"FullSemVer":"0.2.0-dev.1+8af6c6d","SemVer":"0.2.0-dev.1","AssemblyVersion":"0.2.0.128"}
+{
+    "AssemblyVersion":"0.2.0.128",
+    "FullSemVer":"0.2.0-dev.1+8af6c6d",
+    "SemVer":"0.2.0-dev.1"
+}
 ```
 
-### Requirements
+### Usage in Continuous Integration environments
+
+If your Continuous Integration (CI) environment uses [detached heads](https://git-scm.com/docs/git-checkout#_detached_head) `git-flow-version` cannot determine what the _type_ (`master`, `release/*`, `feature/`, `hotfix/`, `support/*`) of the branch is for which it should generate the version number. In these cases the branch name can be specified via a command-line parameter:
+
+```bash
+$ git-flow-wersion --branch develop
+```
+
+Matching of the branch name is performed using the following strategy:
+
+* if there is a branch with the exact same name, use that branch, otherwise,
+* find all branches that end with the same string as the provided parameter:
+  * if all of these branches have the same _type_ use that _type_, otherwise,
+  * if all of these branches have more than one different _type_ generate an error.
+
+### Command-Line reference
+
+The number of command-line parameters and/or options supported by `git-flow-version** is very limited, however below you find them explained in detail:
+
+#### Help information
+
+To show the help information, use any of the following command-line switches:
+
+```bash
+$ git-flow-version -?
+$ git-flow-version -h
+$ git-flow-version --help
+```
+
+#### Setting the branch name
+
+To use the branch in the repository with the name that matches the supplied value to determine the _type_ of the branch, add either the `‑b` or the `‑‑branch` command-line parameter followed by the name of the branch.
+
+```bash
+$ git-flow-version -b develop
+$ git-flow-version --branch feature/issue-1234-improve-error-handling
+```
+
+#### Version information
+
+To list the version of `git‑flow‑version` use either the `‑v` or `‑‑version` command-line switches.
+
+```bash
+$ git-flow-version -v
+$ git-flow-version --version
+```
+
+## Requirements
 
 DashDashVersion only supports repositories that strictly follow the [git flow][gitFlow] conventions with the branch names:
 

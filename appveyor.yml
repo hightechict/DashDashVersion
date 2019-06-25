@@ -1,0 +1,13 @@
+skip_tags: true
+image:
+- Visual Studio 2017
+- Ubuntu1804
+
+install: 
+  - pwsh: dotnet tool install --global git-flow-version
+  - pwsh: dotnet tool install --global coverlet.console
+
+
+build_script:
+  - pwsh: ./build.ps1
+  
