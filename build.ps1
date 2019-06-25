@@ -116,11 +116,11 @@ function Publish-Documentation($version) {
     Write-host (git config --list --show-origin)
     try
     {  
-        <#
+
         Write-Host "Try git clone"
-        Write-Host "##vso[task.logissue type=warning] $(git clone --progress -v git@github.com:hightechict/DashDashVersion_site.git)" 
+        Write-Host "##vso[task.logissue type=warning] $(git clone --progress -v git@github.com:hightechict/DashDashVersion_site.git --branch develop)" 
         Write-Host "Git Repo cloned"
-        #>
+        <#
         Write-Host "Create DashDashVersion_Site dir"
         mkdir DashDashVersion_Site
         Write-Host "selecting folder"
@@ -134,6 +134,7 @@ function Publish-Documentation($version) {
         Write-Host "checkout develop"
         git checkout --progress --force develop
         Write-Host "Clone completed"
+        #>
 
     }
     catch [Exception]
@@ -141,6 +142,7 @@ function Publish-Documentation($version) {
         Write-host "Cloning failed"
         PrintError $_ 
     }
+    cd DashDashVersion_site
     ls | Format-Table
     Write-Host "Git Repo Selected"
 
