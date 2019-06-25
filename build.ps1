@@ -131,7 +131,7 @@ function Publish-Documentation($version) {
     try
     {
         Write-Host "selecting develop branch"
-        git checkout develop
+        git checkout --track origin/develop 
         Write-Host "Git develop checked out"
     }
     catch [Exception]
@@ -169,7 +169,7 @@ function Publish-Documentation($version) {
     {
         Write-host "git debug"
         Write-Host ("list")
-        write-host (ls)
+        ls | Format-Table
         Write-Host ("git show-ref")
         Write-Host (git show-ref)
         Write-host "git branch - a"
