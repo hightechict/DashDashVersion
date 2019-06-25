@@ -150,6 +150,8 @@ function Publish-Documentation($version) {
     }
     try
     {
+        Write-Host (git branch)
+        Write-Host (git commit)
         Write-Host "Git commit complete"
         git push origin develop
         Write-Host "Git push complete"
