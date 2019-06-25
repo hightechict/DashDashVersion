@@ -156,7 +156,9 @@ function Publish-Documentation($version) {
     try
     {
         Write-host "git debug"
-        git show-ref
+        Write-Host ("list")
+        write-host (ls)
+        Write-Host ("git show-ref")
         Write-Host (git show-ref)
         Write-host "git branch - a"
         Write-Host (git branch -a)
