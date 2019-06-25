@@ -118,7 +118,7 @@ function Publish-Documentation($version) {
     {  
 
         Write-Host "Try git clone"
-        (git clone --progress -v git@github.com:hightechict/DashDashVersion_site.git --branch develop) | Format-Table
+        Write-Host (git clone --progress -v git@github.com:hightechict/DashDashVersion_site.git --branch develop)
         Write-Host "Git Repo cloned"
         <#
         Write-Host "Create DashDashVersion_Site dir"
