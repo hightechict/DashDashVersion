@@ -137,10 +137,12 @@ steps:
   inputs:
     targetType: 'inline'
     script: |
-      $temp = git-flow-version --branch $env:BUILD_SOURCEBRANCHNAME
-      $env:version = $temp | ConvertFrom-Json
+      $version= git-flow-version --branch $env:BUILD_SOURCEBRANCHNAME | ConvertFrom-Json
       Write-Host "calculated version:"
-      $env:version | Format-List
+      $version | Format-List
+      echo '##vso[task.setvariable variable=SemVer]$version.SemVer'
+      echo '##vso[task.setvariable variable=FullSemVer]$version.FullSemVer'
+      echo '##vso[task.setvariable variable=AssemblyVersion]$version.AssemblyVersion'
 
 - task: PowerShell@2
   displayName: calculating version
@@ -174,7 +176,7 @@ steps:
     command: 'pack'
     packagesToPack: '**/*.csproj'
     versioningScheme: 'byEnvVar'
-    versionEnvVar: '$(version.FullSemVer)'
+    versionEnvVar: '$(FullSemVer)'
     buildProperties: '/p:NoPackageAnalysis=true'
   displayName: Creating Package
 
