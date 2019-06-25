@@ -137,7 +137,8 @@ steps:
   inputs:
     targetType: 'inline'
     script: |
-      $env:version = git-flow-version --branch $env:BUILD_SOURCEBRANCHNAME | ConvertFrom-Json
+      $temp = git-flow-version --branch $env:BUILD_SOURCEBRANCHNAME
+      $env:version = $temp | ConvertFrom-Json
       Write-Host "calculated version:"
       $env:version | Format-List
 
@@ -219,7 +220,7 @@ steps:
     script: |
       import os
       import glob
-      artifactsDirectory = os.environ['Build_ArtifactStagingDirectory'
+      artifactsDirectory = os.environ['Build_ArtifactStagingDirectory']
       siteDirectory = artifactsDirectory.join('''\DashDashVersion_site''')
       os.chdir(artifactsDirectory)
       os.system('git clone --progress -v git@github.com:hightechict/DashDashVersion_site.git --branch develop')
