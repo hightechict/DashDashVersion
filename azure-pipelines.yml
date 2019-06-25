@@ -24,7 +24,6 @@ trigger:
     - release/*
     - master
 
-
 variables:
   solution: '**/*.sln'
   buildPlatform: 'Any CPU'
@@ -113,12 +112,14 @@ steps:
   inputs:
     command: 'restore'
     feedsToUse: 'select'
+  displayName: Dotnet Restore
 
 - task: DotNetCoreCLI@2
   inputs:
     command: 'test'
     arguments: '/p:CollectCoverage=true /p:Exclude=[xunit.*]* /p:CoverletOutput=''../../built/DashDashVersion.xml'' /p:CoverletOutputFormat=cobertura'
     testRunTitle: 'Running tests'
+  displayName: Running Tests
   
 - task: PowerShell@2
   condition: eq(variables.imageName, 'windows-latest')
@@ -168,6 +169,7 @@ steps:
     versioningScheme: 'byEnvVar'
     versionEnvVar: '$env:version.FullSemVer'
     buildProperties: '/p:NoPackageAnalysis=true'
+  displayName: Creating Package
 
 - task: PowerShell@2
   condition: eq(variables.imageName, 'windows-latest')
@@ -186,7 +188,7 @@ steps:
       }
 
 - task: PowerShell@2
-  condition: and(eq(variables.imageName, 'windows-latest'),not(contains(variables.BUILD_SOURCEBRANCHNAME,'/feature/'))) 
+  condition: and(eq(variables.imageName, 'windows-latest'),not(contains(variables.BUILD_SOURCEBRANCH,'/feature/'))) 
   displayName: pushing NuGet package
   inputs:
     targetType: 'inline'
