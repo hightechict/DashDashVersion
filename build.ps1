@@ -220,6 +220,7 @@ function Publish-Documentation($version) {
 function PrintError($Error){
     Write-Host "Exception: $($Error.Exception)"
     Write-Host "ErrorDetails: $($Error.ErrorDetails)"
+    $Error | Format-Table
 }
 
 Remove-Item built -Force -Recurse -ErrorAction SilentlyContinue
