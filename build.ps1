@@ -84,7 +84,17 @@ function Set-Tag($version) {
     Write-Host "Tagging build"
 	git remote set-url origin git@github.com:hightechict/DashDashVersion.git
     git tag $version.SemVer
-    Start-Process -Wait -ErrorAction SilentlyContinue git -ArgumentList "push", "--verbose", "origin", "$($version.SemVer)"        
+    try
+    {
+        git push --verbose origin $version.SemVer 
+    }
+    catch [Exception]
+    {
+        Write-host "Tagging failed"
+        PrintError $_ 
+    }             
+
+            
 }
 
 function New-Package($version) {
