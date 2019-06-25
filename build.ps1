@@ -128,7 +128,7 @@ function Publish-Documentation($version) {
         Write-Host "git init"
         git init
         Write-Host "add remote"
-        git remote add orgin git@github.com:hightechict/DashDashVersion_site.git
+        git remote add origin git@github.com:hightechict/DashDashVersion_site.git
         Write-Host "fetch"
         git fetch --force --tags --prune --progress --no-recurse-submodules origin
         Write-Host "checkout develop"
