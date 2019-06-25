@@ -86,7 +86,7 @@ function Set-Tag($version) {
     git tag $version.SemVer
     try
     {
-        git push --verbose origin $version.SemVer
+        Start-Process -Wait -ErrorAction SilentlyContinue git -ArgumentList "push", "--verbose", "origin", "$($version.SemVer)" 
     }
     catch [Exception]
     {
@@ -139,20 +139,31 @@ function Publish-Documentation($version) {
         Write-host "adding failed"
         PrintError $_ 
     }
+
     try
     {
         git commit -am "New documentation generated for version: $($version.SemVer)"
-    }
+        Write-Host "Git commit complete"
+    }  
     catch [Exception]
     {
         Write-host "Commiting failed"
         PrintError $_ 
     }
+
     try
     {
-        Write-Host (git branch)
-        Write-Host (git commit)
-        Write-Host "Git commit complete"
+        Write-host "git show-ref"
+        git show-ref
+        Write-Host (git show-ref)
+    }
+    catch [Exception]
+    {
+        PrintError $_ 
+    }
+
+    try
+    {
         git push origin develop
         Write-Host "Git push complete"
     }
@@ -161,6 +172,7 @@ function Publish-Documentation($version) {
         Write-host "Git push failed"
         PrintError $_ 
     }
+
     Write-host "Revert selection back to DashDashVersion Repo"
     cd $PathOfOrigin
     
@@ -169,7 +181,6 @@ function Publish-Documentation($version) {
 function PrintError($Error){
     Write-Host "Exception: $($Error.Exception)"
     Write-Host "ErrorDetails: $($Error.ErrorDetails)"
-    Write-Host "StackTrace: $($Error.ScriptStackTrace)"
 }
 
 Remove-Item built -Force -Recurse -ErrorAction SilentlyContinue
