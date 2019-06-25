@@ -141,7 +141,7 @@ function Publish-Documentation($version) {
         Write-host "Cloning failed"
         PrintError $_ 
     }
-    
+    ls | Format-Table
     Write-Host "Git Repo Selected"
 
     try
@@ -183,9 +183,9 @@ function Publish-Documentation($version) {
 
     try
     {
+        ls | Format-Table
         Write-host "git debug"
         Write-Host ("list")
-        ls | Format-Table
         Write-Host ("git show-ref")
         Write-Host (git show-ref)
         Write-host "git branch - a"
