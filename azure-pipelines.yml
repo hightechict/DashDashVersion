@@ -112,9 +112,10 @@ steps:
 - task: PythonScript@0
   inputs:
     scriptSource: 'inline'
-    script: 'import os
+    script: |
+      import os
       myCmd = ''ls -la''
-      os.system(myCmd)'
+      os.system(myCmd)
 
 # - task: PowerShell@2
   # inputs:
