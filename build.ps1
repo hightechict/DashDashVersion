@@ -155,12 +155,17 @@ function Publish-Documentation($version) {
 
     try
     {
-        Write-host "git show-ref"
+        Write-host "git debug"
         git show-ref
         Write-Host (git show-ref)
+        Write-host "git branch - a"
+        Write-Host (git branch -a)
+        Write-Host "remote -v"
+        Write-Host (git remote -v)
     }
     catch [Exception]
     {
+        Write-host "git debug failed"
         PrintError $_ 
     }
 
