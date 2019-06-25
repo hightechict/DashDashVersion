@@ -118,7 +118,7 @@ function Publish-Documentation($version) {
     try
     {
         Write-Host "Try git clone"
-        git clone --progress -v git@github.com:hightechict/DashDashVersion_site.git 
+        Write-Host "##vso[task.logissue type=warning] $(git clone --progress -v git@github.com:hightechict/DashDashVersion_site.git)" 
         Write-Host "Git Repo cloned"
     }
     catch [Exception]
