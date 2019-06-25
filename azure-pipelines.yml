@@ -108,11 +108,13 @@ steps:
     # sshPublicKey: 'secdsa-sha2-nistp521 AAAAE2VjZHNhLXNoYTItbmlzdHA1MjEAAAAIbmlzdHA1MjEAAACFBAAvZmttHSrJ2SHfXJJImvVWn70vLDh9jetSBwBsjK3MEEES7CBAabuJvPtXqPLQxDngkW4GJTqbrqDzp2YDHejhTAA8trE+sbFUXHDNbC3lwFdyeLA5YD0Kmmq7V7UIpK0h3khjowu4Ivgp6yP1bXl/3iOyVBENkK+Gx6aryPVkRN9ipQ=='
     # sshKeySecureFile: 'DashDashVersionSiteAzurePipeline'
   # displayName: Install sshKey for documentation publishing
-
+  
 - task: PythonScript@0
   inputs:
     scriptSource: 'inline'
-    script: 'print("helo world")'
+    script: 'import os
+      myCmd = ''ls -la''
+      os.system(myCmd)'
 
 # - task: PowerShell@2
   # inputs:
