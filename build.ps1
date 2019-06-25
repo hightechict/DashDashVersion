@@ -114,6 +114,7 @@ function Publish-Documentation($version) {
     git config --global core.autocrlf false
     $PathOfOrigin = Get-Location;
     cd $env:Build_ArtifactStagingDirectory
+    Write-host (git config --list --show-origin)
     try
     {
         Write-Host "Try git clone"
