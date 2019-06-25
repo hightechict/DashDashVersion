@@ -118,7 +118,7 @@ function Publish-Documentation($version) {
     try
     {
         Write-Host "Try git clone"
-        git clone git@github.com:hightechict/DashDashVersion_site.git
+        git clone --progress -v git@github.com:hightechict/DashDashVersion_site.git 
         Write-Host "Git Repo cloned"
     }
     catch [Exception]
