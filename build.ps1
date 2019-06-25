@@ -111,14 +111,14 @@ function Export-Package() {
 
 function Publish-Documentation($version) {
     Write-Host "Publishing documentation"
+    git config --global core.autocrlf false
     $PathOfOrigin = Get-Location;
     cd $env:Build_ArtifactStagingDirectory
-    Write-host (git config --list --show-origin)
     try
     {  
 
         Write-Host "Try git clone"
-        Write-Host "##vso[task.logissue type=warning] $(git clone --progress -v git@github.com:hightechict/DashDashVersion_site.git --branch develop)" 
+        (git clone --progress -v git@github.com:hightechict/DashDashVersion_site.git --branch develop) | Format-Table
         Write-Host "Git Repo cloned"
         <#
         Write-Host "Create DashDashVersion_Site dir"
