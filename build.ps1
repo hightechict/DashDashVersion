@@ -117,7 +117,7 @@ function Publish-Documentation($version) {
     try
     {
         Write-Host "Try git clone"
-        git clone git@github.com:hightechict/DashDashVersion_site.git --branch develop
+        git clone git@github.com:hightechict/DashDashVersion_site.git
         Write-Host "Git Repo cloned"
     }
     catch [Exception]
@@ -127,6 +127,18 @@ function Publish-Documentation($version) {
     }
     cd DashDashVersion_site
     Write-Host "Git Repo Selected"
+
+    try
+    {
+        Write-Host "selecting develop branch"
+        git checkout develop
+        Write-Host "Git develop checked out"
+    }
+    catch [Exception]
+    {
+        Write-host "checkout failed"
+        PrintError $_ 
+    }
     $PathToDocumentationFolder = Get-Location;
     Remove-Item -recurse "$(Get-Location)\*" -exclude CNAME,*.git
     Write-Host "Git Repo Cleared"
