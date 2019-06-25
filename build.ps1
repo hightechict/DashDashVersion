@@ -111,22 +111,37 @@ function Export-Package() {
 
 function Publish-Documentation($version) {
     Write-Host "Publishing documentation"
-    git config --global core.autocrlf false
     $PathOfOrigin = Get-Location;
     cd $env:Build_ArtifactStagingDirectory
     Write-host (git config --list --show-origin)
     try
-    {
+    {  
+        <#
         Write-Host "Try git clone"
         Write-Host "##vso[task.logissue type=warning] $(git clone --progress -v git@github.com:hightechict/DashDashVersion_site.git)" 
         Write-Host "Git Repo cloned"
+        #>
+        Write-Host "Create DashDashVersion_Site dir"
+        mkdir DashDashVersion_Site
+        Write-Host "selecting folder"
+        cd DashDashVersion_site
+        Write-Host "git init"
+        git init
+        Write-Host "add remote"
+        git remote add orgin git@github.com:hightechict/DashDashVersion_site.git
+        Write-Host "fetch"
+        git fetch --force --tags --prune --progress --no-recurse-submodules origin
+        Write-Host "checkout develop"
+        git checkout --progress --force develop
+        Write-Host "Clone completed"
+
     }
     catch [Exception]
     {
         Write-host "Cloning failed"
         PrintError $_ 
     }
-    cd DashDashVersion_site
+    
     Write-Host "Git Repo Selected"
 
     try
