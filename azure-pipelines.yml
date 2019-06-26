@@ -144,11 +144,6 @@ steps:
       echo "##vso[task.setvariable variable=FullSemVer]$($version.FullSemVer)"
       echo "##vso[task.setvariable variable=AssemblyVersion]$($version.AssemblyVersion)"
 
-- task: PowerShell@2
-  displayName: calculating version
-  inputs:
-    targetType: 'inline'
-    script: 'Get-ChildItem Env:'
 
 - task: PowerShell@2
   condition: eq(variables.imageName, 'windows-latest')
@@ -176,7 +171,7 @@ steps:
     command: 'pack'
     packagesToPack: '**/*.csproj'
     versioningScheme: 'byEnvVar'
-    versionEnvVar: $(FULLSEMVER)
+    versionEnvVar: FullSemVer
     buildProperties: '/p:NoPackageAnalysis=true'
   displayName: Creating Package
 
@@ -197,7 +192,7 @@ steps:
       }
 
 - task: PowerShell@2
-  condition: and(eq(variables.imageName, 'windows-latest'),not(contains(variables.BUILD_SOURCEBRANCH,'/feature/'))) 
+  condition: and(eq(variables.imageName, 'windows-latest'),not(contains(variables.BUILD_SOURCEBRANCH,'feature'))) 
   displayName: pushing NuGet package
   inputs:
     targetType: 'inline'
