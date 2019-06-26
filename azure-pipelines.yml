@@ -168,6 +168,7 @@ steps:
   inputs:
     command: 'pack'
     packagesToPack: './src/*/*.csproj'
+    packDirectory: './built'
     versioningScheme: 'byEnvVar'
     versionEnvVar: 'FullSemVer'
   displayName: creating packages dotnet task
