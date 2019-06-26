@@ -257,5 +257,5 @@ steps:
       os.system('git remote -v')
       os.system('git add .')
       message = "New documentation generated for version: {}".format(os.environ['SemVer'])
-      os.system("git commit -am {}".format(message))
+      os.system('git commit -am "{}"'.format(message))
       os.system('git push origin develop')
