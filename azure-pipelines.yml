@@ -254,8 +254,8 @@ steps:
       artifactsDirectory = os.environ['Build_ArtifactStagingDirectory']
       siteDirectory = os.path.join(artifactsDirectory, 'DashDashVersion_site')
       os.chdir(siteDirectory)
-      os.system('git --global config user.email "kees.zijlmans@hightechict.nl"')
-      os.system('git --global config user.name "Azure-pipeline"')
+      os.system('git config --global user.email "kees.zijlmans@hightechict.nl"')
+      os.system('git config --global user.name "Azure-pipeline"')
       os.system('git remote -v')
       os.system('git add .')
       os.system('git commit -am "New documentation generated for version: $($version.SemVer)"')
