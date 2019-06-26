@@ -60,11 +60,11 @@ namespace DashDashVersion.RepositoryAbstraction
         {
             _repository = repo;
             CurrentBranch = FindCurrentBranch(currentBranchName);
-            var tags = VisibleTags(repo.Commits);
-            var highestReleaseVersionTag = HighestReleaseVersionLowestPatchTag(tags);
-            CurrentReleaseVersion = VersionNumber.Parse(highestReleaseVersionTag.FriendlyName);
-            CommitCountSinceLastReleaseVersion = FindAncestor(
-                highestReleaseVersionTag.Sha,
+            var tags = VisibleTags(_repository.Commits);
+            var highestReleaseVersionLowestPatchTag = HighestReleaseVersionLowestPatchTag(tags);
+            CurrentReleaseVersion = VersionNumber.Parse(HighestReleaseVersionTag(tags).FriendlyName);
+            CommitCountSinceLastMinorReleaseVersion = FindAncestor(
+                highestReleaseVersionLowestPatchTag.Sha,
                 _repository.Commits);
             var hash = _repository.Commits.FirstOrDefault();
             HeadCommitHash = hash?.Sha ?? throw new InvalidOperationException("Git repositories without commits are not supported.");
@@ -76,7 +76,7 @@ namespace DashDashVersion.RepositoryAbstraction
 
         public BranchInfo CurrentBranch { get; }
 
-        public uint CommitCountSinceLastReleaseVersion { get; }
+        public uint CommitCountSinceLastMinorReleaseVersion { get; }
 
         public VersionNumber? HighestMatchingTagForReleaseCandidate
         {
@@ -114,6 +114,10 @@ namespace DashDashVersion.RepositoryAbstraction
             }
         }
 
+        public bool IsCurrentCommitTheReleaseVersion => 
+            _repository.Commits.First().Sha
+            .Equals(HighestReleaseVersionTag(VisibleTags(_repository.Commits)).Sha);
+
         private static string? HighestMatchingTag(
             IEnumerable<GitTag> tags,
             string toMatch) =>
@@ -146,6 +150,14 @@ namespace DashDashVersion.RepositoryAbstraction
 
             return developCommits;
         }
+
+        private static GitTag HighestReleaseVersionTag(IEnumerable<GitTag> tags) =>
+            tags.Where(
+                    tag => Patterns.IsReleaseVersionTag.IsMatch(tag.FriendlyName))
+                .OrderByDescending(
+                    t => VersionNumber.Parse(t.FriendlyName))
+                .FirstOrDefault() ??
+            throw new InvalidOperationException($"There is no tag with in the '<major>.<minor>.<patch>' format in this repository looking from the HEAD down: {Patterns.IsReleaseVersionTag}.");
 
         private static GitTag HighestReleaseVersionLowestPatchTag(IEnumerable<GitTag> tags)
         {
