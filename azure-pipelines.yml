@@ -32,20 +32,21 @@ variables:
 steps:
 
 - task: PowerShell@2
-  condition: eq(variables.imageName, 'windows-latest')
+  condition: not(contains(variables.BUILD_SOURCEBRANCH,'feature'))
   inputs:
     targetType: inline
     pwsh: true
-    script: 'choco install -y docfx'
-  displayName: Install docfx
+    script: ''
+  displayName: Test statement
+
 
 - task: PowerShell@2
   condition: eq(variables.imageName, 'windows-latest')
   inputs:
     targetType: inline
     pwsh: true
-    script: 'ls env:'
-  displayName: list envirement variables
+    script: 'choco install -y docfx'
+  displayName: Install docfx
 
 - task: PowerShell@2
   condition: eq(variables.imageName, 'windows-latest')
@@ -172,7 +173,6 @@ steps:
     packagesToPack: '**/*.csproj'
     versioningScheme: 'byEnvVar'
     versionEnvVar: FullSemVer
-    buildProperties: '/p:NoPackageAnalysis=true'
   displayName: Creating Package
 
 - task: PowerShell@2
