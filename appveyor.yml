@@ -9,5 +9,9 @@ install:
 
 
 build_script:
-  - pwsh: ./build.ps1
-  
+  - pwsh: |
+        dotnet restore
+        dotnet test /p:CollectCoverage=true /p:Exclude=[xunit.*]* /p:CoverletOutput='../../built/DashDashVersion.xml' /p:CoverletOutputFormat=cobertura
+        $version = git-flow-version | ConvertFrom-Json
+        Write-Host "calculated version:"
+        $version | Format-List
