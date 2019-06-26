@@ -1,7 +1,7 @@
 # DashDashVersion
 
 [![Build Status](https://dev.azure.com/basbossink0470/DashDashVersion/_apis/build/status/hightechict.DashDashVersion?branchName=master)](https://dev.azure.com/basbossink0470/DashDashVersion/_build/latest?definitionId=1&branchName=master)
-[![Appveyor Build Status](https://ci.appveyor.com/api/projects/status/fgpb3nb7honnt4xh?svg=true)](https://ci.appveyor.com/project/kees2125/dashdashversion)
+[![Appveyor Build Status](https://ci.appveyor.com/api/projects/status/fgpb3nb7honnt4xh/branch/master?svg=true)](https://ci.appveyor.com/project/kees2125/dashdashversion)
 [![codecov](https://codecov.io/gh/hightechict/DashDashVersion/branch/master/graph/badge.svg)](https://codecov.io/gh/hightechict/DashDashVersion)
 [![nuget](https://img.shields.io/nuget/v/git-flow-version.svg?color=green)](https://www.nuget.org/packages/git-flow-version/)
 ![licenceTag](https://img.shields.io/github/license/hightechict/DashDashVersion.svg?color=purple)
