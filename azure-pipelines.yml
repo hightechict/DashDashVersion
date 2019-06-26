@@ -125,14 +125,6 @@ steps:
   inputs:
     targetType: inline
     pwsh: true
-    script: 'ls'
-  displayName: Publish code coverage
-
-- task: PowerShell@2
-  condition: eq(variables.imageName, 'windows-latest')
-  inputs:
-    targetType: inline
-    pwsh: true
     script: 'codecov -f "./built/DashDashVersion.xml" -t $env:CodecovToken'
   env:
     CodecovToken: $(CodecovToken)
@@ -162,15 +154,27 @@ steps:
       using System.Reflection;
       using System.Runtime.InteropServices;
 
-      [assembly: AssemblyVersionAttribute("$($env:version.AssemblyVersion)")]
-      [assembly: AssemblyFileVersionAttribute("$($env:version.AssemblyVersion)")]
-      [assembly: AssemblyInformationalVersionAttribute("$($env:version.FullSemVer)")]
+      [assembly: AssemblyVersionAttribute("$($env:AssemblyVersion)")]
+      [assembly: AssemblyFileVersionAttribute("$($env:AssemblyVersion)")]
+      [assembly: AssemblyInformationalVersionAttribute("$($env:FullSemVer)")]
       "@
       $assemblyInfoContent | Out-File -Encoding utf8 (Join-Path "built" "SharedAssemblyInfo.cs") -Force
+  env:
+    FullSemVer: $(FullSemVer)
+    SemVer: $(SemVer)
+    AssemblyVersion: $(AssemblyVersion)
+
+- task: DotNetCoreCLI@2
+  inputs:
+    command: 'pack'
+    packagesToPack: './src/*/*.csproj'
+    versioningScheme: 'byEnvVar'
+    versionEnvVar: 'FullSemVer'
+  displayName: creating packages dotnet task
 
 - task: PowerShell@2
   condition: eq(variables.imageName, 'windows-latest')
-  displayName: creating packages
+  displayName: creating packages powershell
   inputs:
     targetType: 'inline'
     script: |
