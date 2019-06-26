@@ -106,13 +106,29 @@ steps:
     feedsToUse: 'select'
   displayName: Dotnet Restore
 
+- task: PowerShell@2
+  condition: eq(variables.imageName, 'windows-latest')
+  inputs:
+    targetType: inline
+    pwsh: true
+    script: 'New-Item -ItemType Directory "built"'
+  displayName: Create built folder
+
 - task: DotNetCoreCLI@2
   inputs:
     command: 'test'
     arguments: '/p:CollectCoverage=true /p:Exclude=[xunit.*]* /p:CoverletOutput=''../../built/DashDashVersion.xml'' /p:CoverletOutputFormat=cobertura'
     testRunTitle: 'Running tests'
   displayName: Running Tests
-  
+
+- task: PowerShell@2
+  condition: eq(variables.imageName, 'windows-latest')
+  inputs:
+    targetType: inline
+    pwsh: true
+    script: 'ls'
+  displayName: Publish code coverage
+
 - task: PowerShell@2
   condition: eq(variables.imageName, 'windows-latest')
   inputs:
@@ -135,7 +151,6 @@ steps:
       echo "##vso[task.setvariable variable=SemVer]$($version.SemVer)"
       echo "##vso[task.setvariable variable=FullSemVer]$($version.FullSemVer)"
       echo "##vso[task.setvariable variable=AssemblyVersion]$($version.AssemblyVersion)"
-
 
 - task: PowerShell@2
   condition: eq(variables.imageName, 'windows-latest')
