@@ -37,7 +37,7 @@ steps:
     targetType: inline
     pwsh: true
     script: ''
-  displayName: Test statement
+  displayName: $(variables.BUILD_SOURCEBRANCH)
 
 
 - task: PowerShell@2
