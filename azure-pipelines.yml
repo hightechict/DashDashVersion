@@ -132,7 +132,7 @@ steps:
   displayName: Publish code coverage
 
 - task: PowerShell@2
-  displayName: calculating version
+  displayName: Calculating version
   inputs:
     targetType: 'inline'
     script: |
@@ -145,7 +145,7 @@ steps:
 
 - task: PowerShell@2
   condition: eq(variables.imageName, 'windows-latest')
-  displayName: create assembly info
+  displayName: Create assembly info
   inputs:
     targetType: 'inline'
     script: |
@@ -171,11 +171,11 @@ steps:
     packDirectory: './built'
     versioningScheme: 'byEnvVar'
     versionEnvVar: 'FullSemVer'
-  displayName: creating packages dotnet task
+  displayName: Creating packages dotnet task
 
 - task: PowerShell@2
   condition: eq(variables.imageName, 'ubuntu-latest')
-  displayName: tagging build
+  displayName: Tagging build
   inputs:
     targetType: 'inline'
     script: |
@@ -194,7 +194,7 @@ steps:
 
 - task: PowerShell@2
   condition: and(eq(variables.imageName, 'windows-latest'),not(contains(variables['Build.SourceBranch'],'/feature/'))) 
-  displayName: pushing NuGet package
+  displayName: Pushing NuGet package
   inputs:
     targetType: 'inline'
     script: |
@@ -246,7 +246,7 @@ steps:
       write-Host "New site folder"
 
 - task: PythonScript@0
-  displayName: push new documentation
+  displayName: Push new documentation
   condition: and(eq(variables.imageName, 'windows-latest'),contains(variables['Build.SourceBranch'],'/master'))
   inputs:
     scriptSource: 'inline'
