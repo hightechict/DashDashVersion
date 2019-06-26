@@ -32,12 +32,12 @@ variables:
 steps:
 
 - task: PowerShell@2
-  condition: not(contains(variables.BUILD_SOURCEBRANCH,'feature'))
+  condition: not(contains(variables['Build.SourceBranch'],'feature'))
   inputs:
     targetType: inline
     pwsh: true
     script: ''
-  displayName: $(variables.BUILD_SOURCEBRANCH)
+  displayName: $(variables['Build.SourceBranch'])
 
 
 - task: PowerShell@2
