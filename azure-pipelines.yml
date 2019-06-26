@@ -32,15 +32,6 @@ variables:
 steps:
 
 - task: PowerShell@2
-  condition: not(contains(variables['Build.SourceBranch'],'feature'))
-  inputs:
-    targetType: inline
-    pwsh: true
-    script: ''
-  displayName: $(variables['Build.SourceBranch'])
-
-
-- task: PowerShell@2
   condition: eq(variables.imageName, 'windows-latest')
   inputs:
     targetType: inline
@@ -192,7 +183,7 @@ steps:
       }
 
 - task: PowerShell@2
-  condition: and(eq(variables.imageName, 'windows-latest'),not(contains(variables.BUILD_SOURCEBRANCH,'feature'))) 
+  condition: and(eq(variables.imageName, 'windows-latest'),not(contains(variables['Build.SourceBranch'],'feature'))) 
   displayName: pushing NuGet package
   inputs:
     targetType: 'inline'
