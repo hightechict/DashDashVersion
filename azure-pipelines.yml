@@ -191,13 +191,13 @@ steps:
     targetType: 'inline'
     script: |
       if (Test-Path "./.git/refs/tags/$($env:SemVer)") {
-      Write-Host "Tag: $($env:version.SemVer) is already pressent in the repository!"
+      Write-Host "Tag: $($env:SemVer) is already pressent in the repository!"
       }
       else
       {
       git remote set-url origin git@github.com:hightechict/DashDashVersion.git
-      git tag $env:version.SemVer
-      git push --verbose origin $version.SemVer 
+      git tag $env:SemVer
+      git push --verbose origin $env:SemVer 
       }
   env:
     SemVer: $(SemVer)
