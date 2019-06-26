@@ -246,7 +246,7 @@ steps:
     script: |
       import os
       artifactsDirectory = os.environ['Build_ArtifactStagingDirectory']
-      siteDirectory = artifactsDirectory.join('''\DashDashVersion_site''')
+      siteDirectory = os.path.join(artifactsDirectory, 'DashDashVersion_site')
       os.chdir(siteDirectory)
       os.system('git add.')
       os.system('git commit -am "New documentation generated for version: $($version.SemVer)"')
