@@ -192,7 +192,7 @@ steps:
     SemVer: $(SemVer)
 
 - task: PowerShell@2
-  condition: and(eq(variables.imageName, 'windows-latest'),not(contains(variables['Build.SourceBranch'],'feature'))) 
+  condition: and(eq(variables.imageName, 'windows-latest'),not(contains(variables['Build.SourceBranch'],'/feature/'))) 
   displayName: pushing NuGet package
   inputs:
     targetType: 'inline'
@@ -206,7 +206,7 @@ steps:
     DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
 
 - task: PowerShell@2
-  condition: eq(variables.imageName, 'windows-latest')
+  condition: and(eq(variables.imageName, 'windows-latest'),contains(variables['Build.SourceBranch'],'/master')) 
   displayName: Generating documentation
   inputs:
     targetType: 'inline'
@@ -217,7 +217,7 @@ steps:
 
 - task: PythonScript@0
   displayName: Download site Directory
-  condition: eq(variables.imageName, 'windows-latest')
+  condition: and(eq(variables.imageName, 'windows-latest'),contains(variables['Build.SourceBranch'],'/master')) 
   inputs:
     scriptSource: 'inline'
     script: |
@@ -225,10 +225,10 @@ steps:
       artifactsDirectory = os.environ['Build_ArtifactStagingDirectory']
       siteDirectory = artifactsDirectory.join('''\DashDashVersion_site''')
       os.chdir(artifactsDirectory)
-      os.system('git clone --progress -v git@github.com:hightechict/DashDashVersion_site.git --branch develop')
+      os.system('git clone --progress -v git@github.com:hightechict/DashDashVersion_site.git --branch master')
 
 - task: PowerShell@2
-  condition: eq(variables.imageName, 'windows-latest')
+  condition: and(eq(variables.imageName, 'windows-latest'),contains(variables['Build.SourceBranch'],'/master'))
   displayName: Prepairing repo
   inputs:
     targetType: 'inline'
@@ -246,7 +246,7 @@ steps:
 
 - task: PythonScript@0
   displayName: push new documentation
-  condition: eq(variables.imageName, 'windows-latest')
+  condition: and(eq(variables.imageName, 'windows-latest'),contains(variables['Build.SourceBranch'],'/master'))
   inputs:
     scriptSource: 'inline'
     script: |
