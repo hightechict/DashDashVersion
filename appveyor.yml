@@ -12,6 +12,13 @@ build_script:
   - pwsh: |
         dotnet restore
         dotnet test /p:CollectCoverage=true /p:Exclude=[xunit.*]* /p:CoverletOutput='../../built/DashDashVersion.xml' /p:CoverletOutputFormat=cobertura
+        if($env:APPVEYOR_BUILD_WORKER_IMAGE -like "*Visual Studio*")
+        {
+        $version = git-flow-version.exe | ConvertFrom-Json
+        }
+        else
+        {
         $version = git-flow-version | ConvertFrom-Json
+        }
         Write-Host "calculated version:"
         $version | Format-List
