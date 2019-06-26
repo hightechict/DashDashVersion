@@ -2,7 +2,7 @@
   "profiles": {
     "git-flow-version": {
       "commandName": "Project",
-      "commandLineArgs": "-b refs/heads/develop",
+      "commandLineArgs": "-b master",
       "workingDirectory": "D:\\Repos\\temp"
     }
   }
