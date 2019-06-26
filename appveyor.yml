@@ -14,11 +14,11 @@ build_script:
         dotnet test /p:CollectCoverage=true /p:Exclude=[xunit.*]* /p:CoverletOutput='../../built/DashDashVersion.xml' /p:CoverletOutputFormat=cobertura
         if($env:APPVEYOR_BUILD_WORKER_IMAGE -like "*Visual Studio*")
         {
-        $version = git-flow-version.exe | ConvertFrom-Json
+        $version = git-flow-version.exe --branch $env:APPVEYOR_REPO_BRANCH | ConvertFrom-Json
         }
         else
         {
-        $version = git-flow-version | ConvertFrom-Json
+        $version = git-flow-version --branch $env:APPVEYOR_REPO_BRANCH | ConvertFrom-Json
         }
         Write-Host "calculated version:"
         $version | Format-List
