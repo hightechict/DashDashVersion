@@ -236,13 +236,10 @@ steps:
     script: |
       $PathOfOrigin = Get-Location;
       cd "$($env:Build_ArtifactStagingDirectory)/DashDashVersion_site"
-      Get-ChildItem
       write-Host "Base site folder"
       Remove-Item -recurse "$(Get-Location)\*" -exclude CNAME,*.git
-      Get-ChildItem
       write-Host "Cleaned folder"
       Copy-Item "$($PathOfOrigin)\doc\_site\*" -Destination $PathToDocumentationFolder -recurse -Force
-      Get-ChildItem
       write-Host "New site folder"
 
 - task: PythonScript@0
