@@ -187,6 +187,7 @@ steps:
       git tag $env:SemVer
       git push --verbose origin $env:SemVer 
       }
+    errorActionPreference: 'continue'
   env:
     SemVer: $(SemVer)
 
@@ -215,16 +216,38 @@ steps:
       docfx ./doc/docfx.json
 
 - task: PythonScript@0
-  displayName: pushing documentation
+  displayName: Download site Directory
   condition: eq(variables.imageName, 'windows-latest')
   inputs:
     scriptSource: 'inline'
     script: |
       import os
-      import glob
       artifactsDirectory = os.environ['Build_ArtifactStagingDirectory']
       siteDirectory = artifactsDirectory.join('''\DashDashVersion_site''')
       os.chdir(artifactsDirectory)
       os.system('git clone --progress -v git@github.com:hightechict/DashDashVersion_site.git --branch develop')
+
+- task: PowerShell@2
+  condition: eq(variables.imageName, 'windows-latest')
+  displayName: Prepairing repo
+  inputs:
+    targetType: 'inline'
+    script: |
+      $PathOfOrigin = Get-Location;
+      cd "$($env:Build_ArtifactStagingDirectory)/DashDashVersion_site"
+      Remove-Item -recurse "$(Get-Location)\*" -exclude CNAME,*.git
+      Copy-Item "$($PathOfOrigin)\doc\_site\*" -Destination $PathToDocumentationFolder -recurse -Force
+
+- task: PythonScript@0
+  displayName: push new documentation
+  condition: eq(variables.imageName, 'windows-latest')
+  inputs:
+    scriptSource: 'inline'
+    script: |
+      import os
+      artifactsDirectory = os.environ['Build_ArtifactStagingDirectory']
+      siteDirectory = artifactsDirectory.join('''\DashDashVersion_site''')
       os.chdir(siteDirectory)
-      print(glob.glob(siteDirectory.join('''\*''')))
+      os.system('git add.')
+      os.system('git commit -am "New documentation generated for version: $($version.SemVer)"')
+      os.system('git push origin develop')
