@@ -157,14 +157,15 @@ steps:
       }
       $assemblyInfoContent | Out-File -Encoding utf8 (Join-Path "built" "SharedAssemblyInfo.cs") -Force
 
-- task: DotNetCoreCLI@2
+- task: PowerShell@2
   condition: eq(variables.imageName, 'windows-latest')
+  displayName: create assembly info
   inputs:
-    command: 'pack'
-    packagesToPack: '**/*.csproj'
-    versioningScheme: 'byEnvVar'
-    versionEnvVar: FullSemVer
-  displayName: Creating Package
+    targetType: 'inline'
+    script: 'dotnet pack /p:PackageVersion="$($env:FullSemVer)" /p:NoPackageAnalysis=true'
+  env:
+    NuGet_APIKEY: $(FullSemVer)
+    DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
 
 - task: PowerShell@2
   condition: eq(variables.imageName, 'windows-latest')
