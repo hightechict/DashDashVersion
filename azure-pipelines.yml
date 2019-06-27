@@ -74,7 +74,6 @@ steps:
    DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
   displayName: Install git-flow-version
 
-
 - task: NuGetToolInstaller@1
   inputs:
     versionSpec: '5.1.0'
@@ -207,7 +206,7 @@ steps:
     DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
 
 - task: PowerShell@2
-  condition: and(eq(variables.imageName, 'windows-latest'),contains(variables['Build.SourceBranch'],'/develop')) 
+  condition: and(eq(variables.imageName, 'windows-latest'),contains(variables['Build.SourceBranch'],'/master')) 
   displayName: Generating documentation
   inputs:
     targetType: 'inline'
@@ -218,7 +217,7 @@ steps:
 
 - task: PythonScript@0
   displayName: Download site Directory
-  condition: and(eq(variables.imageName, 'windows-latest'),contains(variables['Build.SourceBranch'],'/develop')) 
+  condition: and(eq(variables.imageName, 'windows-latest'),contains(variables['Build.SourceBranch'],'/master')) 
   inputs:
     scriptSource: 'inline'
     script: |
@@ -226,10 +225,10 @@ steps:
       artifactsDirectory = os.environ['Build_ArtifactStagingDirectory']
       siteDirectory = artifactsDirectory.join('''\DashDashVersion_site''')
       os.chdir(artifactsDirectory)
-      os.system('git clone --progress -v git@github.com:hightechict/DashDashVersion_site.git --branch develop')
+      os.system('git clone --progress -v git@github.com:hightechict/DashDashVersion_site.git --branch master')
 
 - task: PowerShell@2
-  condition: and(eq(variables.imageName, 'windows-latest'),contains(variables['Build.SourceBranch'],'/develop'))
+  condition: and(eq(variables.imageName, 'windows-latest'),contains(variables['Build.SourceBranch'],'/master'))
   displayName: Prepairing repo
   inputs:
     targetType: 'inline'
@@ -244,7 +243,7 @@ steps:
 
 - task: PythonScript@0
   displayName: Push new documentation
-  condition: and(eq(variables.imageName, 'windows-latest'),contains(variables['Build.SourceBranch'],'/develop'))
+  condition: and(eq(variables.imageName, 'windows-latest'),contains(variables['Build.SourceBranch'],'/master'))
   inputs:
     scriptSource: 'inline'
     script: |
@@ -258,4 +257,4 @@ steps:
       os.system('git add .')
       message = "New documentation generated for version: {}".format(os.environ['SemVer'])
       os.system('git commit -am "{}"'.format(message))
-      os.system('git push origin develop')
+      os.system('git push origin master')
