@@ -74,7 +74,6 @@ steps:
    DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
   displayName: Install git-flow-version
 
-
 - task: NuGetToolInstaller@1
   inputs:
     versionSpec: '5.1.0'
