@@ -156,7 +156,7 @@ namespace DashDashVersionTests
         [InlineData(1, 0, 1, "1.0.1.0")]
         public void AssemblyVersionGeneration(uint major, uint minor, uint patch, string expected)
         {
-            var version = new VersionNumber(major,minor,patch);
+            var version = new VersionNumber(major, minor, patch);
             version.AssemblyVersion.Should()
                 .Be(expected);
         }

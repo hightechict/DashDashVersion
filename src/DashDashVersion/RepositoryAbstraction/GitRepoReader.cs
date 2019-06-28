@@ -73,7 +73,7 @@ namespace DashDashVersion.RepositoryAbstraction
             _commitCountSinceBranchOffFromDevelop = new Lazy<uint>(CalculateCommitCountSinceBranchOff);
             _highestReleaseVersionListHightToLow = new Lazy<List<(GitTag tag, VersionNumber versionNumber)>>(HighestReleaseVersionsMajorMinor);
             _currentReleaseVersion = new Lazy<VersionNumber>(CalculateCurrentReleaseVersion);
-            _commitCountSinceLastMinorReleaseVersion = new Lazy<uint>(CalculateCommitCountSinceLastMinorReleaseVersion); 
+            _commitCountSinceLastMinorReleaseVersion = new Lazy<uint>(CalculateCommitCountSinceLastMinorReleaseVersion);
         }
 
 
@@ -158,7 +158,7 @@ namespace DashDashVersion.RepositoryAbstraction
             return develop;
         }
 
-        private List<(GitTag tag,VersionNumber versionNumber)> HighestReleaseVersionsMajorMinor()
+        private List<(GitTag tag, VersionNumber versionNumber)> HighestReleaseVersionsMajorMinor()
         {
             var releaseTagsAndVersions = _visibleTags.Value
                 .Where(tag => Patterns.IsReleaseVersionTag.IsMatch(tag.FriendlyName))
@@ -174,7 +174,7 @@ namespace DashDashVersion.RepositoryAbstraction
             return releaseTagsAndVersions
                 .Where(
                     pair => pair.VersionNumber.Major == highestVersion.Major &&
-                    pair.VersionNumber.Minor == highestVersion.Minor).ToList();            
+                    pair.VersionNumber.Minor == highestVersion.Minor).ToList();
         }
 
         private uint CalculateCommitCountSinceLastMinorReleaseVersion()
@@ -184,9 +184,9 @@ namespace DashDashVersion.RepositoryAbstraction
                         .tag
                         .Sha;
 
-           return FindAncestor(
-                versionTagSha,
-                _repository.CurrentBranch.Commits);
+            return FindAncestor(
+                 versionTagSha,
+                 _repository.CurrentBranch.Commits);
         }
 
         private static uint FindAncestor(
@@ -236,16 +236,16 @@ namespace DashDashVersion.RepositoryAbstraction
             return branches.First();
         }
 
-        private GitBranch FindCurrentGitBranch(string branchName) => 
-            string.IsNullOrWhiteSpace(branchName) ? 
-                BranchForRepositoryHead() : 
+        private GitBranch FindCurrentGitBranch(string branchName) =>
+            string.IsNullOrWhiteSpace(branchName) ?
+                BranchForRepositoryHead() :
                 FindBranch(branchName);
 
         private List<GitTag> VisibleTags()
         {
             return _repository.Tags.Where(tag => _repository.CurrentBranch.Commits.Any(commit => commit.Sha == tag.Sha)).ToList();
         }
-                
+
 
         private static bool IsDevelop(GitBranch branch) =>
             branch.FriendlyName.Equals(Constants.DevelopBranchName);
