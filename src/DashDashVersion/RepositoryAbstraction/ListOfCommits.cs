@@ -16,18 +16,22 @@
 // along with DashDashVersion. If not, see<https://www.gnu.org/licenses/>.
 
 using System.Collections.Generic;
+using System.Linq;
 
 namespace DashDashVersion.RepositoryAbstraction
 {
-    /// <summary>
-    /// This interface is a stand-in for the LibGit2Sharp `Repository` type, used to confine the LibGit2Sharp dependency.
-    /// </summary>
-    internal interface IGitRepository
+    internal class ListOfCommits
     {
-        IReadOnlyCollection<GitBranch> Branches { get; }
+        public ListOfCommits(IEnumerable<GitCommit> source)
+        {
+            Commits = source.ToList();
+            _hashset = new HashSet<string>(Commits.Select(gitCommit => gitCommit.Sha));
+        }
+        public IReadOnlyCollection<GitCommit> Commits { get; }
+        public GitCommit Head => Commits.First();
 
-        ListOfCommits CurrentBranch { get; }
+        private readonly HashSet<string> _hashset;
 
-        IReadOnlyCollection<GitTag> Tags { get; }
+        public bool Contains(GitCommit candidate) => _hashset.Contains(candidate.Sha);
     }
 }

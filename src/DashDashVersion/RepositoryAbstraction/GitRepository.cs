@@ -29,35 +29,35 @@ namespace DashDashVersion.RepositoryAbstraction
         public static GitRepository FromRepository(IRepository repository) =>
             new GitRepository(
                 repository.Branches.Select(
-                    b => new GitBranch(
-                        b.IsRemote,
-                        b.RemoteName,
-                        b.FriendlyName,
-                        b.IsCurrentRepositoryHead,
-                        b.Commits.Select(
-                            c => new GitCommit(c.Sha)))),
+                    branch => new GitBranch(
+                        branch.IsRemote,
+                        branch.RemoteName,
+                        branch.FriendlyName,
+                        branch.IsCurrentRepositoryHead,
+                        branch.Commits.Select(
+                            commit => new GitCommit(commit.Sha)))).ToList(),
                 repository.Commits.Select(
-                    c => new GitCommit(c.Sha)),
+                    commit => new GitCommit(commit.Sha)).ToList(),
                 repository.Tags.Select(
-                    t => new GitTag(
-                        t.FriendlyName,
-                        t.PeeledTarget.Sha)));
+                    tag => new GitTag(
+                        tag.FriendlyName,
+                        tag.PeeledTarget.Sha)).ToList());
 
         public GitRepository(
-            IEnumerable<GitBranch> branches,
-            IEnumerable<GitCommit> commits,
-            IEnumerable<GitTag> tags)
+            IReadOnlyCollection<GitBranch> branches,
+            IReadOnlyCollection<GitCommit> commits,
+            IReadOnlyCollection<GitTag> tags)
         {
             Branches = branches;
-            Commits = commits;
+            CurrentBranch = new ListOfCommits(commits);
             Tags = tags;
         }
 
-        public IEnumerable<GitBranch> Branches { get; }
+        public IReadOnlyCollection<GitBranch> Branches { get; }
 
-        public IEnumerable<GitCommit> Commits { get; }
+        public ListOfCommits CurrentBranch { get; }
 
-        public IEnumerable<GitTag> Tags { get; }
+        public IReadOnlyCollection<GitTag> Tags { get; }
 
     }
 }

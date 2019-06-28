@@ -25,7 +25,6 @@ namespace GitFlowVersion
 {
     internal class Program
     {
-        // ReSharper disable once UnusedParameter.Local
         private static int Main(string[] args)
         {
             var app = new CommandLineApplication
@@ -46,7 +45,7 @@ namespace GitFlowVersion
                 }
                 try
                 {
-                    Console.WriteLine(GenerateJson(VersionNumberGenerator.GenerateVersionNumber(Environment.CurrentDirectory, optionBranch.Value())));
+                    OutputJsonToConsole(VersionNumberGenerator.GenerateVersionNumber(Environment.CurrentDirectory, optionBranch.Value()));
                     return 0;
                 }
                 catch (Exception e)
@@ -55,20 +54,27 @@ namespace GitFlowVersion
                     return -1;
                 }
             });
-
             return app.Execute(args);
         }
 
-        private static string GenerateJson(VersionNumber version)
+        private static void OutputJsonToConsole(VersionNumber version)
         {
-            var toReturn = new
-            {
-                version.AssemblyVersion,
-                version.FullSemVer,
-                version.SemVer  
-            };
+            JsonTextWriter writer = new JsonTextWriter(Console.Out);
 
-            return JsonConvert.SerializeObject(toReturn, Formatting.Indented);
+            writer.Formatting =Formatting.Indented;
+
+            writer.WriteStartObject();
+
+            writer.WritePropertyName(nameof(version.AssemblyVersion));
+            writer.WriteValue(version.AssemblyVersion);
+
+            writer.WritePropertyName(nameof(version.FullSemVer));
+            writer.WriteValue(version.FullSemVer);
+
+            writer.WritePropertyName(nameof(version.SemVer));
+            writer.WriteValue(version.SemVer);
+
+            writer.WriteEndObject();
         }
 
         private static void WriteGitFlowVersion()
