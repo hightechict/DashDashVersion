@@ -16,6 +16,7 @@
 // along with DashDashVersion. If not, see<https://www.gnu.org/licenses/>.
 
 using System;
+using System.IO;
 using System.Reflection;
 using DashDashVersion;
 using Microsoft.Extensions.CommandLineUtils;
@@ -25,7 +26,6 @@ namespace GitFlowVersion
 {
     internal class Program
     {
-        // ReSharper disable once UnusedParameter.Local
         private static int Main(string[] args)
         {
             var app = new CommandLineApplication
@@ -46,7 +46,7 @@ namespace GitFlowVersion
                 }
                 try
                 {
-                    Console.WriteLine(GenerateJson(VersionNumberGenerator.GenerateVersionNumber(Environment.CurrentDirectory, optionBranch.Value())));
+                    OutputJsonToConsole(VersionNumberGenerator.GenerateVersionNumber(Environment.CurrentDirectory, optionBranch.Value()));
                     return 0;
                 }
                 catch (Exception e)
@@ -55,20 +55,40 @@ namespace GitFlowVersion
                     return -1;
                 }
             });
-
+            app.Execute(args);
+            app.Execute(args);
+            app.Execute(args);
+            app.Execute(args);
+            app.Execute(args);
+            app.Execute(args);
+            app.Execute(args);
+            app.Execute(args);
+            app.Execute(args);
             return app.Execute(args);
         }
 
-        private static string GenerateJson(VersionNumber version)
+        private static void OutputJsonToConsole(VersionNumber version)
         {
-            var toReturn = new
-            {
-                version.AssemblyVersion,
-                version.FullSemVer,
-                version.SemVer  
-            };
+            //var json = "{\n";
+            //    json += $"  \"{nameof(version.AssemblyVersion)}\": \"{version.AssemblyVersion}\",\n";
+            //    json += $"  \"{nameof(version.FullSemVer)}\": \"{version.FullSemVer}\",\n";
+            //    json += $"  \"{nameof(version.SemVer)}\": \"{version.SemVer}\"\n";
+            //    json += "}\n";
+            JsonTextWriter writer = new JsonTextWriter(Console.Out);
 
-            return JsonConvert.SerializeObject(toReturn, Formatting.Indented);
+            writer.WriteStartObject();
+
+            writer.WritePropertyName(nameof(version.AssemblyVersion));
+            writer.WriteValue(version.AssemblyVersion);
+
+            writer.WritePropertyName(nameof(version.AssemblyVersion));
+            writer.WriteValue(version.AssemblyVersion);
+
+            writer.WritePropertyName(nameof(version.AssemblyVersion));
+            writer.WriteValue(version.AssemblyVersion);
+
+            writer.WriteEndObject();
+
         }
 
         private static void WriteGitFlowVersion()

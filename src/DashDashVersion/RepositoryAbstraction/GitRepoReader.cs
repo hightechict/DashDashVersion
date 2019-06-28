@@ -29,6 +29,11 @@ namespace DashDashVersion.RepositoryAbstraction
     internal sealed class GitRepoReader : IGitRepoReader
     {
         private readonly IGitRepository _repository;
+        private readonly Lazy<uint> _commitCountSinceBranchOffFromDevelop;
+        private readonly Lazy<uint> _commitCountSinceLastMinorReleaseVersion;
+        private readonly Lazy<VersionNumber> _currentReleaseVersion;
+        private readonly Lazy<List<(GitTag tag, VersionNumber versionNumber)>> _highestReleaseVersionListHightToLow;
+        private readonly Lazy<List<GitTag>> _visibleTags;
 
         internal static GitRepoReader Load(
             string path,
@@ -48,10 +53,10 @@ namespace DashDashVersion.RepositoryAbstraction
             {
                 throw new ArgumentException($"The path: '{path}' is not the root of or in a git repository.", nameof(path));
             }
-            return new GitRepoReader(
-                GitRepository.FromRepository(
-                    new Repository(
-                        repoPath)), currentBranch);
+
+            var repository = new Repository(repoPath);
+            var gitRepo = GitRepository.FromRepository(repository);
+            return new GitRepoReader(gitRepo, currentBranch);
         }
 
         internal GitRepoReader(
@@ -60,23 +65,26 @@ namespace DashDashVersion.RepositoryAbstraction
         {
             _repository = repo;
             CurrentBranch = FindCurrentBranch(currentBranchName);
-            var tags = VisibleTags(_repository.Commits);
-            var highestReleaseVersionLowestPatchTag = HighestReleaseVersionLowestPatchTag(tags);
-            CurrentReleaseVersion = VersionNumber.Parse(HighestReleaseVersionTag(tags).FriendlyName);
-            CommitCountSinceLastMinorReleaseVersion = FindAncestor(
-                highestReleaseVersionLowestPatchTag.Sha,
-                _repository.Commits);
-            var hash = _repository.Commits.FirstOrDefault();
+
+            var hash = _repository.CurrentBranch.Head;
             HeadCommitHash = hash?.Sha ?? throw new InvalidOperationException("Git repositories without commits are not supported.");
+
+            _visibleTags = new Lazy<List<GitTag>>(VisibleTags);
+            _commitCountSinceBranchOffFromDevelop = new Lazy<uint>(CalculateCommitCountSinceBranchOff);
+            _highestReleaseVersionListHightToLow = new Lazy<List<(GitTag tag, VersionNumber versionNumber)>>(HighestReleaseVersionsMajorMinor);
+            _currentReleaseVersion = new Lazy<VersionNumber>(CalculateCurrentReleaseVersion);
+            _commitCountSinceLastMinorReleaseVersion = new Lazy<uint>(CalculateCommitCountSinceLastMinorReleaseVersion); 
         }
+
+
 
         public string HeadCommitHash { get; }
 
-        public VersionNumber CurrentReleaseVersion { get; }
+        public VersionNumber CurrentReleaseVersion => _currentReleaseVersion.Value;
 
         public BranchInfo CurrentBranch { get; }
 
-        public uint CommitCountSinceLastMinorReleaseVersion { get; }
+        public uint CommitCountSinceLastMinorReleaseVersion => _commitCountSinceLastMinorReleaseVersion.Value;
 
         public VersionNumber? HighestMatchingTagForReleaseCandidate
         {
@@ -89,45 +97,44 @@ namespace DashDashVersion.RepositoryAbstraction
                 }
                 var toCheckFor =
                     $"{currentRc.VersionFromName}{Constants.PreReleaseLabelDelimiter}{Constants.ReleasePreReleaseLabel}";
-                var returnTag = HighestMatchingTag(_repository.Tags, toCheckFor);
+                var returnTag = HighestMatchingTag(toCheckFor);
                 return returnTag == null ? null : VersionNumber.Parse(returnTag);
             }
         }
 
-        public uint CommitCountSinceBranchOffFromDevelop
-        {
-            get
-            {
-                var developCommits = OriginDevelopOrDevelopCommits(_repository.Branches).ToArray();
-                uint toReturn = 0;
-                foreach (var commit in _repository.Commits)
-                {
-                    if (developCommits.Any(developCommit => commit.Sha.Equals(developCommit.Sha)))
-                    {
-                        return toReturn;
-                    }
+        public uint CommitCountSinceBranchOffFromDevelop => _commitCountSinceBranchOffFromDevelop.Value;
 
-                    toReturn++;
+        public bool IsCurrentCommitTheReleaseVersion => _repository.CurrentBranch.Head.Sha == _highestReleaseVersionListHightToLow.Value.First().tag.Sha;
+
+        private VersionNumber CalculateCurrentReleaseVersion()
+        {
+            return _highestReleaseVersionListHightToLow.Value.First().versionNumber;
+        }
+        private uint CalculateCommitCountSinceBranchOff()
+        {
+            var developBranch = OriginDevelopOrDevelopCommits(_repository.Branches);
+            uint toReturn = 0;
+            foreach (var commit in _repository.CurrentBranch.Commits)
+            {
+                if (developBranch.CommitCollection.Contains(commit))
+                {
+                    return toReturn;
                 }
-                throw new InvalidOperationException(
-                    $"Git repository does not contain a common ancestor between '{Constants.DevelopBranchName}' and the current HEAD.");
+
+                toReturn++;
             }
+            throw new InvalidOperationException(
+                $"Git repository does not contain a common ancestor between '{Constants.DevelopBranchName}' and the current HEAD.");
         }
 
-        public bool IsCurrentCommitTheReleaseVersion => 
-            _repository.Commits.First().Sha
-            .Equals(HighestReleaseVersionTag(VisibleTags(_repository.Commits)).Sha);
-
-        private static string? HighestMatchingTag(
-            IEnumerable<GitTag> tags,
-            string toMatch) =>
-                tags
-                    .Where(tag => Patterns.ValidVersionNumber.IsMatch(tag.FriendlyName))
+        private string? HighestMatchingTag(string toMatch) =>
+               _repository.Tags
                     .Where(tag => tag.FriendlyName.StartsWith(toMatch))
+                    .Where(tag => Patterns.ValidVersionNumber.IsMatch(tag.FriendlyName))
                     .OrderByDescending(t => VersionNumber.Parse(t.FriendlyName))
                     .FirstOrDefault()?.FriendlyName;
 
-        private static IEnumerable<GitCommit> OriginDevelopOrDevelopCommits(IEnumerable<GitBranch> branches)
+        private static GitBranch OriginDevelopOrDevelopCommits(IEnumerable<GitBranch> branches)
         {
             var develop = branches.FirstOrDefault(IsOriginDevelop);
             if (develop == null)
@@ -141,44 +148,45 @@ namespace DashDashVersion.RepositoryAbstraction
                 }
             }
 
-            var developCommits = develop.Commits;
+            var developCommits = develop.CommitCollection.Commits;
             if (!developCommits.Any())
             {
                 throw new InvalidOperationException(
                     $"Git repository does not contain any commits on '{Constants.DevelopBranchName}' or '{Constants.OriginDevelop}'.");
             }
 
-            return developCommits;
+            return develop;
         }
 
-        private static GitTag HighestReleaseVersionTag(IEnumerable<GitTag> tags) =>
-            tags.Where(
-                    tag => Patterns.IsReleaseVersionTag.IsMatch(tag.FriendlyName))
-                .OrderByDescending(
-                    t => VersionNumber.Parse(t.FriendlyName))
-                .FirstOrDefault() ??
-            throw new InvalidOperationException($"There is no tag with in the '<major>.<minor>.<patch>' format in this repository looking from the HEAD down: {Patterns.IsReleaseVersionTag}.");
-
-        private static GitTag HighestReleaseVersionLowestPatchTag(IEnumerable<GitTag> tags)
+        private List<(GitTag tag,VersionNumber versionNumber)> HighestReleaseVersionsMajorMinor()
         {
-            var releaseTagsAndVersions = tags
+            var releaseTagsAndVersions = _visibleTags.Value
                 .Where(tag => Patterns.IsReleaseVersionTag.IsMatch(tag.FriendlyName))
-                .Select(tag => (Tag: tag, VersionNumber: VersionNumber.Parse(tag.FriendlyName)));
+                .Select(tag => (Tag: tag, VersionNumber: VersionNumber.Parse(tag.FriendlyName)))
+                .OrderByDescending(pair => pair.VersionNumber)
+                .ToList();
 
             if (!releaseTagsAndVersions.Any())
                 throw new InvalidOperationException($"There is no tag with in the '<major>.<minor>.<patch>' format in this repository looking from the HEAD down: {Patterns.IsReleaseVersionTag}.");
 
-            var highestVersion = releaseTagsAndVersions
-                .Select(pair => pair.VersionNumber)
-                .Max();
+            var highestVersion = releaseTagsAndVersions.First().VersionNumber;
 
             return releaseTagsAndVersions
                 .Where(
-                    pair => pair.VersionNumber.Major == highestVersion.Major && 
-                    pair.VersionNumber.Minor == highestVersion.Minor)
-                .OrderBy(pair => pair.VersionNumber)
-                .First().Tag;
-            
+                    pair => pair.VersionNumber.Major == highestVersion.Major &&
+                    pair.VersionNumber.Minor == highestVersion.Minor).ToList();            
+        }
+
+        private uint CalculateCommitCountSinceLastMinorReleaseVersion()
+        {
+            var versionTagSha = _highestReleaseVersionListHightToLow.Value
+                        .Last()
+                        .tag
+                        .Sha;
+
+           return FindAncestor(
+                versionTagSha,
+                _repository.CurrentBranch.Commits);
         }
 
         private static uint FindAncestor(
@@ -188,7 +196,7 @@ namespace DashDashVersion.RepositoryAbstraction
             var matches = commits.Select(
                     (commit, index) => (commit, index))
                 .Where(tuple => tuple.commit.Sha == sha).ToList();
-            if (matches.Any())
+            if (matches.Count > 0)
             {
                 return (uint)matches.First().index;
             }
@@ -233,9 +241,11 @@ namespace DashDashVersion.RepositoryAbstraction
                 BranchForRepositoryHead() : 
                 FindBranch(branchName);
 
-        private IEnumerable<GitTag> VisibleTags(
-            IEnumerable<GitCommit> commits) =>
-                _repository.Tags.Where(tag => commits.Any(commit => commit.Sha == tag.Sha));
+        private List<GitTag> VisibleTags()
+        {
+            return _repository.Tags.Where(tag => _repository.CurrentBranch.Commits.Any(commit => commit.Sha == tag.Sha)).ToList();
+        }
+                
 
         private static bool IsDevelop(GitBranch branch) =>
             branch.FriendlyName.Equals(Constants.DevelopBranchName);
