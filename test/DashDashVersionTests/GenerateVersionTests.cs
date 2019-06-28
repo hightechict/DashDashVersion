@@ -152,7 +152,7 @@ namespace DashDashVersionTests
         [Fact]
         public void RepoWithoutHeadDevelopTest()
         {
-            var versionNumberGenerator = CreateVersionNumberGenerator(TestRepositories.DeteachedHeadRepo(),"develop");
+            var versionNumberGenerator = CreateVersionNumberGenerator(TestRepositories.DeteachedHeadRepo(), "develop");
             versionNumberGenerator.VersionNumber.SemVer.Should().Be("0.2.0-dev.0");
         }
 
@@ -210,7 +210,7 @@ namespace DashDashVersionTests
         [Fact]
         public void PatchReleaseTest()
         {
-            
+
             var versionNumberGenerator = CreateVersionNumberGenerator(TestRepositories.PatchReleaseRepository());
             versionNumberGenerator.VersionNumber.SemVer.Should().Be("0.2.0-dev.3");
         }

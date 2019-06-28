@@ -15,7 +15,9 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with DashDashVersion. If not, see<https://www.gnu.org/licenses/>.
 
+using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace DashDashVersion.RepositoryAbstraction
 {
@@ -35,7 +37,7 @@ namespace DashDashVersion.RepositoryAbstraction
             RemoteName = remoteName;
             FriendlyName = friendlyName;
             IsCurrentRepositoryHead = isCurrentRepositoryHead;
-            Commits = commits;
+            _commits = new Lazy<ListOfCommits>(() => new ListOfCommits(commits));
         }
 
         public bool IsRemote { get; }
@@ -44,7 +46,8 @@ namespace DashDashVersion.RepositoryAbstraction
 
         public string FriendlyName { get; }
 
-        public IEnumerable<GitCommit> Commits { get; }
+        private readonly Lazy<ListOfCommits> _commits;
+        public ListOfCommits CommitCollection => _commits.Value;
 
         public bool IsCurrentRepositoryHead { get; }
 

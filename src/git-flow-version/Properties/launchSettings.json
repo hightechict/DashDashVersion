@@ -2,8 +2,7 @@
   "profiles": {
     "git-flow-version": {
       "commandName": "Project",
-      "commandLineArgs": "-b master",
-      "workingDirectory": "D:\\Repos\\temp"
+      "workingDirectory": "D:\\Repos\\Hightech\\ch.titlecatalogizer"
     }
   }
 }
