@@ -16,7 +16,6 @@
 // along with DashDashVersion. If not, see<https://www.gnu.org/licenses/>.
 
 using System;
-using System.IO;
 using System.Reflection;
 using DashDashVersion;
 using Microsoft.Extensions.CommandLineUtils;
@@ -55,40 +54,27 @@ namespace GitFlowVersion
                     return -1;
                 }
             });
-            app.Execute(args);
-            app.Execute(args);
-            app.Execute(args);
-            app.Execute(args);
-            app.Execute(args);
-            app.Execute(args);
-            app.Execute(args);
-            app.Execute(args);
-            app.Execute(args);
             return app.Execute(args);
         }
 
         private static void OutputJsonToConsole(VersionNumber version)
         {
-            //var json = "{\n";
-            //    json += $"  \"{nameof(version.AssemblyVersion)}\": \"{version.AssemblyVersion}\",\n";
-            //    json += $"  \"{nameof(version.FullSemVer)}\": \"{version.FullSemVer}\",\n";
-            //    json += $"  \"{nameof(version.SemVer)}\": \"{version.SemVer}\"\n";
-            //    json += "}\n";
             JsonTextWriter writer = new JsonTextWriter(Console.Out);
+
+            writer.Formatting =Formatting.Indented;
 
             writer.WriteStartObject();
 
             writer.WritePropertyName(nameof(version.AssemblyVersion));
             writer.WriteValue(version.AssemblyVersion);
 
-            writer.WritePropertyName(nameof(version.AssemblyVersion));
-            writer.WriteValue(version.AssemblyVersion);
+            writer.WritePropertyName(nameof(version.FullSemVer));
+            writer.WriteValue(version.FullSemVer);
 
-            writer.WritePropertyName(nameof(version.AssemblyVersion));
-            writer.WriteValue(version.AssemblyVersion);
+            writer.WritePropertyName(nameof(version.SemVer));
+            writer.WriteValue(version.SemVer);
 
             writer.WriteEndObject();
-
         }
 
         private static void WriteGitFlowVersion()
