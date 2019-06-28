@@ -38,7 +38,7 @@ namespace GitFlowVersion
 
             app.OnExecute(() =>
             {
-                if(optionVersion.Value() == "on")
+                if (optionVersion.Value() == "on")
                 {
                     WriteGitFlowVersion();
                     return 0;
@@ -61,7 +61,7 @@ namespace GitFlowVersion
         {
             JsonTextWriter writer = new JsonTextWriter(Console.Out);
 
-            writer.Formatting =Formatting.Indented;
+            writer.Formatting = Formatting.Indented;
 
             writer.WriteStartObject();
 
