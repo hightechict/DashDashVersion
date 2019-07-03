@@ -9,7 +9,7 @@ pipeline {
         }
         stage('Build') {
             steps {
-                powershell './build.ps1'
+ 
             }
         }
     }
@@ -20,7 +20,7 @@ pipeline {
         }
         success {
             script {
-                def tag = powershell (returnStdout: true, script: '$semVer = (git-flow-version | ConvertFrom-Json).SemVer; git tag $semVer;git push --verbose origin $semVer;$semVer')
+                def tag = powershell (returnStdout: true, script: '$semVer = (git-flow-version --branch ${env.GIT_BRANCH} | ConvertFrom-Json).SemVer; git tag $semVer;git push --verbose origin $semVer;$semVer')
                 echo "Tag: ${tag}"
 
                 if (tag?.trim()) {

@@ -12,6 +12,16 @@ DashDashVersion creates predictable and opinionated [SemVer 2.0.0 version][SemVe
 
 It consists of an executable that can be installed as a [`dotnet` global tool][globalTool] and a reusable library [NET Standard 2.0](https://docs.microsoft.com/en-us/dotnet/standard/net-standard) that can be used in other applications or .NET based build scripts.
 
+## Why DashDashVersion?
+
+DashDashVersion is an application to generate a version number for a git repository that follows [git-flow](https://www.atlassian.com/git/tutorials/comparing-workflows/gitflow-workflow). 
+Ideal if you are using [Continuous Intergration](https://en.wikipedia.org/wiki/Continuous_integration).
+In the repository you will find several integrations with CI services that can be used as an example.
+The version number can be used for packages or to simply tag your commits.
+
+DashDashVersion provides automated versioning during development, while leaving control over release versions to the user.
+It compliese with [SemVer 2.0](https://semver.org/).
+
 ## Installation
 
 DashDashVersion can be installed as a [`dotnet` global tool][globalTool] by using the following command:
@@ -135,10 +145,14 @@ $ git flow release finish
 ```
 the output of `git-flow-version` will be:
 
-```json
-{"FullSemVer":"0.2.0-dev.1+8af6c6d","SemVer":"0.2.0-dev.1","AssemblyVersion":"0.2.0.128"}
+```bash
+$ git-flow-version
+{
+    "AssemblyVersion":"0.2.0.128",
+    "FullSemVer":"0.2.0-dev.1+8af6c6d",
+    "SemVer":"0.2.0-dev.1"
+}
 ```
-
 ### On a `feature/` branch
 
 For a feature branch a version number will be calculated for the branch-off point from `origin/develop` or `develop` if there is no `origin/develop`. The number of commits on the feature branch is counted and these pieces are glued together.
@@ -169,7 +183,7 @@ This work is licensed under the LGPL license, refer to the [COPYING.md][license]
 [license]: https://github.com/dashdashversion/COPYING.md
 [licenseExtension]: https://github.com/dashdashversion/COPYING.LESSER.md
 [SemVer2]: https://semver.org/
-[gitFlow]: https://nl.atlassian.com/git/tutorials/comparing-workflows/gitflow-workflow
+[gitFlow]: https://www.atlassian.com/git/tutorials/comparing-workflows/gitflow-workflow
 [globalTool]: https://docs.microsoft.com/en-us/dotnet/core/tools/global-tools
 [source]: https://github.com/dashdashversion
 [contribute]: https://github.com/dashdashversion/CONTRIBUTING.md 
