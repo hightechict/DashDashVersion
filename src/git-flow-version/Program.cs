@@ -59,9 +59,7 @@ namespace GitFlowVersion
 
         private static void OutputJsonToConsole(VersionNumber version)
         {
-            JsonTextWriter writer = new JsonTextWriter(Console.Out);
-
-            writer.Formatting = Formatting.Indented;
+            var writer = new JsonTextWriter(Console.Out) { Formatting = Formatting.Indented };
 
             writer.WriteStartObject();
 
