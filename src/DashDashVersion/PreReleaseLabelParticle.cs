@@ -22,9 +22,9 @@ namespace DashDashVersion
     /// <summary>
     /// This is the base class for a pre-release label that checks if the label is SemVer 2.0.0 compliant and requires a number to indicate the specific pre-release version.  
     /// </summary>
-    public class PreReleaseLabelParticle
+    internal class PreReleaseLabelParticle
     {
-        public PreReleaseLabelParticle(string label, uint ordinal)
+        internal PreReleaseLabelParticle(string label, uint ordinal)
         {
             if (!IsSemverValid(label))
             {

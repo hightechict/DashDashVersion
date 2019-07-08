@@ -20,9 +20,9 @@ namespace DashDashVersion
     /// <summary>
     ///This is the base class for storing the branch information. 
     /// </summary>
-    public class BranchInfo
+    internal abstract class BranchInfo
     {
-        public BranchInfo(string name)
+        internal BranchInfo(string name)
         {
             Name = name;
         }
