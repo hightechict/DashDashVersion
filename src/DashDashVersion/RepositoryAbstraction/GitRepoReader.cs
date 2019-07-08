@@ -30,11 +30,11 @@ namespace DashDashVersion.RepositoryAbstraction
     {
         private readonly IGitRepository _repository;
         private readonly Lazy<uint> _commitCountSinceBranchOffFromDevelop;
-        private readonly Lazy<uint> _commitCountSinceLastMinorReleaseVersion;
-        private readonly Lazy<VersionNumber> _currentReleaseVersion;
-        private readonly Lazy<List<(GitTag tag, VersionNumber versionNumber)>> _highestReleaseVersionListHighToLow;
+        private readonly Lazy<uint> _commitCountSinceLastMinorVersion;
+        private readonly Lazy<VersionNumber> _currentVersionCore;
+        private readonly Lazy<List<(GitTag tag, VersionNumber versionNumber)>> _highestVersionCoreListHighToLow;
         private readonly Lazy<List<GitTag>> _visibleTags;
-        private Lazy<GitTag> _tagOnHead;
+        private readonly Lazy<GitTag> _tagOnHead;
 
         internal static GitRepoReader Load(
             string path,
@@ -72,9 +72,9 @@ namespace DashDashVersion.RepositoryAbstraction
 
             _visibleTags = new Lazy<List<GitTag>>(VisibleTags);
             _commitCountSinceBranchOffFromDevelop = new Lazy<uint>(CalculateCommitCountSinceBranchOff);
-            _highestReleaseVersionListHighToLow = new Lazy<List<(GitTag tag, VersionNumber versionNumber)>>(HighestReleaseVersionsMajorMinor);
-            _currentReleaseVersion = new Lazy<VersionNumber>(CalculateCurrentReleaseVersion);
-            _commitCountSinceLastMinorReleaseVersion = new Lazy<uint>(CalculateCommitCountSinceLastMinorReleaseVersion);
+            _highestVersionCoreListHighToLow = new Lazy<List<(GitTag tag, VersionNumber versionNumber)>>(HighestVersionCoresMajorMinor);
+            _currentVersionCore = new Lazy<VersionNumber>(CalculateCurrentVersionCore);
+            _commitCountSinceLastMinorVersion = new Lazy<uint>(CalculateCommitCountSinceLastMinorVersion);
             _tagOnHead = new Lazy<GitTag>(CalculateTagOnHead);
         }
 
@@ -83,11 +83,11 @@ namespace DashDashVersion.RepositoryAbstraction
 
         public GitTag TagOnHead => _tagOnHead.Value;
 
-        public VersionNumber CurrentReleaseVersion => _currentReleaseVersion.Value;
+        public VersionNumber CurrentVersionCore => _currentVersionCore.Value;
 
         public BranchInfo CurrentBranch { get; }
 
-        public uint CommitCountSinceLastMinorReleaseVersion => _commitCountSinceLastMinorReleaseVersion.Value;
+        public uint CommitCountSinceLastMinorVersion => _commitCountSinceLastMinorVersion.Value;
 
         public VersionNumber? HighestMatchingTagForReleaseCandidate
         {
@@ -107,7 +107,7 @@ namespace DashDashVersion.RepositoryAbstraction
 
         public uint CommitCountSinceBranchOffFromDevelop => _commitCountSinceBranchOffFromDevelop.Value;
 
-        private VersionNumber CalculateCurrentReleaseVersion() => _highestReleaseVersionListHighToLow.Value.First().versionNumber;
+        private VersionNumber CalculateCurrentVersionCore() => _highestVersionCoreListHighToLow.Value.First().versionNumber;
 
         private uint CalculateCommitCountSinceBranchOff()
         {
@@ -157,16 +157,16 @@ namespace DashDashVersion.RepositoryAbstraction
             return develop;
         }
 
-        private List<(GitTag tag, VersionNumber versionNumber)> HighestReleaseVersionsMajorMinor()
+        private List<(GitTag tag, VersionNumber versionNumber)> HighestVersionCoresMajorMinor()
         {
             var releaseTagsAndVersions = _visibleTags.Value
-                .Where(tag => Patterns.IsReleaseVersionTag.IsMatch(tag.FriendlyName))
+                .Where(tag => Patterns.IsVersionCoreTag.IsMatch(tag.FriendlyName))
                 .Select(tag => (Tag: tag, VersionNumber: VersionNumber.Parse(tag.FriendlyName)))
                 .OrderByDescending(pair => pair.VersionNumber)
                 .ToList();
 
             if (!releaseTagsAndVersions.Any())
-                throw new InvalidOperationException($"There is no tag with in the '<major>.<minor>.<patch>' format in this repository looking from the HEAD down: {Patterns.IsReleaseVersionTag}.");
+                throw new InvalidOperationException($"There is no tag with in the '<major>.<minor>.<patch>' format in this repository looking from the HEAD down: {Patterns.IsVersionCoreTag}.");
 
             var highestVersion = releaseTagsAndVersions.First().VersionNumber;
 
@@ -176,9 +176,9 @@ namespace DashDashVersion.RepositoryAbstraction
                     pair.VersionNumber.Minor == highestVersion.Minor).ToList();
         }
 
-        private uint CalculateCommitCountSinceLastMinorReleaseVersion()
+        private uint CalculateCommitCountSinceLastMinorVersion()
         {
-            var versionTagSha = _highestReleaseVersionListHighToLow.Value
+            var versionTagSha = _highestVersionCoreListHighToLow.Value
                         .Last()
                         .tag
                         .Sha;
