@@ -14,7 +14,7 @@ strategy:
 
 pool:
   vmImage: $(imageName)
-  
+
 trigger:
   branches:
     include:
@@ -50,7 +50,7 @@ steps:
 - task: DotNetCoreInstaller@0
   inputs:
     packageType: 'sdk'
-    version: '2.2.300' 
+    version: '2.2.300'
   displayName: Install .NET Core 2 latest
   env:
    DOTNET_CLI_TELEMETRY_OPTOUT: false
@@ -97,7 +97,7 @@ steps:
     sshPublicKey: 'ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIF6/HvdVdOqxei+waWEWBR9u3zwx9TZtyeYuIqs2uBL0 Azure-pipeline'
     sshKeySecureFile: 'GithubDeploymentKey'
   displayName: Install sshKey for tagging
-  
+
 - task: DotNetCoreCLI@2
   inputs:
     command: 'restore'
@@ -185,28 +185,28 @@ steps:
       {
       git remote set-url origin git@github.com:hightechict/DashDashVersion.git
       git tag $env:SemVer
-      git push --verbose origin $env:SemVer 
+      git push --verbose origin $env:SemVer
       }
     errorActionPreference: 'continue'
   env:
     SemVer: $(SemVer)
 
 - task: PowerShell@2
-  condition: and(eq(variables.imageName, 'windows-latest'),not(contains(variables['Build.SourceBranch'],'/feature/'))) 
+  condition: and(eq(variables.imageName, 'windows-latest'),not(contains(variables['Build.SourceBranch'],'/feature/')))
   displayName: Pushing NuGet package
   inputs:
     targetType: 'inline'
     script: |
       Write-Host "Publishing NuGet package"
       pushd built
-      dotnet nuget push *.nupkg --api-key $env:NuGet_APIKEY --no-symbols true --source https://api.nuget.org/v3/index.json 
+      dotnet nuget push *.nupkg --api-key $env:NuGet_APIKEY --no-symbols true --source https://api.nuget.org/v3/index.json
       popd
   env:
     NuGet_APIKEY: $(nuget.APIKEY)
     DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
 
 - task: PowerShell@2
-  condition: and(eq(variables.imageName, 'windows-latest'),contains(variables['Build.SourceBranch'],'/master')) 
+  condition: and(eq(variables.imageName, 'windows-latest'),contains(variables['Build.SourceBranch'],'/master'))
   displayName: Generating documentation
   inputs:
     targetType: 'inline'
@@ -217,7 +217,7 @@ steps:
 
 - task: PythonScript@0
   displayName: Download site Directory
-  condition: and(eq(variables.imageName, 'windows-latest'),contains(variables['Build.SourceBranch'],'/master')) 
+  condition: and(eq(variables.imageName, 'windows-latest'),contains(variables['Build.SourceBranch'],'/master'))
   inputs:
     scriptSource: 'inline'
     script: |
@@ -251,8 +251,8 @@ steps:
       artifactsDirectory = os.environ['Build_ArtifactStagingDirectory']
       siteDirectory = os.path.join(artifactsDirectory, 'DashDashVersion_site')
       os.chdir(siteDirectory)
-      os.system('git config --global user.email "kees.zijlmans@hightechict.nl"')
-      os.system('git config --global user.name "Azure-pipeline"')
+      os.system('git config --global user.email "azure-pipeline@noreply.com"')
+      os.system('git config --global user.name "azure-pipeline"')
       os.system('git remote -v')
       os.system('git add .')
       message = "New documentation generated for version: {}".format(os.environ['SemVer'])
