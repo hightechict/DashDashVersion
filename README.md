@@ -14,13 +14,12 @@ It consists of an executable that can be installed as a [`dotnet` global tool][g
 
 ## Why DashDashVersion?
 
-DashDashVersion is an application to generate a version number for a git repository that follows [git-flow](https://www.atlassian.com/git/tutorials/comparing-workflows/gitflow-workflow). 
-Ideal if you are using [Continuous Intergration](https://en.wikipedia.org/wiki/Continuous_integration).
-In the repository you will find several integrations with CI services that can be used as an example.
+DashDashVersion is an application to generate a version number for a git repository that follows [git-flow][gitFlow]. 
+Ideal if you are using [Continuous Integration](https://en.wikipedia.org/wiki/Continuous_integration).
 The version number can be used for packages or to simply tag your commits.
 
 DashDashVersion provides automated versioning during development, while leaving control over release versions to the user.
-It compliese with [SemVer 2.0](https://semver.org/).
+It complies with [SemVer 2.0](https://semver.org/). DashDashVersion only supports repositories that strictly follow the [git flow][gitFlow] conventions, this may seem overly restrictive but we believe strongly in simplicity and convention over configuration.
 
 ## Installation
 
@@ -61,7 +60,7 @@ $ git-flow-version
 If your Continuous Integration (CI) environment uses [detached heads](https://git-scm.com/docs/git-checkout#_detached_head) `git-flow-version` cannot determine what the _type_ (`master`, `release/*`, `feature/`, `hotfix/`, `support/*`) of the branch is for which it should generate the version number. In these cases the branch name can be specified via a command-line parameter:
 
 ```bash
-$ git-flow-wersion --branch develop
+$ git-flow-version --branch develop
 ```
 
 Matching of the branch name is performed using the following strategy:
@@ -73,7 +72,7 @@ Matching of the branch name is performed using the following strategy:
 
 ### Command-Line reference
 
-The number of command-line parameters and/or options supported by `git-flow-version** is very limited, however below you find them explained in detail:
+The number of command-line parameters and/or options supported by `git-flow-version` is very limited, however below you find them explained in detail:
 
 #### Help information
 
@@ -128,7 +127,7 @@ There is nothing to configure 🙌, you have already done the necessary configur
 ### Keep in mind
 
 * Only `release/`, `hotfix/`, `develop` and `feature/` branches are supported, for other branches a human has to decide on a version number.
-* Make sure to tag release and hotfix branches after generating a version number, the next version number is solely reliant upon that tag.
+* Make sure to tag `release/` and `hotfix/` branches after generating a version number, the next version number is solely reliant upon that tag.
 * For unsupported branches if a tag is already present in the correct format, that version number will be returned, to facilitate rebuilds on `master` for example.
 
 ## What version number to expect
