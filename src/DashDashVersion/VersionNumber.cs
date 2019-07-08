@@ -21,10 +21,13 @@ using System.Text.RegularExpressions;
 namespace DashDashVersion
 {
     /// <summary>
-    /// This class is used to represent a single version number.
+    /// This class is used to represent a single [Semantic Versioning 2.0.0](https://semver.org) version number.
     /// </summary>
     public class VersionNumber : IComparable<VersionNumber>
     {
+        /// <summary>
+        /// Parse a semver 2.0.0 compliant string to a VersionNumber instance.
+        /// </summary>
         public static VersionNumber Parse(string version)
         {
             if (string.IsNullOrWhiteSpace(version))
@@ -67,16 +70,35 @@ namespace DashDashVersion
             Metadata = metadata;
         }
 
+        /// <summary>
+        /// The major version number.
+        /// </summary>
         public uint Major { get; }
 
+        /// <summary>
+        /// The minor version number.
+        /// </summary>
         public uint Minor { get; }
 
+        /// <summary>
+        /// The patch number.
+        /// </summary>
         public uint Patch { get; }
 
+        /// <summary>
+        /// The (optional) pre-release label.
+        /// </summary>
         public PreReleaseLabel? PreReleaseLabel { get; }
 
+        /// <summary>
+        /// This property contains the possibly empty build metadata.
+        /// </summary>
         public string Metadata { get; }
 
+        /// <summary>
+        /// This method determines the ordering of VersionNumber instances.
+        /// </summary>
+        /// <see cref="IComparable{T}.CompareTo"/>
         public int CompareTo(VersionNumber other)
         {
             var compare = Major.CompareTo(other.Major);
@@ -111,10 +133,18 @@ namespace DashDashVersion
             return 0;
         }
 
+        /// <summary>
+        /// A string representation of this VersionNumber that can be used as the constructor parameter of the [AssemblyVersionAttribute](https://docs.microsoft.com/en-us/dotnet/api/system.reflection.assemblyversionattribute?view=netstandard-2.0).
+        /// </summary>
+        /// <see cref="System.Reflection.AssemblyVersionAttribute"/>
         public string AssemblyVersion => $"{Major}{Constants.ParticleDelimiter}{Minor}{Constants.ParticleDelimiter}{Patch}{Constants.ParticleDelimiter}{PreReleaseLabel?.CalculatedRevision ?? 0}";
 
+        /// <returns>The full semantic version string of the version number including a pre-release label (if present) and the build meta data.</returns>
         public override string ToString() => FullSemVer;
 
+        /// <summary>
+        /// The full semantic version string of the version number including a pre-release label (if present) and the build meta data.
+        /// </summary>
         public string FullSemVer
         {
             get
@@ -126,6 +156,9 @@ namespace DashDashVersion
             }
         }
 
+        /// <summary>
+        /// The semantic version string of the version number including a pre-release label (if present), but without the build meta data.
+        /// </summary>
         public string SemVer
         {
             get
