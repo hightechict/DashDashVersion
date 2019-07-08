@@ -51,7 +51,7 @@ namespace DashDashVersion
 
             if (name.Equals(Constants.MasterBranchName) || name.StartsWith(Constants.SupportBranchName))
             {
-                return new BranchInfo(name);
+                return new MasterBranchInfo(name);
             }
             throw new ArgumentException($"This branch : {name} is not any of the supported branch types, only [{string.Join(", ", Constants.GitFlowBranchTypes)}] branches are supported.", nameof(name));
         }

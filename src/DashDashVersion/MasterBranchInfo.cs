@@ -15,25 +15,15 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with DashDashVersion. If not, see<https://www.gnu.org/licenses/>.
 
-namespace DashDashVersion.RepositoryAbstraction
+namespace DashDashVersion
 {
     /// <summary>
-    /// This interface provides the minimum information needed from a git repository in order to generate a version number.
+    /// This class represents branches of the 'develop' type.
     /// </summary>
-    internal interface IGitRepoReader
+    internal class MasterBranchInfo : BranchInfo
     {
-        BranchInfo CurrentBranch { get; }
-
-        string HeadCommitHash { get; }
-
-        VersionNumber CurrentReleaseVersion { get; }
-        
-        GitTag TagOnHead { get; }
-
-        VersionNumber? HighestMatchingTagForReleaseCandidate { get; }
-
-        uint CommitCountSinceLastMinorReleaseVersion { get; }
-
-        uint CommitCountSinceBranchOffFromDevelop { get; }
+        internal MasterBranchInfo(string name) : base(name)
+        {
+        }
     }
 }

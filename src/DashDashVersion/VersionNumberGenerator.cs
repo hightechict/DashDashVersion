@@ -21,73 +21,89 @@ using DashDashVersion.RepositoryAbstraction;
 namespace DashDashVersion
 {
     /// <summary>
-    /// This class generates a version number for the current head of a git repository.
+    /// This class generates a version number for a git repository.
     /// </summary>
-    public class VersionNumberGenerator
+    public static class VersionNumberGenerator
     {
-        private readonly IGitRepoReader _repoReader;
-
-        public static VersionNumber GenerateVersionNumber(string path, string branch)
+        /// <summary>
+        /// Generate a VersionNumber for the git repository.
+        /// </summary>
+        /// <param name="path">The path to the git repository.</param>
+        /// <param name="branch">The name of the branch to consider when generating the version number.</param>
+        /// <returns></returns>
+        public static VersionNumber GenerateVersionNumber(
+            string path, 
+            string branch)
         {
             var repo = GitRepoReader.Load(path, branch);
-            var versionNumberGenerator = new VersionNumberGenerator(repo);
-            return versionNumberGenerator.VersionNumber;
+            return GenerateVersionNumber(repo);
         }
 
-        internal VersionNumberGenerator(IGitRepoReader repoReader) =>
-            _repoReader = repoReader;
-
-        internal VersionNumber VersionNumber
+        internal static VersionNumber GenerateVersionNumber(IGitRepoReader repo)
         {
-            get
+            var currentBranch = repo.CurrentBranch;
+            var headCommitHash = repo.HeadCommitHash.Length > Constants.BuildMetadataHashLength
+                ? repo.HeadCommitHash.Substring(0, Constants.BuildMetadataHashLength)
+                : repo.HeadCommitHash;
+            var tagOnHead = repo.TagOnHead;
+            return currentBranch switch
             {
-                PreReleaseLabel preReleaseLabel;
-                var currentBranch = _repoReader.CurrentBranch;
-                var headCommitHash = _repoReader.HeadCommitHash.Length > Constants.BuildMetadataHashLength
-                    ? _repoReader.HeadCommitHash.Substring(0, Constants.BuildMetadataHashLength)
-                    : _repoReader.HeadCommitHash;
-                switch (currentBranch)
-                {
-                    case FeatureBranchInfo feature:
-                        preReleaseLabel = feature.DeterminePreReleaseLabel(
-                            _repoReader.CommitCountSinceLastMinorReleaseVersion -
-                            _repoReader.CommitCountSinceBranchOffFromDevelop,
-                            _repoReader.CommitCountSinceBranchOffFromDevelop);
-                        return new VersionNumber(
-                            _repoReader.CurrentReleaseVersion.Major,
-                            _repoReader.CurrentReleaseVersion.Minor + 1,
-                            0,
-                            preReleaseLabel,
-                            headCommitHash);
-                    case ReleaseCandidateBranchInfo releaseCandidate:
-                        var ordinal = _repoReader.HighestMatchingTagForReleaseCandidate?.PreReleaseLabel?.BranchLabel
-                                          .Ordinal + 1;
-                        preReleaseLabel = releaseCandidate.DeterminePreReleaseLabel(ordinal ?? 1);
-                        var version = releaseCandidate.VersionFromName;
-                        return new VersionNumber(
-                            version.Major,
-                            version.Minor,
-                            version.Patch,
-                            preReleaseLabel,
-                            headCommitHash);
-                    case DevelopBranchInfo develop:
-                        return new VersionNumber(
-                            _repoReader.CurrentReleaseVersion.Major,
-                            _repoReader.CurrentReleaseVersion.Minor + 1,
-                            0,
-                            develop.DeterminePreReleaseLabel(_repoReader.CommitCountSinceLastMinorReleaseVersion),
-                            headCommitHash);
-                }
-
-                if (_repoReader.IsCurrentCommitTheReleaseVersion)
-                {
-                    return _repoReader.CurrentReleaseVersion;
-                }
-
-                throw new ArgumentOutOfRangeException(
-                    $"{currentBranch.Name} is not a branch that is supported for automated version generation, please tag the commit manualy.",
-                    nameof(currentBranch.Name));
-            }
+                FeatureBranchInfo feature => GenerateFeatureVersionNumber(repo, feature, headCommitHash),
+                ReleaseCandidateBranchInfo releaseCandidate => GenerateReleaseVersionNumber(repo, releaseCandidate, headCommitHash),
+                DevelopBranchInfo develop => GenerateDevelopVersionNumber(repo, develop, headCommitHash),
+                MasterBranchInfo _ when TagOnHeadIsMajorMinorPatch(tagOnHead) => VersionNumber.Parse(tagOnHead.FriendlyName),
+                _ => throw new ArgumentOutOfRangeException(
+                        $"'{currentBranch.Name}' is not a branch that is supported for automated version generation, please tag the commit manualy.",
+                        nameof(currentBranch.Name))
+            };
         }
+
+        private static VersionNumber GenerateDevelopVersionNumber(
+            IGitRepoReader repo, 
+            DevelopBranchInfo develop,
+            string headCommitHash) =>
+            new VersionNumber(
+                repo.CurrentReleaseVersion.Major, 
+                repo.CurrentReleaseVersion.Minor + 1,
+                0,
+                develop.DeterminePreReleaseLabel(repo.CommitCountSinceLastMinorReleaseVersion),
+                headCommitHash);
+
+        private static VersionNumber GenerateReleaseVersionNumber(
+            IGitRepoReader repo,
+            ReleaseCandidateBranchInfo releaseCandidate, 
+            string headCommitHash)
+        {
+            var ordinal = repo.HighestMatchingTagForReleaseCandidate?.PreReleaseLabel?.BranchLabel
+                              .Ordinal + 1;
+            var preReleaseLabel = releaseCandidate.DeterminePreReleaseLabel(ordinal ?? 1);
+            var version = releaseCandidate.VersionFromName;
+            return new VersionNumber(
+                version.Major,
+                version.Minor,
+                version.Patch,
+                preReleaseLabel,
+                headCommitHash);
+        }
+
+        private static VersionNumber GenerateFeatureVersionNumber(
+            IGitRepoReader repo, 
+            FeatureBranchInfo feature,
+            string headCommitHash)
+        {
+            var preReleaseLabel = feature.DeterminePreReleaseLabel(
+                repo.CommitCountSinceLastMinorReleaseVersion - repo.CommitCountSinceBranchOffFromDevelop,
+                repo.CommitCountSinceBranchOffFromDevelop);
+            return new VersionNumber(
+                repo.CurrentReleaseVersion.Major, 
+                repo.CurrentReleaseVersion.Minor + 1,
+                0,
+                preReleaseLabel,
+                headCommitHash);
+        }
+
+        private static bool TagOnHeadIsMajorMinorPatch(GitTag tagOnHead) => 
+            tagOnHead != null && 
+            Patterns.IsReleaseVersionTag.IsMatch(tagOnHead.FriendlyName);
     }
 }

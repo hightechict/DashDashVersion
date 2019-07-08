@@ -32,8 +32,9 @@ namespace DashDashVersion.RepositoryAbstraction
         private readonly Lazy<uint> _commitCountSinceBranchOffFromDevelop;
         private readonly Lazy<uint> _commitCountSinceLastMinorReleaseVersion;
         private readonly Lazy<VersionNumber> _currentReleaseVersion;
-        private readonly Lazy<List<(GitTag tag, VersionNumber versionNumber)>> _highestReleaseVersionListHightToLow;
+        private readonly Lazy<List<(GitTag tag, VersionNumber versionNumber)>> _highestReleaseVersionListHighToLow;
         private readonly Lazy<List<GitTag>> _visibleTags;
+        private Lazy<GitTag> _tagOnHead;
 
         internal static GitRepoReader Load(
             string path,
@@ -71,14 +72,16 @@ namespace DashDashVersion.RepositoryAbstraction
 
             _visibleTags = new Lazy<List<GitTag>>(VisibleTags);
             _commitCountSinceBranchOffFromDevelop = new Lazy<uint>(CalculateCommitCountSinceBranchOff);
-            _highestReleaseVersionListHightToLow = new Lazy<List<(GitTag tag, VersionNumber versionNumber)>>(HighestReleaseVersionsMajorMinor);
+            _highestReleaseVersionListHighToLow = new Lazy<List<(GitTag tag, VersionNumber versionNumber)>>(HighestReleaseVersionsMajorMinor);
             _currentReleaseVersion = new Lazy<VersionNumber>(CalculateCurrentReleaseVersion);
             _commitCountSinceLastMinorReleaseVersion = new Lazy<uint>(CalculateCommitCountSinceLastMinorReleaseVersion);
+            _tagOnHead = new Lazy<GitTag>(CalculateTagOnHead);
         }
 
 
-
         public string HeadCommitHash { get; }
+
+        public GitTag TagOnHead => _tagOnHead.Value;
 
         public VersionNumber CurrentReleaseVersion => _currentReleaseVersion.Value;
 
@@ -104,12 +107,8 @@ namespace DashDashVersion.RepositoryAbstraction
 
         public uint CommitCountSinceBranchOffFromDevelop => _commitCountSinceBranchOffFromDevelop.Value;
 
-        public bool IsCurrentCommitTheReleaseVersion => _repository.CurrentBranch.Head.Sha == _highestReleaseVersionListHightToLow.Value.First().tag.Sha;
+        private VersionNumber CalculateCurrentReleaseVersion() => _highestReleaseVersionListHighToLow.Value.First().versionNumber;
 
-        private VersionNumber CalculateCurrentReleaseVersion()
-        {
-            return _highestReleaseVersionListHightToLow.Value.First().versionNumber;
-        }
         private uint CalculateCommitCountSinceBranchOff()
         {
             var developBranch = OriginDevelopOrDevelopCommits(_repository.Branches);
@@ -179,7 +178,7 @@ namespace DashDashVersion.RepositoryAbstraction
 
         private uint CalculateCommitCountSinceLastMinorReleaseVersion()
         {
-            var versionTagSha = _highestReleaseVersionListHightToLow.Value
+            var versionTagSha = _highestReleaseVersionListHighToLow.Value
                         .Last()
                         .tag
                         .Sha;
@@ -241,10 +240,10 @@ namespace DashDashVersion.RepositoryAbstraction
                 BranchForRepositoryHead() :
                 FindBranch(branchName);
 
-        private List<GitTag> VisibleTags()
-        {
-            return _repository.Tags.Where(tag => _repository.CurrentBranch.Commits.Any(commit => commit.Sha == tag.Sha)).ToList();
-        }
+        private List<GitTag> VisibleTags() => 
+            _repository.Tags.Where(
+                tag => _repository.CurrentBranch.Commits.Any(commit => commit.Sha == tag.Sha))
+                .ToList();
 
 
         private static bool IsDevelop(GitBranch branch) =>
@@ -266,5 +265,10 @@ namespace DashDashVersion.RepositoryAbstraction
             BranchInfoFactory.CreateBranchInfo(
                 TrimRemoteName(
                     FindCurrentGitBranch(branchName)));
+
+        private GitTag CalculateTagOnHead() => 
+            _visibleTags.Value.FirstOrDefault(t => t.Sha.Equals(HeadCommitHash));
+
+
     }
 }
