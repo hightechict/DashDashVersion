@@ -105,7 +105,7 @@ steps:
   displayName: Dotnet Restore
 
 - task: PowerShell@2
-  condition: eq(variables.imageName, 'windows-latest')
+  condition: and(eq(variables.imageName, 'windows-latest'),ne(variables['Build.SourceBranchName'], 'merge'))
   inputs:
     targetType: inline
     pwsh: true
@@ -120,7 +120,7 @@ steps:
   displayName: Running Tests
 
 - task: PowerShell@2
-  condition: eq(variables.imageName, 'windows-latest')
+  condition: and(eq(variables.imageName, 'windows-latest'),ne(variables['Build.SourceBranchName'], 'merge'))
   inputs:
     targetType: inline
     pwsh: true
@@ -131,6 +131,7 @@ steps:
   displayName: Publish code coverage
 
 - task: PowerShell@2
+  condition: ne(variables['Build.SourceBranchName'], 'merge')
   displayName: Calculating version
   inputs:
     targetType: 'inline'
@@ -143,7 +144,7 @@ steps:
       echo "##vso[task.setvariable variable=AssemblyVersion]$($version.AssemblyVersion)"
 
 - task: PowerShell@2
-  condition: eq(variables.imageName, 'windows-latest')
+  condition: and(eq(variables.imageName, 'windows-latest'),ne(variables['Build.SourceBranchName'], 'merge'))
   displayName: Create assembly info
   inputs:
     targetType: 'inline'
@@ -164,6 +165,7 @@ steps:
     AssemblyVersion: $(AssemblyVersion)
 
 - task: DotNetCoreCLI@2
+  condition: and(eq(variables.imageName, 'windows-latest'),ne(variables['Build.SourceBranchName'], 'merge'))
   inputs:
     command: 'pack'
     packagesToPack: './src/*/*.csproj'
@@ -192,7 +194,7 @@ steps:
     SemVer: $(SemVer)
 
 - task: PowerShell@2
-  condition: and(eq(variables.imageName, 'windows-latest'),not(contains(variables['Build.SourceBranch'],'/feature/')))
+  condition: and(eq(variables.imageName, 'windows-latest'),not(contains(variables['Build.SourceBranch'],'/feature/')),ne(variables['Build.SourceBranchName'], 'merge'))
   displayName: Pushing NuGet package
   inputs:
     targetType: 'inline'
