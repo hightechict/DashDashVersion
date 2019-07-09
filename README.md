@@ -19,7 +19,7 @@ Ideal if you are using [Continuous Integration](https://en.wikipedia.org/wiki/Co
 The version number can be used for packages or to simply tag your commits.
 
 DashDashVersion provides automated versioning during development, while leaving control over release versions to the user.
-It complies with [SemVer 2.0](https://semver.org/). DashDashVersion only supports repositories that strictly follow the [git flow][gitFlow] conventions, this may seem overly restrictive but we believe strongly in simplicity and convention over configuration.
+It complies with [SemVer 2.0][SemVer2]. DashDashVersion only supports repositories that strictly follow the [git flow][gitFlow] conventions, this may seem overly restrictive but we believe strongly in simplicity and convention over configuration.
 
 ## Installation
 
@@ -179,10 +179,9 @@ Read more about contributing [here][contribute].
 
 This work is licensed under the LGPL license, refer to the [COPYING.md][license] and [COPYING.LESSER.md][licenseExtension] files for details.
 
-[license]: https://github.com/dashdashversion/COPYING.md
-[licenseExtension]: https://github.com/dashdashversion/COPYING.LESSER.md
+[license]: https://raw.githubusercontent.com/hightechict/DashDashVersion/develop/COPYING
+[licenseExtension]: https://raw.githubusercontent.com/hightechict/DashDashVersion/develop/COPYING.LESSER
 [SemVer2]: https://semver.org/
 [gitFlow]: https://www.atlassian.com/git/tutorials/comparing-workflows/gitflow-workflow
 [globalTool]: https://docs.microsoft.com/en-us/dotnet/core/tools/global-tools
-[source]: https://github.com/dashdashversion
-[contribute]: https://github.com/dashdashversion/CONTRIBUTING.md 
+[contribute]: https://github.com/hightechict/DashDashVersion/blob/develop/CONTRIBUTING.md
