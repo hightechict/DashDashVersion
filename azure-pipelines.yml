@@ -32,7 +32,7 @@ variables:
 steps:
 
 - task: PowerShell@2
-  condition: eq(variables.imageName, 'windows-latest')
+  condition: and(eq(variables.imageName, 'windows-latest'),contains(variables['Build.SourceBranch'],'/master'))
   inputs:
     targetType: inline
     pwsh: true
@@ -40,7 +40,7 @@ steps:
   displayName: Install docfx
 
 - task: PowerShell@2
-  condition: eq(variables.imageName, 'windows-latest')
+  condition: and(eq(variables.imageName, 'windows-latest'),ne(variables['Build.SourceBranchName'], 'merge'))
   inputs:
     targetType: inline
     pwsh: true
@@ -66,6 +66,7 @@ steps:
   displayName: Install coverlet
 
 - task: PowerShell@2
+  condition: ne(variables['Build.SourceBranchName'], 'merge')
   inputs:
     targetType: inline
     pwsh: true
@@ -83,7 +84,7 @@ steps:
   displayName: Install NuGet
 
 - task: InstallSSHKey@0
-  condition: eq(variables.imageName, 'windows-latest')
+  condition: and(eq(variables.imageName, 'windows-latest'),contains(variables['Build.SourceBranch'],'/master'))
   inputs:
     knownHostsEntry: 'github.com, ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAq2A7hRGmdnm9tUDbO9IDSwBK6TbQa+PXYPCPy6rbTrTtw7PHkccKrpp0yVhp5HdEIcKr6pLlVDBfOLX9QUsyCOV0wzfjIJNlGEYsdlLJizHhbn2mUjvSAHQqZETYP81eFzLQNnPHt4EVVUh7VfDESU84KezmD5QlWpXLmvU31/yMf+Se8xhHTvKSCZIFImWwoG6mbUoWf9nzpIoaSjB+weqqUUmpaaasXVal72J+UX2B+2RPW3RcT0eOzQgqlJL3RKrTJvdsjE3JEAvGq3lGHSZXy28G3skua2SmVi/w4yCE6gbODqnTWlg7+wC604ydGXA8VJiS5ap43JXiUFFAaQ=='
     sshPublicKey: 'secdsa-sha2-nistp521 AAAAE2VjZHNhLXNoYTItbmlzdHA1MjEAAAAIbmlzdHA1MjEAAACFBAAvZmttHSrJ2SHfXJJImvVWn70vLDh9jetSBwBsjK3MEEES7CBAabuJvPtXqPLQxDngkW4GJTqbrqDzp2YDHejhTAA8trE+sbFUXHDNbC3lwFdyeLA5YD0Kmmq7V7UIpK0h3khjowu4Ivgp6yP1bXl/3iOyVBENkK+Gx6aryPVkRN9ipQ== Azure-pipeline-site'
@@ -175,7 +176,7 @@ steps:
   displayName: Creating packages dotnet task
 
 - task: PowerShell@2
-  condition: eq(variables.imageName, 'ubuntu-latest')
+  condition: and(eq(variables.imageName, 'ubuntu-latest'),ne(variables['Build.SourceBranchName'], 'merge'))
   displayName: Tagging build
   inputs:
     targetType: 'inline'
