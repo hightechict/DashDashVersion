@@ -179,6 +179,10 @@ Read more about contributing [here][contribute].
 
 This work is licensed under the LGPL license, refer to the [COPYING.md][license] and [COPYING.LESSER.md][licenseExtension] files for details.
 
+## Repository
+
+The source code of this projecte can be found on [github](https://github.com/hightechict/DashDashVersion).
+
 [license]: https://raw.githubusercontent.com/hightechict/DashDashVersion/develop/COPYING
 [licenseExtension]: https://raw.githubusercontent.com/hightechict/DashDashVersion/develop/COPYING.LESSER
 [SemVer2]: https://semver.org/
