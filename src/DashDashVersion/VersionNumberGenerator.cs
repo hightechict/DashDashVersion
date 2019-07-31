@@ -63,8 +63,8 @@ namespace DashDashVersion
             DevelopBranchInfo develop,
             string headCommitHash) =>
             new VersionNumber(
-                repo.CurrentVersionCore.Major, 
-                repo.CurrentVersionCore.Minor + 1,
+                repo.CurrentCoreVersion.Major, 
+                repo.CurrentCoreVersion.Minor + 1,
                 0,
                 develop.DeterminePreReleaseLabel(repo.CommitCountSinceLastMinorVersion),
                 headCommitHash);
@@ -95,8 +95,8 @@ namespace DashDashVersion
                 repo.CommitCountSinceLastMinorVersion - repo.CommitCountSinceBranchOffFromDevelop,
                 repo.CommitCountSinceBranchOffFromDevelop);
             return new VersionNumber(
-                repo.CurrentVersionCore.Major, 
-                repo.CurrentVersionCore.Minor + 1,
+                repo.CurrentCoreVersion.Major, 
+                repo.CurrentCoreVersion.Minor + 1,
                 0,
                 preReleaseLabel,
                 headCommitHash);
@@ -104,6 +104,6 @@ namespace DashDashVersion
 
         private static bool TagOnHeadIsMajorMinorPatch(GitTag tagOnHead) => 
             tagOnHead != null && 
-            Patterns.IsVersionCoreTag.IsMatch(tagOnHead.FriendlyName);
+            Patterns.IsCoreVersionTag.IsMatch(tagOnHead.FriendlyName);
     }
 }

@@ -31,8 +31,8 @@ namespace DashDashVersion.RepositoryAbstraction
         private readonly IGitRepository _repository;
         private readonly Lazy<uint> _commitCountSinceBranchOffFromDevelop;
         private readonly Lazy<uint> _commitCountSinceLastMinorVersion;
-        private readonly Lazy<VersionNumber> _currentVersionCore;
-        private readonly Lazy<List<(GitTag tag, VersionNumber versionNumber)>> _highestVersionCoreListHighToLow;
+        private readonly Lazy<VersionNumber> _currentCoreVersion;
+        private readonly Lazy<List<(GitTag tag, VersionNumber versionNumber)>> _highestCoreVersionListHighToLow;
         private readonly Lazy<List<GitTag>> _visibleTags;
         private readonly Lazy<GitTag> _tagOnHead;
 
@@ -72,8 +72,8 @@ namespace DashDashVersion.RepositoryAbstraction
 
             _visibleTags = new Lazy<List<GitTag>>(VisibleTags);
             _commitCountSinceBranchOffFromDevelop = new Lazy<uint>(CalculateCommitCountSinceBranchOff);
-            _highestVersionCoreListHighToLow = new Lazy<List<(GitTag tag, VersionNumber versionNumber)>>(HighestVersionCoresMajorMinor);
-            _currentVersionCore = new Lazy<VersionNumber>(CalculateCurrentVersionCore);
+            _highestCoreVersionListHighToLow = new Lazy<List<(GitTag tag, VersionNumber versionNumber)>>(HighestCoreVersionsMajorMinor);
+            _currentCoreVersion = new Lazy<VersionNumber>(CalculateCurrentCoreVersion);
             _commitCountSinceLastMinorVersion = new Lazy<uint>(CalculateCommitCountSinceLastMinorVersion);
             _tagOnHead = new Lazy<GitTag>(CalculateTagOnHead);
         }
@@ -83,7 +83,7 @@ namespace DashDashVersion.RepositoryAbstraction
 
         public GitTag TagOnHead => _tagOnHead.Value;
 
-        public VersionNumber CurrentVersionCore => _currentVersionCore.Value;
+        public VersionNumber CurrentCoreVersion => _currentCoreVersion.Value;
 
         public BranchInfo CurrentBranch { get; }
 
@@ -107,7 +107,7 @@ namespace DashDashVersion.RepositoryAbstraction
 
         public uint CommitCountSinceBranchOffFromDevelop => _commitCountSinceBranchOffFromDevelop.Value;
 
-        private VersionNumber CalculateCurrentVersionCore() => _highestVersionCoreListHighToLow.Value.First().versionNumber;
+        private VersionNumber CalculateCurrentCoreVersion() => _highestCoreVersionListHighToLow.Value.First().versionNumber;
 
         private uint CalculateCommitCountSinceBranchOff()
         {
@@ -157,16 +157,16 @@ namespace DashDashVersion.RepositoryAbstraction
             return develop;
         }
 
-        private List<(GitTag tag, VersionNumber versionNumber)> HighestVersionCoresMajorMinor()
+        private List<(GitTag tag, VersionNumber versionNumber)> HighestCoreVersionsMajorMinor()
         {
             var releaseTagsAndVersions = _visibleTags.Value
-                .Where(tag => Patterns.IsVersionCoreTag.IsMatch(tag.FriendlyName))
+                .Where(tag => Patterns.IsCoreVersionTag.IsMatch(tag.FriendlyName))
                 .Select(tag => (Tag: tag, VersionNumber: VersionNumber.Parse(tag.FriendlyName)))
                 .OrderByDescending(pair => pair.VersionNumber)
                 .ToList();
 
             if (!releaseTagsAndVersions.Any())
-                throw new InvalidOperationException($"There is no tag with in the '<major>.<minor>.<patch>' format in this repository looking from the HEAD down: {Patterns.IsVersionCoreTag}.");
+                throw new InvalidOperationException($"There is no tag with in the '<major>.<minor>.<patch>' format in this repository looking from the HEAD down: {Patterns.IsCoreVersionTag}.");
 
             var highestVersion = releaseTagsAndVersions.First().VersionNumber;
 
@@ -178,7 +178,7 @@ namespace DashDashVersion.RepositoryAbstraction
 
         private uint CalculateCommitCountSinceLastMinorVersion()
         {
-            var versionTagSha = _highestVersionCoreListHighToLow.Value
+            var versionTagSha = _highestCoreVersionListHighToLow.Value
                         .Last()
                         .tag
                         .Sha;

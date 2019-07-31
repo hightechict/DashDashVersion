@@ -24,7 +24,7 @@ namespace DashDashVersion
     /// </summary>
     internal class Patterns
     {
-        internal static Regex IsVersionCoreTag = new Regex(@"^(?<BaseVersion>(?<Major>\d+)\.(?<Minor>\d+)\.(?<Patch>\d+))$", RegexOptions.Compiled);
+        internal static Regex IsCoreVersionTag = new Regex(@"^(?<BaseVersion>(?<Major>\d+)\.(?<Minor>\d+)\.(?<Patch>\d+))$", RegexOptions.Compiled);
 
         internal static Regex ContainsVersionNumber = new Regex(@"(?<BaseVersion>(?<Major>\d+)\.(?<Minor>\d+)\.(?<Patch>\d+))", RegexOptions.Compiled);
 

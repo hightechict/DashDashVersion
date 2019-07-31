@@ -26,7 +26,7 @@ namespace DashDashVersion.RepositoryAbstraction
 
         string HeadCommitHash { get; }
 
-        VersionNumber CurrentVersionCore { get; }
+        VersionNumber CurrentCoreVersion { get; }
         
         GitTag TagOnHead { get; }
 
