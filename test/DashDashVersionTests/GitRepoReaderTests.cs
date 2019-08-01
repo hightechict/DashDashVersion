@@ -1,4 +1,4 @@
-// Copyright 2019 Hightech ICT and authors
+﻿// Copyright 2019 Hightech ICT and authors
 
 // This file is part of DashDashVersion.
 
@@ -30,9 +30,9 @@ namespace DashDashVersionTests
         {
             var repoReader = new GitRepoReader(TestRepositories.MasterOnlyRepository(), string.Empty);
             repoReader.CurrentBranch.Name.Should().Be(DashDashVersion.Constants.MasterBranchName);
-            repoReader.CommitCountSinceLastMinorReleaseVersion.Should().Be(0);
+            repoReader.CommitCountSinceLastMinorVersion.Should().Be(0);
             repoReader.HeadCommitHash.Should().Be("a");
-            repoReader.CurrentReleaseVersion.SemVer.Should().Be("1.0.0");
+            repoReader.CurrentCoreVersion.SemVer.Should().Be("1.0.0");
         }
 
         [Fact]
@@ -40,9 +40,9 @@ namespace DashDashVersionTests
         {
             var repoReader = new GitRepoReader(TestRepositories.MasterAheadOfDevelopRepository(), string.Empty);
             repoReader.CurrentBranch.Name.Should().Be(DashDashVersion.Constants.DevelopBranchName);
-            repoReader.CommitCountSinceLastMinorReleaseVersion.Should().Be(1);
+            repoReader.CommitCountSinceLastMinorVersion.Should().Be(1);
             repoReader.HeadCommitHash.Should().Be("b");
-            repoReader.CurrentReleaseVersion.SemVer.Should().Be("0.0.0");
+            repoReader.CurrentCoreVersion.SemVer.Should().Be("0.0.0");
         }
 
         [Fact]
@@ -50,9 +50,9 @@ namespace DashDashVersionTests
         {
             var repoReader = new GitRepoReader(TestRepositories.TwoCommitsOnDevelopRepository(), string.Empty);
             repoReader.CommitCountSinceBranchOffFromDevelop.Should().Be(0);
-            repoReader.CommitCountSinceLastMinorReleaseVersion.Should().Be(1);
+            repoReader.CommitCountSinceLastMinorVersion.Should().Be(1);
             repoReader.CurrentBranch.Name.Should().Be(DashDashVersion.Constants.DevelopBranchName);
-            repoReader.CurrentReleaseVersion.SemVer.Should().Be("0.0.0");
+            repoReader.CurrentCoreVersion.SemVer.Should().Be("0.0.0");
             repoReader.HeadCommitHash.Should().Be("b");
         }
 
@@ -61,9 +61,9 @@ namespace DashDashVersionTests
         {
             var repoReader = new GitRepoReader(TestRepositories.RemoteDevelopRepository(), string.Empty);
             repoReader.CommitCountSinceBranchOffFromDevelop.Should().Be(0);
-            repoReader.CommitCountSinceLastMinorReleaseVersion.Should().Be(1);
+            repoReader.CommitCountSinceLastMinorVersion.Should().Be(1);
             repoReader.CurrentBranch.Name.Should().Be(DashDashVersion.Constants.DevelopBranchName);
-            repoReader.CurrentReleaseVersion.SemVer.Should().Be("0.0.0");
+            repoReader.CurrentCoreVersion.SemVer.Should().Be("0.0.0");
             repoReader.HeadCommitHash.Should().Be("b");
         }
 
@@ -72,9 +72,9 @@ namespace DashDashVersionTests
         {
             var repoReader = new GitRepoReader(TestRepositories.ReleaseBranchRepositoryWithoutTag(), string.Empty);
             repoReader.CommitCountSinceBranchOffFromDevelop.Should().Be(1);
-            repoReader.CommitCountSinceLastMinorReleaseVersion.Should().Be(2);
+            repoReader.CommitCountSinceLastMinorVersion.Should().Be(2);
             repoReader.HeadCommitHash.Should().Be("c");
-            repoReader.CurrentReleaseVersion.SemVer.Should().Be("0.0.0");
+            repoReader.CurrentCoreVersion.SemVer.Should().Be("0.0.0");
             repoReader.CurrentBranch.Name.Should().Be($"{DashDashVersion.Constants.ReleaseBranchName}/1.0.0");
             repoReader.HighestMatchingTagForReleaseCandidate.Should().BeNull();
         }
@@ -84,9 +84,9 @@ namespace DashDashVersionTests
         {
             var repoReader = new GitRepoReader(TestRepositories.ReleaseBranchRepositoryWithTaggedRc(), string.Empty);
             repoReader.CommitCountSinceBranchOffFromDevelop.Should().Be(3);
-            repoReader.CommitCountSinceLastMinorReleaseVersion.Should().Be(4);
+            repoReader.CommitCountSinceLastMinorVersion.Should().Be(4);
             repoReader.HeadCommitHash.Should().Be("e");
-            repoReader.CurrentReleaseVersion.SemVer.Should().Be("0.0.0");
+            repoReader.CurrentCoreVersion.SemVer.Should().Be("0.0.0");
             repoReader.CurrentBranch.Name.Should().Be($"{DashDashVersion.Constants.ReleaseBranchName}/1.0.0");
             repoReader.HighestMatchingTagForReleaseCandidate?.ToString().Should().Be("1.0.0-rc.2");
         }
@@ -96,9 +96,9 @@ namespace DashDashVersionTests
         {
             var repoReader = new GitRepoReader(TestRepositories.FeatureBranchOnFeatureBranchRepository(), string.Empty);
             repoReader.CommitCountSinceBranchOffFromDevelop.Should().Be(2);
-            repoReader.CommitCountSinceLastMinorReleaseVersion.Should().Be(3);
+            repoReader.CommitCountSinceLastMinorVersion.Should().Be(3);
             repoReader.HeadCommitHash.Should().Be("d");
-            repoReader.CurrentReleaseVersion.SemVer.Should().Be("0.0.0");
+            repoReader.CurrentCoreVersion.SemVer.Should().Be("0.0.0");
             repoReader.CurrentBranch.Name.Should().Be($"{DashDashVersion.Constants.FeatureBranchName}/B");
         }
     }

@@ -27,6 +27,7 @@ along with DashDashVersion. If not, see<https://www.gnu.org/licenses/>.
     <PackAsTool>true</PackAsTool>
     <LangVersion>8.0</LangVersion>
     <NullableContextOptions>enable</NullableContextOptions>
+    <NullableReferenceTypes>true</NullableReferenceTypes>
   </PropertyGroup>
     
   <ItemGroup>
