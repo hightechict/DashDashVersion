@@ -117,7 +117,7 @@ this may seem overly restrictive but we believe strongly in simplicity and conve
 
 #### Bootstrap requirements
 
-* A tag on `master` with a [SemVer 2.0.0][SemVer2] compliant name for the latest release, without a pre-release label and without build metadata, even if it's only a `0.0.0` at the beginning of the master branch.
+* A tag on `master` with a [SemVer 2.0.0][SemVer2] compliant name for the latest release, without a pre-release label and without build metadata, if not it will assume 0.0.0 as the current version at the first commit on the repository and count from there.
 * On any active `release/` or `hotfix/` branch add a tag using the  `<major>.<minor>.<patch>-rc.<number>` format if having consecutive `rc` versions is required.
 
 ### Configuration

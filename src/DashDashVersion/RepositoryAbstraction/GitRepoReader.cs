@@ -166,7 +166,8 @@ namespace DashDashVersion.RepositoryAbstraction
                 .ToList();
 
             if (!releaseTagsAndVersions.Any())
-                throw new InvalidOperationException($"There is no tag with in the '<major>.<minor>.<patch>' format in this repository looking from the HEAD down: {Patterns.IsCoreVersionTag}.");
+                releaseTagsAndVersions.Add((new GitTag("0.0.0+assumption", _repository.CurrentBranch.Commits.Last().Sha), new VersionNumber(0, 0, 0, null, "assumption")));
+                //throw new InvalidOperationException($"There is no tag with in the '<major>.<minor>.<patch>' format in this repository looking from the HEAD down: {Patterns.IsCoreVersionTag}.");
 
             var highestVersion = releaseTagsAndVersions.First().VersionNumber;
 
