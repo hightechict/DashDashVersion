@@ -15,8 +15,6 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with DashDashVersion. If not, see<https://www.gnu.org/licenses/>.
 
-using System;
-using System.Collections.Generic;
 using DashDashVersion.RepositoryAbstraction;
 using FluentAssertions;
 using Xunit;

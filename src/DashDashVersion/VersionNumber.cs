@@ -183,7 +183,7 @@ namespace DashDashVersion
                 }
                 else if(debugVersion)
                 {
-                    toReturn = $"{toReturn}{Constants.PreReleaseLabelDelimiter}{Constants.DebugPreReleaseLabel}";
+                    toReturn = $"{Major}{Constants.ParticleDelimiter}{Minor}{Constants.ParticleDelimiter}{Patch+1}{Constants.PreReleaseLabelDelimiter}{Constants.DebugPreReleaseLabel}";
                 }
                 return toReturn;
             }
