@@ -35,7 +35,7 @@ namespace GitFlowVersion
 
             var optionBranch = app.Option("-b|--branch", "Manually set the branch to use, for determining the branch 'type' and pre-release label. This can be a full or partial name.", CommandOptionType.SingleValue);
             var optionVersion = app.Option("-v|--version", "Returns the currently installed version of git-flow-version.", CommandOptionType.NoValue);
-            var optionDebug = app.Option("-d|--debug", "Adds a debug prerelease lable to the version number.", CommandOptionType.NoValue);
+            var optionDebug = app.Option("-d|--debug", "Adds a debug prerelease label to the version number.", CommandOptionType.NoValue);
 
             app.OnExecute(() =>
             {
@@ -60,19 +60,31 @@ namespace GitFlowVersion
 
         private static void OutputJsonToConsole(VersionNumber version, bool debugVersion)
         {
-            version.debugVersion = debugVersion;
+            var newVersion = version;
+            if(debugVersion)
+            {
+                newVersion =
+                    new VersionNumber(
+                        version.Major,
+                        version.Minor,
+                        version.PreReleaseLabel == null? version.Patch + 1 : version.Patch,
+                        version.PreReleaseLabel,
+                        version.Metadata,
+                        debugVersion
+                        );
+            }
             var writer = new JsonTextWriter(Console.Out) { Formatting = Formatting.Indented };
 
             writer.WriteStartObject();
 
-            writer.WritePropertyName(nameof(version.AssemblyVersion));
-            writer.WriteValue(version.AssemblyVersion);
+            writer.WritePropertyName(nameof(newVersion.AssemblyVersion));
+            writer.WriteValue(newVersion.AssemblyVersion);
 
-            writer.WritePropertyName(nameof(version.FullSemVer));
-            writer.WriteValue(version.FullSemVer);
+            writer.WritePropertyName(nameof(newVersion.FullSemVer));
+            writer.WriteValue(newVersion.FullSemVer);
 
-            writer.WritePropertyName(nameof(version.SemVer));
-            writer.WriteValue(version.SemVer);
+            writer.WritePropertyName(nameof(newVersion.SemVer));
+            writer.WriteValue(newVersion.SemVer);
 
             writer.WriteEndObject();
         }

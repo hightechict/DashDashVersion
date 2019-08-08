@@ -49,6 +49,7 @@ namespace DashDashVersion
             var buildMetadata = matches.Groups["BuildMetadata"].Captures;
             var metadata = buildMetadata.Count > 0 ? buildMetadata[0].Value : string.Empty;
             var debug = matches.Groups["DebugLabel"].Success;
+    
             return new VersionNumber(
                 major,
                 minor,
@@ -58,7 +59,7 @@ namespace DashDashVersion
                 debug);
         }
 
-        internal VersionNumber(
+        public VersionNumber(
             uint major,
             uint minor,
             uint patch,
@@ -71,7 +72,7 @@ namespace DashDashVersion
             Patch = patch;
             PreReleaseLabel = preReleaseTag;
             Metadata = metadata;
-            this.debugVersion = debugVersion;
+            DebugVersion = debugVersion;
         }
 
         /// <summary>
@@ -147,9 +148,9 @@ namespace DashDashVersion
         public override string ToString() => FullSemVer;
 
         /// <summary>
-        /// This property convaise whether the debug flag should be added to the version number.
+        /// This property conveys whether the debug flag should be added to the version number.
         /// </summary>
-        public bool debugVersion;
+        public bool DebugVersion{ get; }
 
         /// <summary>
         /// The full semantic version string of the version number including a pre-release label (if present) and the build meta data.
@@ -176,14 +177,14 @@ namespace DashDashVersion
                 if (PreReleaseLabel != null)
                 {
                     toReturn = $"{toReturn}{Constants.PreReleaseLabelDelimiter}{PreReleaseLabel}";
-                    if(debugVersion)
+                    if(DebugVersion)
                     {
                         toReturn = $"{toReturn}{Constants.ParticleDelimiter}{Constants.DebugPreReleaseLabel}";
                     }
                 }
-                else if(debugVersion)
+                else if(DebugVersion)
                 {
-                    toReturn = $"{Major}{Constants.ParticleDelimiter}{Minor}{Constants.ParticleDelimiter}{Patch+1}{Constants.PreReleaseLabelDelimiter}{Constants.DebugPreReleaseLabel}";
+                    toReturn = $"{toReturn}{Constants.PreReleaseLabelDelimiter}{Constants.DebugPreReleaseLabel}";
                 }
                 return toReturn;
             }

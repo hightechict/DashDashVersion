@@ -159,19 +159,24 @@ namespace DashDashVersion.RepositoryAbstraction
 
         private List<(GitTag tag, VersionNumber versionNumber)> HighestCoreVersionsMajorMinor()
         {
-            var releaseTagsAndVersions = _visibleTags.Value
+            var coreVersionTagsAndVersions = _visibleTags.Value
                 .Where(tag => Patterns.IsCoreVersionTag.IsMatch(tag.FriendlyName))
                 .Select(tag => (Tag: tag, VersionNumber: VersionNumber.Parse(tag.FriendlyName)))
                 .OrderByDescending(pair => pair.VersionNumber)
                 .ToList();
 
-            if (!releaseTagsAndVersions.Any())
-                releaseTagsAndVersions.Add((new GitTag("0.0.0+assumption", _repository.CurrentBranch.Commits.Last().Sha), new VersionNumber(0, 0, 0, null, "assumption")));
-                //throw new InvalidOperationException($"There is no tag with in the '<major>.<minor>.<patch>' format in this repository looking from the HEAD down: {Patterns.IsCoreVersionTag}.");
+            if (!coreVersionTagsAndVersions.Any())
+            {
+                var sha = _repository.CurrentBranch.Commits.Last().Sha;
+                coreVersionTagsAndVersions.Add((new GitTag("0.0.0+assumption", sha), new VersionNumber(0, 0, 0, null, "assumption")));
+                Console.Error.WriteLine(
+@$"Warning you currently have no core version tag on master like '0.0.0'.
+You could use 'git tag 0.0.0 {sha}' to place a tag.");
+            }
 
-            var highestVersion = releaseTagsAndVersions.First().VersionNumber;
+            var highestVersion = coreVersionTagsAndVersions.First().VersionNumber;
 
-            return releaseTagsAndVersions
+            return coreVersionTagsAndVersions
                 .Where(
                     pair => pair.VersionNumber.Major == highestVersion.Major &&
                     pair.VersionNumber.Minor == highestVersion.Minor).ToList();
