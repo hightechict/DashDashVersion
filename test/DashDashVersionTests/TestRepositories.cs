@@ -48,6 +48,25 @@ namespace DashDashVersionTests
 
             return new GitRepository(branches, developCommits, tags);
         }
+        internal static GitRepository TwoCommitsOnDevelopWithoutCoreVersionRepository()
+        {
+            var masterCommits = new List<GitCommit>
+            {
+                new GitCommit("a")
+            };
+            var developCommits = new List<GitCommit>
+            {
+                new GitCommit("b"),
+                new GitCommit("a")
+            };
+            var branches = new List<GitBranch>
+            {
+                new GitBranch(false,"",Constants.MasterBranchName,false,masterCommits),
+                new GitBranch(false,"",Constants.DevelopBranchName,true,developCommits)
+            };
+
+            return new GitRepository(branches, developCommits, new List<GitTag>());
+        }
 
         internal static GitRepository ReleaseBranchRepositoryWithoutTag()
         {

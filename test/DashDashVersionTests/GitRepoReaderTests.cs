@@ -99,5 +99,17 @@ namespace DashDashVersionTests
             repoReader.CurrentCoreVersion.SemVer.Should().Be("0.0.0");
             repoReader.CurrentBranch.Name.Should().Be($"{DashDashVersion.Constants.FeatureBranchName}/B");
         }
+
+        [Fact]
+        public void DevelopRepoWithoutCoreVersion()
+        {
+            var repoReader = new GitRepoReader(TestRepositories.TwoCommitsOnDevelopWithoutCoreVersionRepository(), string.Empty);
+            repoReader.CommitCountSinceBranchOffFromDevelop.Should().Be(0);
+            repoReader.CommitCountSinceLastMinorVersion.Should().Be(1);
+            repoReader.CurrentBranch.Name.Should().Be(DashDashVersion.Constants.DevelopBranchName);
+            repoReader.CurrentCoreVersion.SemVer.Should().Be("0.0.0");
+            repoReader.HeadCommitHash.Should().Be("b");
+
+        }
     }
 }
