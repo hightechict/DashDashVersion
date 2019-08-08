@@ -1,6 +1,6 @@
 function New-Package($version) {
     New-SharedAssemblyInfo $version
-    dotnet pack /p:PackageVersion="$($version.FullSemVer)" /p:NoPackageAnalysis=true
+    dotnet pack /p:PackageVersion="$($version.FullSemVer)" /p:NoPackageAnalysis=true /p:Configuration=Release
 } 
 
 function New-SharedAssemblyInfo($version) {
