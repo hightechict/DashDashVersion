@@ -48,12 +48,14 @@ namespace DashDashVersion
                 matches.Groups["PreReleaseLabelFeature"].Captures);
             var buildMetadata = matches.Groups["BuildMetadata"].Captures;
             var metadata = buildMetadata.Count > 0 ? buildMetadata[0].Value : string.Empty;
+            var debug = matches.Groups["DebugLabel"].Success;
             return new VersionNumber(
                 major,
                 minor,
                 patch,
                 preReleaseLabel,
-                metadata);
+                metadata,
+                debug);
         }
 
         internal VersionNumber(
@@ -61,13 +63,15 @@ namespace DashDashVersion
             uint minor,
             uint patch,
             PreReleaseLabel? preReleaseTag = null,
-            string metadata = "")
+            string metadata = "",
+            bool debugVersion = false)
         {
             Major = major;
             Minor = minor;
             Patch = patch;
             PreReleaseLabel = preReleaseTag;
             Metadata = metadata;
+            this.debugVersion = debugVersion;
         }
 
         /// <summary>
@@ -143,6 +147,11 @@ namespace DashDashVersion
         public override string ToString() => FullSemVer;
 
         /// <summary>
+        /// This property convaise whether the debug flag should be added to the version number.
+        /// </summary>
+        public bool debugVersion;
+
+        /// <summary>
         /// The full semantic version string of the version number including a pre-release label (if present) and the build meta data.
         /// </summary>
         public string FullSemVer
@@ -165,7 +174,17 @@ namespace DashDashVersion
             {
                 var toReturn = $"{Major}{Constants.ParticleDelimiter}{Minor}{Constants.ParticleDelimiter}{Patch}";
                 if (PreReleaseLabel != null)
+                {
                     toReturn = $"{toReturn}{Constants.PreReleaseLabelDelimiter}{PreReleaseLabel}";
+                    if(debugVersion)
+                    {
+                        toReturn = $"{toReturn}{Constants.ParticleDelimiter}{Constants.DebugPreReleaseLabel}";
+                    }
+                }
+                else if(debugVersion)
+                {
+                    toReturn = $"{toReturn}{Constants.PreReleaseLabelDelimiter}{Constants.DebugPreReleaseLabel}";
+                }
                 return toReturn;
             }
         }
@@ -182,7 +201,6 @@ namespace DashDashVersion
             return featureLabel.Count > 0 ?
                 new FeaturePreReleaseLabel(baseParticle, SplitLabel(featureLabel[0].Value)) :
                 new PreReleaseLabel(baseParticle);
-
         }
 
         private static PreReleaseLabelParticle SplitLabel(string label)

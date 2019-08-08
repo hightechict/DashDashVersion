@@ -125,6 +125,12 @@ namespace DashDashVersionTests
         [InlineData("0.1.0")]
         [InlineData("0.1.0-dev.2.a.2")]
         [InlineData("0.1.0-dev.2.a.2+sdfdsdf")]
+        [InlineData("0.1.0-debug+sdfdsdf")]
+        [InlineData("0.1.0-dev.1.debug+sdfdsdf")]
+        [InlineData("0.1.0-dev.1.feature.1.debug+sdfdsdf")]
+        [InlineData("0.1.0-debug")]
+        [InlineData("0.1.0-dev.1.debug")]
+        [InlineData("0.1.0-dev.1.feature.1.debug")]
         public void VersionNumberParseToStringIsIdempotent(string versionLabel)
         {
             var version = VersionNumber.Parse(versionLabel);
