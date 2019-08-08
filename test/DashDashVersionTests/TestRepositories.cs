@@ -64,11 +64,8 @@ namespace DashDashVersionTests
                 new GitBranch(false,"",Constants.MasterBranchName,false,masterCommits),
                 new GitBranch(false,"",Constants.DevelopBranchName,true,developCommits)
             };
-            var tags = new List<GitTag>
-            {
-            };
 
-            return new GitRepository(branches, developCommits, tags);
+            return new GitRepository(branches, developCommits, new List<GitTag>());
         }
 
         internal static GitRepository ReleaseBranchRepositoryWithoutTag()
