@@ -48,6 +48,50 @@ namespace DashDashVersionTests
 
             return new GitRepository(branches, developCommits, tags);
         }
+
+        internal static GitRepository FeatureDebugMergedRepository()
+        {
+            var masterCommits = new List<GitCommit>
+            {
+                new GitCommit("1")
+            };
+            var developCommits = new List<GitCommit>
+            {
+                new GitCommit("8"),
+                new GitCommit("7"),
+                new GitCommit("3"),
+                new GitCommit("2"),
+                new GitCommit("1")
+            };
+            var featureCommits = new List<GitCommit>
+            {
+                new GitCommit("12"),
+                new GitCommit("11"),
+                new GitCommit("10"),
+                new GitCommit("9"),
+                new GitCommit("8"),
+                new GitCommit("7"),
+                new GitCommit("6"),
+                new GitCommit("5"),
+                new GitCommit("4"),
+                new GitCommit("3"),
+                new GitCommit("2"),
+                new GitCommit("1")
+            };
+            var branches = new List<GitBranch>
+            {
+                new GitBranch(false,"",Constants.MasterBranchName,false,masterCommits),
+                new GitBranch(false,"",Constants.DevelopBranchName,false,developCommits),
+                new GitBranch(false,"",$"{Constants.FeatureBranchName}{Constants.BranchNameInfoDelimiter}test",true,featureCommits)
+            };
+            var tags = new List<GitTag>
+            {
+                new GitTag("0.0.0", "1")
+            };
+
+            return new GitRepository(branches, featureCommits, tags);
+        }
+
         internal static GitRepository TwoCommitsOnDevelopWithoutCoreVersionRepository()
         {
             var masterCommits = new List<GitCommit>

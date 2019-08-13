@@ -69,7 +69,6 @@ namespace DashDashVersionTests
             versionNumber.PreReleaseLabel?.BranchLabel.Should().NotBeOfType(typeof(FeaturePreReleaseLabel));
         }
 
-
         [Theory]
         [InlineData("0.1.0-dev.2.a.2", 0, 1, 0, "dev", 2, "a", 2, "")]
         [InlineData("0.1.0-dev.2.a.2+sdfdsdff232", 0, 1, 0, "dev", 2, "a", 2, "sdfdsdff232")]
@@ -97,7 +96,84 @@ namespace DashDashVersionTests
             actual.FeatureBranchLabel.Ordinal.Should().Be(expectedFeatureBranchLabelOrdinal);
         }
 
+        [Theory]
+        [InlineData("0.1.0-dev.2.a.2.debug", 0, 1, 0, "dev", 2, "a", 2, "", true)]
+        [InlineData("0.1.0-dev.2.a.2.debug+sdfdsdff232", 0, 1, 0, "dev", 2, "a", 2, "sdfdsdff232", true)]
+        [InlineData("0.1.0-dev.2.a.2", 0, 1, 0, "dev", 2, "a", 2, "",false)]
+        [InlineData("0.1.0-dev.2.a.2+sdfdsdff232", 0, 1, 0, "dev", 2, "a", 2, "sdfdsdff232",false)]
+        public void DebugVersionNumberFeature(
+            string versionTag,
+            uint expectedMajor,
+            uint expectedMinor,
+            uint expectedPatch,
+            string expectedBranchLabel,
+            uint expectedBranchLabelOrdinal,
+            string expectedFeatureBranchLabel,
+            uint expectedFeatureBranchLabelOrdinal,
+            string expectedMetadata,
+            bool debug)
+        {
+            var versionNumber = VersionNumber.Parse(versionTag);
+            versionNumber.Major.Should().Be(expectedMajor);
+            versionNumber.Minor.Should().Be(expectedMinor);
+            versionNumber.Patch.Should().Be(expectedPatch);
+            versionNumber.Metadata.Should().Be(expectedMetadata);
+            versionNumber.PreReleaseLabel.Should().NotBeNull();
+            versionNumber.DebugVersion.Should().Be(debug);
+            var actual = versionNumber.PreReleaseLabel.Should().BeAssignableTo<FeaturePreReleaseLabel>().Subject;
+            actual.BranchLabel.Label.Should().Be(expectedBranchLabel);
+            actual.BranchLabel.Ordinal.Should().Be(expectedBranchLabelOrdinal);
+            actual.FeatureBranchLabel.Label.Should().Be(expectedFeatureBranchLabel);
+            actual.FeatureBranchLabel.Ordinal.Should().Be(expectedFeatureBranchLabelOrdinal);
+        }
 
+        [Theory]
+        [InlineData("0.1.0-dev.2", 0, 1, 0, "dev", 2, "", false)]
+        [InlineData("0.1.0-dev.2+sdfdsdff232", 0, 1, 0, "dev", 2, "sdfdsdff232", false)]
+        [InlineData("0.1.0-dev.2.debug", 0, 1, 0, "dev", 2, "", true)]
+        [InlineData("0.1.0-dev.2.debug+sdfdsdff232", 0, 1, 0, "dev", 2, "sdfdsdff232", true)]
+        public void DebugVersionNumberDevelop(
+            string versionTag,
+            uint expectedMajor,
+            uint expectedMinor,
+            uint expectedPatch,
+            string expectedBranchLabel,
+            uint expectedBranchLabelOrdinal,
+            string expectedMetadata,
+            bool debug)
+        {
+            var versionNumber = VersionNumber.Parse(versionTag);
+            versionNumber.Major.Should().Be(expectedMajor);
+            versionNumber.Minor.Should().Be(expectedMinor);
+            versionNumber.Patch.Should().Be(expectedPatch);
+            versionNumber.Metadata.Should().Be(expectedMetadata);
+            versionNumber.PreReleaseLabel.Should().NotBeNull();
+            versionNumber.DebugVersion.Should().Be(debug);
+            var actual = versionNumber.PreReleaseLabel;
+            actual.BranchLabel.Label.Should().Be(expectedBranchLabel);
+            actual.BranchLabel.Ordinal.Should().Be(expectedBranchLabelOrdinal);
+        }
+
+        [Theory]
+        [InlineData("0.1.0", 0, 1, 0, "", false)]
+        [InlineData("0.1.0+sdfdsdff232", 0, 1, 0, "sdfdsdff232", false)]
+        [InlineData("0.1.1-debug.0.1.0", 0, 1, 0, "", true)]
+        [InlineData("0.1.1-debug.0.1.0+sdfdsdff232", 0, 1, 0, "sdfdsdff232", true)]
+        public void CoreDebugVersionNumber(
+            string versionTag,
+            uint expectedMajor,
+            uint expectedMinor,
+            uint expectedPatch,
+            string expectedMetadata,
+            bool debug)
+        {
+            var versionNumber = VersionNumber.Parse(versionTag);
+            versionNumber.Major.Should().Be(expectedMajor);
+            versionNumber.Minor.Should().Be(expectedMinor);
+            versionNumber.Patch.Should().Be(expectedPatch);
+            versionNumber.Metadata.Should().Be(expectedMetadata);
+            versionNumber.DebugVersion.Should().Be(debug);
+        }
 
         [Theory]
         [InlineData("s.2.1")]
@@ -125,10 +201,10 @@ namespace DashDashVersionTests
         [InlineData("0.1.0")]
         [InlineData("0.1.0-dev.2.a.2")]
         [InlineData("0.1.0-dev.2.a.2+sdfdsdf")]
-        [InlineData("0.1.0-debug+sdfdsdf")]
+        [InlineData("0.1.1-debug.0.1.0+sdfdsdf")]
         [InlineData("0.1.0-dev.1.debug+sdfdsdf")]
         [InlineData("0.1.0-dev.1.feature.1.debug+sdfdsdf")]
-        [InlineData("0.1.0-debug")]
+        [InlineData("0.1.1-debug.0.1.0")]
         [InlineData("0.1.0-dev.1.debug")]
         [InlineData("0.1.0-dev.1.feature.1.debug")]
         public void VersionNumberParseToStringIsIdempotent(string versionLabel)

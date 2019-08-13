@@ -21,12 +21,20 @@ using LibGit2Sharp;
 
 namespace DashDashVersion.RepositoryAbstraction
 {
+    internal static class QuerybleCommitLogExtensions
+    {
+        public static ICommitLog OrderTopological( this IQueryableCommitLog commits)
+        {
+            var config = new CommitFilter { SortBy = CommitSortStrategies.Topological };
+            return commits.QueryBy(config);
+        }
+    }
     /// <summary>
     /// This class is a stand-in for the LibGit2Sharp `Repository` type, used to confine the LibGit2Sharp dependency.
     /// </summary>
     internal sealed class GitRepository : IGitRepository
     {
-        public static GitRepository FromRepository(IRepository repository) =>
+              public static GitRepository FromRepository(IRepository repository) =>
             new GitRepository(
                 repository.Branches.Select(
                     branch => new GitBranch(
@@ -36,7 +44,7 @@ namespace DashDashVersion.RepositoryAbstraction
                         branch.IsCurrentRepositoryHead,
                         branch.Commits.Select(
                             commit => new GitCommit(commit.Sha)))).ToList(),
-                repository.Commits.Select(
+                repository.Commits.OrderTopological().Select(
                     commit => new GitCommit(commit.Sha)).ToList(),
                 repository.Tags.Select(
                     tag => new GitTag(

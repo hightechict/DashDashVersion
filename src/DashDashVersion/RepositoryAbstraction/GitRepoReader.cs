@@ -29,7 +29,7 @@ namespace DashDashVersion.RepositoryAbstraction
     internal sealed class GitRepoReader : IGitRepoReader
     {
         private readonly IGitRepository _repository;
-        private readonly Lazy<uint> _commitCountSinceBranchOffFromDevelop;
+        private readonly Lazy<uint> _commitCountUniqueToFeature;
         private readonly Lazy<uint> _commitCountSinceLastMinorVersion;
         private readonly Lazy<VersionNumber> _currentCoreVersion;
         private readonly Lazy<List<(GitTag tag, VersionNumber versionNumber)>> _highestCoreVersionListHighToLow;
@@ -54,7 +54,6 @@ namespace DashDashVersion.RepositoryAbstraction
             {
                 throw new ArgumentException($"The path: '{path}' is not the root of or in a git repository.", nameof(path));
             }
-
             var repository = new Repository(repoPath);
             var gitRepo = GitRepository.FromRepository(repository);
             return new GitRepoReader(gitRepo, currentBranch);
@@ -71,7 +70,7 @@ namespace DashDashVersion.RepositoryAbstraction
             HeadCommitHash = hash?.Sha ?? throw new InvalidOperationException("Git repositories without commits are not supported.");
 
             _visibleTags = new Lazy<List<GitTag>>(VisibleTags);
-            _commitCountSinceBranchOffFromDevelop = new Lazy<uint>(CalculateCommitCountSinceBranchOff);
+            _commitCountUniqueToFeature = new Lazy<uint>(CalculateCommitCountUniqueToFeature);
             _highestCoreVersionListHighToLow = new Lazy<List<(GitTag tag, VersionNumber versionNumber)>>(HighestCoreVersionsMajorMinor);
             _currentCoreVersion = new Lazy<VersionNumber>(CalculateCurrentCoreVersion);
             _commitCountSinceLastMinorVersion = new Lazy<uint>(CalculateCommitCountSinceLastMinorVersion);
@@ -105,25 +104,29 @@ namespace DashDashVersion.RepositoryAbstraction
             }
         }
 
-        public uint CommitCountSinceBranchOffFromDevelop => _commitCountSinceBranchOffFromDevelop.Value;
+        public uint CommitCountUniqueToFeature => _commitCountUniqueToFeature.Value;
 
         private VersionNumber CalculateCurrentCoreVersion() => _highestCoreVersionListHighToLow.Value.First().versionNumber;
 
-        private uint CalculateCommitCountSinceBranchOff()
+        private uint CalculateCommitCountUniqueToFeature()
         {
             var developBranch = OriginDevelopOrDevelopCommits(_repository.Branches);
             uint toReturn = 0;
+            var branchesAreConnected = false;
             foreach (var commit in _repository.CurrentBranch.Commits)
             {
-                if (developBranch.CommitCollection.Contains(commit))
+                if (!developBranch.CommitCollection.Contains(commit))
                 {
-                    return toReturn;
+                    toReturn++;
                 }
-
-                toReturn++;
+                else
+                {
+                    branchesAreConnected = true;
+                }
             }
-            throw new InvalidOperationException(
-                $"Git repository does not contain a common ancestor between '{Constants.DevelopBranchName}' and the current HEAD.");
+            if(!branchesAreConnected)
+                throw new InvalidOperationException($"Git repository does not contain a common ancestor between '{Constants.DevelopBranchName}' and the current HEAD.");
+            return toReturn;
         }
 
         private string? HighestMatchingTag(string toMatch) =>

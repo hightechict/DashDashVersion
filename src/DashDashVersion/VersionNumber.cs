@@ -48,7 +48,14 @@ namespace DashDashVersion
                 matches.Groups["PreReleaseLabelFeature"].Captures);
             var buildMetadata = matches.Groups["BuildMetadata"].Captures;
             var metadata = buildMetadata.Count > 0 ? buildMetadata[0].Value : string.Empty;
-            var debug = matches.Groups["DebugLabel"].Success;
+            var debug = matches.Groups["CoreDebugLabel"].Success || matches.Groups["PreDebugLabel"].Success;
+            
+            if(matches.Groups["CoreDebugLabel"].Success)
+            {
+                major = uint.Parse(matches.Groups["Major2"].Captures[0].Value);
+                minor = uint.Parse(matches.Groups["Minor2"].Captures[0].Value);
+                patch = uint.Parse(matches.Groups["Patch2"].Captures[0].Value);
+            }
     
             return new VersionNumber(
                 major,
@@ -173,10 +180,10 @@ namespace DashDashVersion
         {
             get
             {
-                var toReturn = $"{Major}{Constants.ParticleDelimiter}{Minor}{Constants.ParticleDelimiter}{Patch}";
+                var toReturn = $"{Major}{Constants.ParticleDelimiter}{Minor}{Constants.ParticleDelimiter}";
                 if (PreReleaseLabel != null)
                 {
-                    toReturn = $"{toReturn}{Constants.PreReleaseLabelDelimiter}{PreReleaseLabel}";
+                    toReturn = $"{toReturn}{Patch}{Constants.PreReleaseLabelDelimiter}{PreReleaseLabel}";
                     if(DebugVersion)
                     {
                         toReturn = $"{toReturn}{Constants.ParticleDelimiter}{Constants.DebugPreReleaseLabel}";
@@ -184,7 +191,11 @@ namespace DashDashVersion
                 }
                 else if(DebugVersion)
                 {
-                    toReturn = $"{toReturn}{Constants.PreReleaseLabelDelimiter}{Constants.DebugPreReleaseLabel}";
+                    toReturn = $"{toReturn}{Patch+1}{Constants.PreReleaseLabelDelimiter}{Constants.DebugPreReleaseLabel}{Constants.ParticleDelimiter}{toReturn}{Patch}";
+                }
+                else
+                {
+                    toReturn = $"{toReturn}{Patch}";
                 }
                 return toReturn;
             }

@@ -91,9 +91,14 @@ namespace DashDashVersion
             FeatureBranchInfo feature,
             string headCommitHash)
         {
+            var developOrdinal = repo.CommitCountSinceLastMinorVersion - repo.CommitCountUniqueToFeature;
+            if((int)developOrdinal < 0)
+            {
+                throw new InvalidOperationException("While calculating the develop version a negative number was found, ether the feature has no root in the develop branch or a incorect core-version tag was placed like '0.1.0'");
+            }
             var preReleaseLabel = feature.DeterminePreReleaseLabel(
-                repo.CommitCountSinceLastMinorVersion - repo.CommitCountSinceBranchOffFromDevelop,
-                repo.CommitCountSinceBranchOffFromDevelop);
+                developOrdinal,
+                repo.CommitCountUniqueToFeature);
             return new VersionNumber(
                 repo.CurrentCoreVersion.Major, 
                 repo.CurrentCoreVersion.Minor + 1,

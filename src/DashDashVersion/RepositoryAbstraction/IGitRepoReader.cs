@@ -34,6 +34,6 @@ namespace DashDashVersion.RepositoryAbstraction
 
         uint CommitCountSinceLastMinorVersion { get; }
 
-        uint CommitCountSinceBranchOffFromDevelop { get; }
+        uint CommitCountUniqueToFeature { get; }
     }
 }

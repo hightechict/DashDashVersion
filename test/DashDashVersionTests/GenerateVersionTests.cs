@@ -77,7 +77,7 @@ namespace DashDashVersionTests
             _mock.Setup(f => f.CurrentBranch).Returns(BranchInfoFactory.CreateBranchInfo(branchName));
             _mock.Setup(f => f.CurrentCoreVersion).Returns(VersionNumber.Parse(highestAnnotatedTag));
             _mock.Setup(f => f.CommitCountSinceLastMinorVersion).Returns(commitsSinceAnnotatedTag);
-            _mock.Setup(f => f.CommitCountSinceBranchOffFromDevelop).Returns(commitsSinceBranchOff);
+            _mock.Setup(f => f.CommitCountUniqueToFeature).Returns(commitsSinceBranchOff);
             _mock.Setup(f => f.HeadCommitHash).Returns(hash);
 
             var version = VersionNumberGenerator.GenerateVersionNumber(_mock.Object);
