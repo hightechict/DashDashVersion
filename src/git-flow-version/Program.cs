@@ -46,7 +46,7 @@ namespace GitFlowVersion
                 }
                 try
                 {
-                    OutputJsonToConsole(VersionNumberGenerator.GenerateVersionNumber(Environment.CurrentDirectory, optionBranch.Value()),optionDebug.Value() == "on");
+                    OutputJsonToConsole(VersionNumberGenerator.GenerateVersionNumber(Environment.CurrentDirectory, optionBranch.Value()), optionDebug.Value() == "on");
                     return 0;
                 }
                 catch (Exception e)
@@ -61,13 +61,13 @@ namespace GitFlowVersion
         private static void OutputJsonToConsole(VersionNumber version, bool debugVersion)
         {
             var newVersion = version;
-            if(debugVersion)
+            if (debugVersion)
             {
                 newVersion =
                     new VersionNumber(
                         version.Major,
                         version.Minor,
-                        version.PreReleaseLabel == null? version.Patch + 1 : version.Patch,
+                        version.PreReleaseLabel == null ? version.Patch + 1 : version.Patch,
                         version.PreReleaseLabel,
                         version.Metadata,
                         debugVersion

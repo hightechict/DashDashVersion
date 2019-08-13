@@ -32,7 +32,7 @@ namespace DashDashVersion
         /// <param name="branch">The name of the branch to consider when generating the version number.</param>
         /// <returns></returns>
         public static VersionNumber GenerateVersionNumber(
-            string path, 
+            string path,
             string branch)
         {
             var repo = GitRepoReader.Load(path, branch);
@@ -59,11 +59,11 @@ namespace DashDashVersion
         }
 
         private static VersionNumber GenerateDevelopVersionNumber(
-            IGitRepoReader repo, 
+            IGitRepoReader repo,
             DevelopBranchInfo develop,
             string headCommitHash) =>
             new VersionNumber(
-                repo.CurrentCoreVersion.Major, 
+                repo.CurrentCoreVersion.Major,
                 repo.CurrentCoreVersion.Minor + 1,
                 0,
                 develop.DeterminePreReleaseLabel(repo.CommitCountSinceLastMinorVersion),
@@ -71,7 +71,7 @@ namespace DashDashVersion
 
         private static VersionNumber GenerateReleaseVersionNumber(
             IGitRepoReader repo,
-            ReleaseCandidateBranchInfo releaseCandidate, 
+            ReleaseCandidateBranchInfo releaseCandidate,
             string headCommitHash)
         {
             var ordinal = repo.HighestMatchingTagForReleaseCandidate?.PreReleaseLabel?.BranchLabel
@@ -87,12 +87,12 @@ namespace DashDashVersion
         }
 
         private static VersionNumber GenerateFeatureVersionNumber(
-            IGitRepoReader repo, 
+            IGitRepoReader repo,
             FeatureBranchInfo feature,
             string headCommitHash)
         {
             var developOrdinal = repo.CommitCountSinceLastMinorVersion - repo.CommitCountUniqueToFeature;
-            if((int)developOrdinal < 0)
+            if ((int)developOrdinal < 0)
             {
                 throw new InvalidOperationException("While calculating the develop version a negative number was found, ether the feature has no root in the develop branch or a incorect core-version tag was placed like '0.1.0'");
             }
@@ -100,15 +100,15 @@ namespace DashDashVersion
                 developOrdinal,
                 repo.CommitCountUniqueToFeature);
             return new VersionNumber(
-                repo.CurrentCoreVersion.Major, 
+                repo.CurrentCoreVersion.Major,
                 repo.CurrentCoreVersion.Minor + 1,
                 0,
                 preReleaseLabel,
                 headCommitHash);
         }
 
-        private static bool TagOnHeadIsMajorMinorPatch(GitTag tagOnHead) => 
-            tagOnHead != null && 
+        private static bool TagOnHeadIsMajorMinorPatch(GitTag tagOnHead) =>
+            tagOnHead != null &&
             Patterns.IsCoreVersionTag.IsMatch(tagOnHead.FriendlyName);
     }
 }

@@ -124,7 +124,7 @@ namespace DashDashVersion.RepositoryAbstraction
                     branchesAreConnected = true;
                 }
             }
-            if(!branchesAreConnected)
+            if (!branchesAreConnected)
                 throw new InvalidOperationException($"Git repository does not contain a common ancestor between '{Constants.DevelopBranchName}' and the current HEAD.");
             return toReturn;
         }
@@ -249,7 +249,7 @@ You could use 'git tag 0.0.0 {sha}' to place a tag.");
                 BranchForRepositoryHead() :
                 FindBranch(branchName);
 
-        private List<GitTag> VisibleTags() => 
+        private List<GitTag> VisibleTags() =>
             _repository.Tags.Where(
                 tag => _repository.CurrentBranch.Commits.Any(commit => commit.Sha == tag.Sha))
                 .ToList();
@@ -275,7 +275,7 @@ You could use 'git tag 0.0.0 {sha}' to place a tag.");
                 TrimRemoteName(
                     FindCurrentGitBranch(branchName)));
 
-        private GitTag CalculateTagOnHead() => 
+        private GitTag CalculateTagOnHead() =>
             _visibleTags.Value.FirstOrDefault(t => t.Sha.Equals(HeadCommitHash));
 
 

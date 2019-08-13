@@ -23,7 +23,7 @@ namespace DashDashVersion.RepositoryAbstraction
 {
     internal static class QuerybleCommitLogExtensions
     {
-        public static ICommitLog OrderTopological( this IQueryableCommitLog commits)
+        public static ICommitLog OrderTopological(this IQueryableCommitLog commits)
         {
             var config = new CommitFilter { SortBy = CommitSortStrategies.Topological };
             return commits.QueryBy(config);
@@ -34,22 +34,22 @@ namespace DashDashVersion.RepositoryAbstraction
     /// </summary>
     internal sealed class GitRepository : IGitRepository
     {
-              public static GitRepository FromRepository(IRepository repository) =>
-            new GitRepository(
-                repository.Branches.Select(
-                    branch => new GitBranch(
-                        branch.IsRemote,
-                        branch.RemoteName,
-                        branch.FriendlyName,
-                        branch.IsCurrentRepositoryHead,
-                        branch.Commits.Select(
-                            commit => new GitCommit(commit.Sha)))).ToList(),
-                repository.Commits.OrderTopological().Select(
-                    commit => new GitCommit(commit.Sha)).ToList(),
-                repository.Tags.Select(
-                    tag => new GitTag(
-                        tag.FriendlyName,
-                        tag.PeeledTarget.Sha)).ToList());
+        public static GitRepository FromRepository(IRepository repository) =>
+      new GitRepository(
+          repository.Branches.Select(
+              branch => new GitBranch(
+                  branch.IsRemote,
+                  branch.RemoteName,
+                  branch.FriendlyName,
+                  branch.IsCurrentRepositoryHead,
+                  branch.Commits.Select(
+                      commit => new GitCommit(commit.Sha)))).ToList(),
+          repository.Commits.OrderTopological().Select(
+              commit => new GitCommit(commit.Sha)).ToList(),
+          repository.Tags.Select(
+              tag => new GitTag(
+                  tag.FriendlyName,
+                  tag.PeeledTarget.Sha)).ToList());
 
         public GitRepository(
             IReadOnlyCollection<GitBranch> branches,
