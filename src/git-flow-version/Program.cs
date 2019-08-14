@@ -61,19 +61,9 @@ namespace GitFlowVersion
         private static void OutputJsonToConsole(VersionNumber version, bool debugVersion)
         {
             var newVersion = version;
-            if (debugVersion)
-            {
-                newVersion =
-                    new VersionNumber(
-                        version.Major,
-                        version.Minor,
-                        version.PreReleaseLabel == null ? version.Patch + 1 : version.Patch,
-                        version.PreReleaseLabel,
-                        version.Metadata,
-                        debugVersion
-                        );
-            }
             var writer = new JsonTextWriter(Console.Out) { Formatting = Formatting.Indented };
+
+            newVersion.SetDebugVersion(debugVersion);
 
             writer.WriteStartObject();
 

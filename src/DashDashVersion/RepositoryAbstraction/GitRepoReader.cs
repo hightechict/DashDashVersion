@@ -277,7 +277,5 @@ You could use 'git tag 0.0.0 {sha}' to place a tag.");
 
         private GitTag CalculateTagOnHead() =>
             _visibleTags.Value.FirstOrDefault(t => t.Sha.Equals(HeadCommitHash));
-
-
     }
 }

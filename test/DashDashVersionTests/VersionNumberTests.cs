@@ -99,8 +99,8 @@ namespace DashDashVersionTests
         [Theory]
         [InlineData("0.1.0-dev.2.a.2.debug", 0, 1, 0, "dev", 2, "a", 2, "", true)]
         [InlineData("0.1.0-dev.2.a.2.debug+sdfdsdff232", 0, 1, 0, "dev", 2, "a", 2, "sdfdsdff232", true)]
-        [InlineData("0.1.0-dev.2.a.2", 0, 1, 0, "dev", 2, "a", 2, "", false)]
-        [InlineData("0.1.0-dev.2.a.2+sdfdsdff232", 0, 1, 0, "dev", 2, "a", 2, "sdfdsdff232", false)]
+        [InlineData("0.1.0-dev.2.a.2", 0, 1, 0, "dev", 2, "a", 2, "",false)]
+        [InlineData("0.1.0-dev.2.a.2+sdfdsdff232", 0, 1, 0, "dev", 2, "a", 2, "sdfdsdff232",false)]
         public void DebugVersionNumberFeature(
             string versionTag,
             uint expectedMajor,

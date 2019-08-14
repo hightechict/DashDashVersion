@@ -1,4 +1,4 @@
-// Copyright 2019 Hightech ICT and authors
+﻿// Copyright 2019 Hightech ICT and authors
 
 // This file is part of DashDashVersion.
 
@@ -17,7 +17,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace DashDashVersion.RepositoryAbstraction
 {

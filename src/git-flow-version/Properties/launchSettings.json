@@ -2,7 +2,8 @@
   "profiles": {
     "git-flow-version": {
       "commandName": "Project",
-      "workingDirectory": "D:\\Repos\\Hightech\\!ch.titlecatalogizer"
+      "commandLineArgs": "-d",
+      "workingDirectory": "D:\\Repos\\Hightech\\QuickConnect"
     }
   }
 }

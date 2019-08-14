@@ -21,6 +21,9 @@ using LibGit2Sharp;
 
 namespace DashDashVersion.RepositoryAbstraction
 {
+    /// <summary>
+    /// This class adds implements a sorting option so the current branch can be sorted by the commits child parent relationship. This is to prevent unpredictable ordering in the commit list which can happen if you order by time.
+    /// </summary>
     internal static class QuerybleCommitLogExtensions
     {
         public static ICommitLog OrderTopological(this IQueryableCommitLog commits)
