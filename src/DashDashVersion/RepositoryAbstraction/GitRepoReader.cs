@@ -54,7 +54,8 @@ namespace DashDashVersion.RepositoryAbstraction
             {
                 throw new ArgumentException($"The path: '{path}' is not the root of or in a git repository.", nameof(path));
             }
-            var repository = new Repository(repoPath);
+
+            using var repository = new Repository(repoPath);
             var gitRepo = GitRepository.FromRepository(repository);
             return new GitRepoReader(gitRepo, currentBranch);
         }
@@ -110,21 +111,8 @@ namespace DashDashVersion.RepositoryAbstraction
 
         private uint CalculateCommitCountUniqueToFeature()
         {
-            var developBranch = OriginDevelopOrDevelopCommits(_repository.Branches);
-            uint toReturn = 0;
-            var branchesAreConnected = false;
-            foreach (var commit in _repository.CurrentBranch.Commits)
-            {
-                if (!developBranch.CommitCollection.Contains(commit))
-                {
-                    toReturn++;
-                }
-                else
-                {
-                    branchesAreConnected = true;
-                }
-            }
-            if (!branchesAreConnected)
+            var toReturn = (uint)_repository.CurrentBranch.Except(_repository.Develop.Commits).Count();
+            if (!_repository.CurrentBranch.Overlaps(_repository.Develop.Commits))
                 throw new InvalidOperationException($"Git repository does not contain a common ancestor between '{Constants.DevelopBranchName}' and the current HEAD.");
             return toReturn;
         }
@@ -136,41 +124,19 @@ namespace DashDashVersion.RepositoryAbstraction
                     .OrderByDescending(t => VersionNumber.Parse(t.FriendlyName))
                     .FirstOrDefault()?.FriendlyName;
 
-        private static GitBranch OriginDevelopOrDevelopCommits(IEnumerable<GitBranch> branches)
-        {
-            var develop = branches.FirstOrDefault(IsOriginDevelop);
-            if (develop == null)
-            {
-                // ReSharper disable once PossibleMultipleEnumeration
-                develop = branches.FirstOrDefault(IsDevelop);
-                if (develop == null)
-                {
-                    throw new InvalidOperationException(
-                        $"Git repository does not contain a branch named '{Constants.DevelopBranchName}' or '{Constants.OriginDevelop}'.");
-                }
-            }
-
-            var developCommits = develop.CommitCollection.Commits;
-            if (!developCommits.Any())
-            {
-                throw new InvalidOperationException(
-                    $"Git repository does not contain any commits on '{Constants.DevelopBranchName}' or '{Constants.OriginDevelop}'.");
-            }
-
-            return develop;
-        }
 
         private List<(GitTag tag, VersionNumber versionNumber)> HighestCoreVersionsMajorMinor()
         {
             var coreVersionTagsAndVersions = _visibleTags.Value
                 .Where(tag => Patterns.IsCoreVersionTag.IsMatch(tag.FriendlyName))
+                .Where(tag => _repository.Master.Commits.Contains(tag.Sha))
                 .Select(tag => (Tag: tag, VersionNumber: VersionNumber.Parse(tag.FriendlyName)))
                 .OrderByDescending(pair => pair.VersionNumber)
                 .ToList();
 
             if (!coreVersionTagsAndVersions.Any())
             {
-                var sha = _repository.CurrentBranch.Commits.Last().Sha;
+                var sha = _repository.CurrentBranch.First.Sha;
                 coreVersionTagsAndVersions.Add((new GitTag("0.0.0+assumption", sha), new VersionNumber(0, 0, 0, null, "assumption")));
                 Console.Error.WriteLine(
 @$"Warning you currently have no core version tag on master like '0.0.0'.
@@ -251,16 +217,10 @@ You could use 'git tag 0.0.0 {sha}' to place a tag.");
 
         private List<GitTag> VisibleTags() =>
             _repository.Tags.Where(
-                tag => _repository.CurrentBranch.Commits.Any(commit => commit.Sha == tag.Sha))
+                tag => _repository.CurrentBranch.Contains(tag.Sha))
                 .ToList();
 
 
-        private static bool IsDevelop(GitBranch branch) =>
-            branch.FriendlyName.Equals(Constants.DevelopBranchName);
-
-        private static bool IsOriginDevelop(GitBranch branch) =>
-            branch.IsRemote &&
-            branch.FriendlyName.Equals(Constants.OriginDevelop);
 
         private GitBranch BranchForRepositoryHead() =>
             _repository.Branches

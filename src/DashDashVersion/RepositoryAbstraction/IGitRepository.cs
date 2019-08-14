@@ -26,6 +26,10 @@ namespace DashDashVersion.RepositoryAbstraction
     {
         IReadOnlyCollection<GitBranch> Branches { get; }
 
+        GitBranch Master { get; }
+
+        GitBranch Develop { get; }
+
         ListOfCommits CurrentBranch { get; }
 
         IReadOnlyCollection<GitTag> Tags { get; }
