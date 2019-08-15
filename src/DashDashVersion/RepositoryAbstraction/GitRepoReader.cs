@@ -70,14 +70,13 @@ namespace DashDashVersion.RepositoryAbstraction
             var hash = _repository.CurrentBranch.Head;
             HeadCommitHash = hash?.Sha ?? throw new InvalidOperationException("Git repositories without commits are not supported.");
 
-            _visibleTags = new Lazy<List<GitTag>>(VisibleTags);
+            _visibleTags = new Lazy<List<GitTag>>(() => VisibleTags);
             _commitCountUniqueToFeature = new Lazy<uint>(CalculateCommitCountUniqueToFeature);
             _highestCoreVersionListHighToLow = new Lazy<List<(GitTag tag, VersionNumber versionNumber)>>(HighestCoreVersionsMajorMinor);
             _currentCoreVersion = new Lazy<VersionNumber>(CalculateCurrentCoreVersion);
             _commitCountSinceLastMinorVersion = new Lazy<uint>(CalculateCommitCountSinceLastMinorVersion);
-            _tagOnHead = new Lazy<GitTag>(CalculateTagOnHead);
+            _tagOnHead = new Lazy<GitTag>(() => CalculateTagOnHead);
         }
-
 
         public string HeadCommitHash { get; }
 
@@ -216,15 +215,15 @@ You could use 'git tag 0.0.0 {sha}' to place a tag.");
 
         private GitBranch FindCurrentGitBranch(string branchName) =>
             string.IsNullOrWhiteSpace(branchName) ?
-                BranchForRepositoryHead() :
+                BranchForRepositoryHead :
                 FindBranch(branchName);
 
-        private List<GitTag> VisibleTags() =>
+        private List<GitTag> VisibleTags =>
             _repository.Tags.Where(
                 tag => _repository.CurrentBranch.Contains(tag.Sha))
                 .ToList();
 
-        private GitBranch BranchForRepositoryHead() =>
+        private GitBranch BranchForRepositoryHead =>
             _repository.Branches
                 .Where(f => f.IsCurrentRepositoryHead)
                 .Select(f => f)
@@ -237,7 +236,7 @@ You could use 'git tag 0.0.0 {sha}' to place a tag.");
                 TrimRemoteName(
                     FindCurrentGitBranch(branchName)));
 
-        private GitTag CalculateTagOnHead() =>
+        private GitTag CalculateTagOnHead =>
             _visibleTags.Value.FirstOrDefault(t => t.Sha.Equals(HeadCommitHash));
     }
 }
