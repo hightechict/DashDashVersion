@@ -15,32 +15,21 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with DashDashVersion. If not, see<https://www.gnu.org/licenses/>.
 
-using System.Collections.Generic;
-using System.Linq;
+using LibGit2Sharp;
 
 namespace DashDashVersion.RepositoryAbstraction
 {
-    internal class ListOfCommits
+    /// <summary>
+    /// This class adds implements a sorting option so the current branch can be sorted by the commits child parent relationship.
+    /// This is to prevent unpredictable ordering in the commit list which can happen if you order by time.
+    /// </summary>
+    internal static class QueryableCommitLogExtensions
     {
-        private readonly HashSet<string> _hashset;
-
-        public ListOfCommits(IEnumerable<GitCommit> source)
-        {
-            Commits = source.ToList();
-            _hashset = new HashSet<string>(Commits.Select(gitCommit => gitCommit.Sha));
-        }
-
-        public IReadOnlyCollection<GitCommit> Commits { get; }
-
-        public GitCommit Head => Commits.First();
-
-        public GitCommit First => Commits.Last();
-
-        public bool Contains(string sha) => _hashset.Contains(sha);
-
-        public bool Overlaps(ListOfCommits commits) => _hashset.Overlaps(commits._hashset);
-
-        public IEnumerable<string> Except(ListOfCommits commits) => _hashset.Except(commits._hashset);
-
+        public static ICommitLog OrderTopological(this IQueryableCommitLog commits) =>
+            commits.QueryBy(
+                new CommitFilter
+                {
+                    SortBy = CommitSortStrategies.Topological
+                });
     }
 }

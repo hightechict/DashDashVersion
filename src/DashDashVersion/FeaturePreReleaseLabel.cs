@@ -22,7 +22,7 @@ namespace DashDashVersion
     /// <summary>
     ///  This class represents a pre-release label for feature branches, composed of two pre-release label particles.
     /// </summary>
-    public class FeaturePreReleaseLabel : PreReleaseLabel
+    internal class FeaturePreReleaseLabel : PreReleaseLabel
     {
         internal const int NumberOfBitsAllocatedForFeatureRevision = 6;
         internal const ushort FeatureRevisionMaxValue = 0b0000_0000_00_11_1110;

@@ -12,6 +12,15 @@ DashDashVersion creates predictable and opinionated [SemVer 2.0.0 version][SemVe
 
 It consists of an executable that can be installed as a [`dotnet` global tool][globalTool] and a reusable library [NET Standard 2.0](https://docs.microsoft.com/en-us/dotnet/standard/net-standard) that can be used in other applications or .NET based build scripts.
 
+## Why DashDashVersion?
+
+DashDashVersion is an application to generate a version number for a git repository that follows [git-flow][gitFlow]. 
+Ideal if you are using [Continuous Integration](https://en.wikipedia.org/wiki/Continuous_integration).
+The version number can be used for packages or to simply tag your commits.
+
+DashDashVersion provides automated versioning during development, while leaving control over release versions to the user.
+It complies with [SemVer 2.0][SemVer2]. DashDashVersion only supports repositories that strictly follow the [git flow][gitFlow] conventions, this may seem overly restrictive but we believe strongly in simplicity and convention over configuration.
+
 ## Installation
 
 DashDashVersion can be installed as a [`dotnet` global tool][globalTool] by using the following command:
@@ -51,7 +60,7 @@ $ git-flow-version
 If your Continuous Integration (CI) environment uses [detached heads](https://git-scm.com/docs/git-checkout#_detached_head) `git-flow-version` cannot determine what the _type_ (`master`, `release/*`, `feature/`, `hotfix/`, `support/*`) of the branch is for which it should generate the version number. In these cases the branch name can be specified via a command-line parameter:
 
 ```bash
-$ git-flow-wersion --branch develop
+$ git-flow-version --branch develop
 ```
 
 Matching of the branch name is performed using the following strategy:
@@ -63,7 +72,7 @@ Matching of the branch name is performed using the following strategy:
 
 ### Command-Line reference
 
-The number of command-line parameters and/or options supported by `git-flow-version** is very limited, however below you find them explained in detail:
+The number of command-line parameters and/or options supported by `git-flow-version` is very limited, however below you find them explained in detail:
 
 #### Help information
 
@@ -108,7 +117,7 @@ this may seem overly restrictive but we believe strongly in simplicity and conve
 
 #### Bootstrap requirements
 
-* A tag on `master` with a [SemVer 2.0.0][SemVer2] compliant name for the latest release, without a pre-release label and without build metadata, even if it's only a `0.0.0` at the beginning of the master branch.
+* A tag on `master` with a [SemVer 2.0.0][SemVer2] compliant name for the latest release, without a pre-release label and without build metadata, if not it will assume 0.0.0 as the current version at the first commit on the repository and count from there.
 * On any active `release/` or `hotfix/` branch add a tag using the  `<major>.<minor>.<patch>-rc.<number>` format if having consecutive `rc` versions is required.
 
 ### Configuration
@@ -118,7 +127,7 @@ There is nothing to configure 🙌, you have already done the necessary configur
 ### Keep in mind
 
 * Only `release/`, `hotfix/`, `develop` and `feature/` branches are supported, for other branches a human has to decide on a version number.
-* Make sure to tag release and hotfix branches after generating a version number, the next version number is solely reliant upon that tag.
+* Make sure to tag `release/` and `hotfix/` branches after generating a version number, the next version number is solely reliant upon that tag.
 * For unsupported branches if a tag is already present in the correct format, that version number will be returned, to facilitate rebuilds on `master` for example.
 
 ## What version number to expect
@@ -135,10 +144,14 @@ $ git flow release finish
 ```
 the output of `git-flow-version` will be:
 
-```json
-{"FullSemVer":"0.2.0-dev.1+8af6c6d","SemVer":"0.2.0-dev.1","AssemblyVersion":"0.2.0.128"}
+```bash
+$ git-flow-version
+{
+    "AssemblyVersion":"0.2.0.128",
+    "FullSemVer":"0.2.0-dev.1+8af6c6d",
+    "SemVer":"0.2.0-dev.1"
+}
 ```
-
 ### On a `feature/` branch
 
 For a feature branch a version number will be calculated for the branch-off point from `origin/develop` or `develop` if there is no `origin/develop`. The number of commits on the feature branch is counted and these pieces are glued together.
@@ -166,10 +179,13 @@ Read more about contributing [here][contribute].
 
 This work is licensed under the LGPL license, refer to the [COPYING.md][license] and [COPYING.LESSER.md][licenseExtension] files for details.
 
-[license]: https://github.com/dashdashversion/COPYING.md
-[licenseExtension]: https://github.com/dashdashversion/COPYING.LESSER.md
+## Repository
+
+The source code of this projecte can be found on [github](https://github.com/hightechict/DashDashVersion).
+
+[license]: https://raw.githubusercontent.com/hightechict/DashDashVersion/develop/COPYING
+[licenseExtension]: https://raw.githubusercontent.com/hightechict/DashDashVersion/develop/COPYING.LESSER
 [SemVer2]: https://semver.org/
-[gitFlow]: https://nl.atlassian.com/git/tutorials/comparing-workflows/gitflow-workflow
+[gitFlow]: https://www.atlassian.com/git/tutorials/comparing-workflows/gitflow-workflow
 [globalTool]: https://docs.microsoft.com/en-us/dotnet/core/tools/global-tools
-[source]: https://github.com/dashdashversion
-[contribute]: https://github.com/dashdashversion/CONTRIBUTING.md 
+[contribute]: https://github.com/hightechict/DashDashVersion/blob/develop/CONTRIBUTING.md

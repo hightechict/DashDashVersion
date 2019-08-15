@@ -31,6 +31,7 @@ namespace DashDashVersion
 
         internal const string DevelopPreReleaseLabel = "dev";
         internal const string ReleasePreReleaseLabel = "rc";
+        internal const string DebugPreReleaseLabel = "debug";
 
         internal const string DevelopBranchName = "develop";
         internal const string ReleaseBranchName = "release";
@@ -42,6 +43,8 @@ namespace DashDashVersion
         internal const string DefaultRemoteName = "origin";
 
         internal static string OriginDevelop => $"{DefaultRemoteName}{BranchNameInfoDelimiter}{DevelopBranchName}";
+
+        internal static string OriginMaster => $"{DefaultRemoteName}{BranchNameInfoDelimiter}{MasterBranchName}";
 
         internal static string[] GitFlowBranchTypes =
         {

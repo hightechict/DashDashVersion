@@ -14,7 +14,7 @@ strategy:
 
 pool:
   vmImage: $(imageName)
-  
+
 trigger:
   branches:
     include:
@@ -32,7 +32,7 @@ variables:
 steps:
 
 - task: PowerShell@2
-  condition: eq(variables.imageName, 'windows-latest')
+  condition: and(eq(variables.imageName, 'windows-latest'),contains(variables['Build.SourceBranch'],'/master'))
   inputs:
     targetType: inline
     pwsh: true
@@ -40,7 +40,7 @@ steps:
   displayName: Install docfx
 
 - task: PowerShell@2
-  condition: eq(variables.imageName, 'windows-latest')
+  condition: and(eq(variables.imageName, 'windows-latest'),ne(variables['Build.SourceBranchName'], 'merge'))
   inputs:
     targetType: inline
     pwsh: true
@@ -50,7 +50,7 @@ steps:
 - task: DotNetCoreInstaller@0
   inputs:
     packageType: 'sdk'
-    version: '2.2.300' 
+    version: '2.2.401'
   displayName: Install .NET Core 2 latest
   env:
    DOTNET_CLI_TELEMETRY_OPTOUT: false
@@ -66,6 +66,7 @@ steps:
   displayName: Install coverlet
 
 - task: PowerShell@2
+  condition: ne(variables['Build.SourceBranchName'], 'merge')
   inputs:
     targetType: inline
     pwsh: true
@@ -83,7 +84,7 @@ steps:
   displayName: Install NuGet
 
 - task: InstallSSHKey@0
-  condition: eq(variables.imageName, 'windows-latest')
+  condition: and(eq(variables.imageName, 'windows-latest'),contains(variables['Build.SourceBranch'],'/master'))
   inputs:
     knownHostsEntry: 'github.com, ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAq2A7hRGmdnm9tUDbO9IDSwBK6TbQa+PXYPCPy6rbTrTtw7PHkccKrpp0yVhp5HdEIcKr6pLlVDBfOLX9QUsyCOV0wzfjIJNlGEYsdlLJizHhbn2mUjvSAHQqZETYP81eFzLQNnPHt4EVVUh7VfDESU84KezmD5QlWpXLmvU31/yMf+Se8xhHTvKSCZIFImWwoG6mbUoWf9nzpIoaSjB+weqqUUmpaaasXVal72J+UX2B+2RPW3RcT0eOzQgqlJL3RKrTJvdsjE3JEAvGq3lGHSZXy28G3skua2SmVi/w4yCE6gbODqnTWlg7+wC604ydGXA8VJiS5ap43JXiUFFAaQ=='
     sshPublicKey: 'secdsa-sha2-nistp521 AAAAE2VjZHNhLXNoYTItbmlzdHA1MjEAAAAIbmlzdHA1MjEAAACFBAAvZmttHSrJ2SHfXJJImvVWn70vLDh9jetSBwBsjK3MEEES7CBAabuJvPtXqPLQxDngkW4GJTqbrqDzp2YDHejhTAA8trE+sbFUXHDNbC3lwFdyeLA5YD0Kmmq7V7UIpK0h3khjowu4Ivgp6yP1bXl/3iOyVBENkK+Gx6aryPVkRN9ipQ== Azure-pipeline-site'
@@ -97,7 +98,7 @@ steps:
     sshPublicKey: 'ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIF6/HvdVdOqxei+waWEWBR9u3zwx9TZtyeYuIqs2uBL0 Azure-pipeline'
     sshKeySecureFile: 'GithubDeploymentKey'
   displayName: Install sshKey for tagging
-  
+
 - task: DotNetCoreCLI@2
   inputs:
     command: 'restore'
@@ -105,7 +106,7 @@ steps:
   displayName: Dotnet Restore
 
 - task: PowerShell@2
-  condition: eq(variables.imageName, 'windows-latest')
+  condition: and(eq(variables.imageName, 'windows-latest'),ne(variables['Build.SourceBranchName'], 'merge'))
   inputs:
     targetType: inline
     pwsh: true
@@ -120,7 +121,7 @@ steps:
   displayName: Running Tests
 
 - task: PowerShell@2
-  condition: eq(variables.imageName, 'windows-latest')
+  condition: and(eq(variables.imageName, 'windows-latest'),ne(variables['Build.SourceBranchName'], 'merge'))
   inputs:
     targetType: inline
     pwsh: true
@@ -131,6 +132,7 @@ steps:
   displayName: Publish code coverage
 
 - task: PowerShell@2
+  condition: ne(variables['Build.SourceBranchName'], 'merge')
   displayName: Calculating version
   inputs:
     targetType: 'inline'
@@ -143,7 +145,7 @@ steps:
       echo "##vso[task.setvariable variable=AssemblyVersion]$($version.AssemblyVersion)"
 
 - task: PowerShell@2
-  condition: eq(variables.imageName, 'windows-latest')
+  condition: and(eq(variables.imageName, 'windows-latest'),ne(variables['Build.SourceBranchName'], 'merge'))
   displayName: Create assembly info
   inputs:
     targetType: 'inline'
@@ -164,6 +166,7 @@ steps:
     AssemblyVersion: $(AssemblyVersion)
 
 - task: DotNetCoreCLI@2
+  condition: and(eq(variables.imageName, 'windows-latest'),ne(variables['Build.SourceBranchName'], 'merge'))
   inputs:
     command: 'pack'
     packagesToPack: './src/*/*.csproj'
@@ -173,7 +176,7 @@ steps:
   displayName: Creating packages dotnet task
 
 - task: PowerShell@2
-  condition: eq(variables.imageName, 'ubuntu-latest')
+  condition: and(eq(variables.imageName, 'ubuntu-latest'),ne(variables['Build.SourceBranchName'], 'merge'))
   displayName: Tagging build
   inputs:
     targetType: 'inline'
@@ -185,28 +188,28 @@ steps:
       {
       git remote set-url origin git@github.com:hightechict/DashDashVersion.git
       git tag $env:SemVer
-      git push --verbose origin $env:SemVer 
+      git push --verbose origin $env:SemVer
       }
     errorActionPreference: 'continue'
   env:
     SemVer: $(SemVer)
 
 - task: PowerShell@2
-  condition: and(eq(variables.imageName, 'windows-latest'),not(contains(variables['Build.SourceBranch'],'/feature/'))) 
+  condition: and(eq(variables.imageName, 'windows-latest'),not(contains(variables['Build.SourceBranch'],'/feature/')),ne(variables['Build.SourceBranchName'], 'merge'))
   displayName: Pushing NuGet package
   inputs:
     targetType: 'inline'
     script: |
       Write-Host "Publishing NuGet package"
       pushd built
-      dotnet nuget push *.nupkg --api-key $env:NuGet_APIKEY --no-symbols true --source https://api.nuget.org/v3/index.json 
+      dotnet nuget push *.nupkg --api-key $env:NuGet_APIKEY --no-symbols true --source https://api.nuget.org/v3/index.json
       popd
   env:
     NuGet_APIKEY: $(nuget.APIKEY)
     DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
 
 - task: PowerShell@2
-  condition: and(eq(variables.imageName, 'windows-latest'),contains(variables['Build.SourceBranch'],'/master')) 
+  condition: and(eq(variables.imageName, 'windows-latest'),contains(variables['Build.SourceBranch'],'/master'))
   displayName: Generating documentation
   inputs:
     targetType: 'inline'
@@ -217,7 +220,7 @@ steps:
 
 - task: PythonScript@0
   displayName: Download site Directory
-  condition: and(eq(variables.imageName, 'windows-latest'),contains(variables['Build.SourceBranch'],'/master')) 
+  condition: and(eq(variables.imageName, 'windows-latest'),contains(variables['Build.SourceBranch'],'/master'))
   inputs:
     scriptSource: 'inline'
     script: |
@@ -251,8 +254,8 @@ steps:
       artifactsDirectory = os.environ['Build_ArtifactStagingDirectory']
       siteDirectory = os.path.join(artifactsDirectory, 'DashDashVersion_site')
       os.chdir(siteDirectory)
-      os.system('git config --global user.email "kees.zijlmans@hightechict.nl"')
-      os.system('git config --global user.name "Azure-pipeline"')
+      os.system('git config --global user.email "azure-pipeline@noreply.com"')
+      os.system('git config --global user.name "azure-pipeline"')
       os.system('git remote -v')
       os.system('git add .')
       message = "New documentation generated for version: {}".format(os.environ['SemVer'])

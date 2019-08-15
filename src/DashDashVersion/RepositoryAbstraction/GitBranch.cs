@@ -1,4 +1,4 @@
-// Copyright 2019 Hightech ICT and authors
+﻿// Copyright 2019 Hightech ICT and authors
 
 // This file is part of DashDashVersion.
 
@@ -26,18 +26,25 @@ namespace DashDashVersion.RepositoryAbstraction
     /// </summary>
     internal sealed class GitBranch
     {
+        private readonly Lazy<ListOfCommits> _commits;
+
         public GitBranch(
             bool isRemote,
             string remoteName,
             string friendlyName,
             bool isCurrentRepositoryHead,
-            IEnumerable<GitCommit> commits)
+            IReadOnlyCollection<GitCommit> commits)
         {
+            if (commits.Count == 0)
+            {
+                throw new InvalidOperationException($"Branch {friendlyName}, does not contain any commits.");
+            }
             IsRemote = isRemote;
             RemoteName = remoteName;
             FriendlyName = friendlyName;
             IsCurrentRepositoryHead = isCurrentRepositoryHead;
             _commits = new Lazy<ListOfCommits>(() => new ListOfCommits(commits));
+            Head = commits.First();
         }
 
         public bool IsRemote { get; }
@@ -46,10 +53,11 @@ namespace DashDashVersion.RepositoryAbstraction
 
         public string FriendlyName { get; }
 
-        private readonly Lazy<ListOfCommits> _commits;
-        public ListOfCommits CommitCollection => _commits.Value;
-
         public bool IsCurrentRepositoryHead { get; }
+
+        public GitCommit Head { get; }
+
+        public ListOfCommits Commits => _commits.Value;
 
         public override string ToString() => $"branch: {FriendlyName}";
     }

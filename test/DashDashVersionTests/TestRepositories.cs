@@ -1,4 +1,21 @@
-﻿using DashDashVersion;
+﻿// Copyright 2019 Hightech ICT and authors
+
+// This file is part of DashDashVersion.
+
+// DashDashVersion is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Lesser General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+
+// DashDashVersion is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
+// GNU Lesser General Public License for more details.
+
+// You should have received a copy of the GNU Lesser General Public License
+// along with DashDashVersion. If not, see<https://www.gnu.org/licenses/>.
+
+using DashDashVersion;
 using DashDashVersion.RepositoryAbstraction;
 using System.Collections.Generic;
 
@@ -6,7 +23,7 @@ namespace DashDashVersionTests
 {
     public static class TestRepositories
     {
-        internal static GitRepository MasterOnlyRepository()
+        internal static GitRepository MasterRepository()
         {
             var commits = new List<GitCommit>
             {
@@ -15,7 +32,9 @@ namespace DashDashVersionTests
 
             var branches = new List<GitBranch>
             {
-                new GitBranch(false,"",Constants.MasterBranchName,true,commits)
+                new GitBranch(false,"",Constants.MasterBranchName,true,commits),
+                new GitBranch(false,"",Constants.DevelopBranchName,false,commits)
+
             };
             var tags = new List<GitTag>
             {
@@ -47,6 +66,69 @@ namespace DashDashVersionTests
             };
 
             return new GitRepository(branches, developCommits, tags);
+        }
+
+        internal static GitRepository FeatureDebugMergedRepository()
+        {
+            var masterCommits = new List<GitCommit>
+            {
+                new GitCommit("1")
+            };
+            var developCommits = new List<GitCommit>
+            {
+                new GitCommit("8"),
+                new GitCommit("7"),
+                new GitCommit("3"),
+                new GitCommit("2"),
+                new GitCommit("1")
+            };
+            var featureCommits = new List<GitCommit>
+            {
+                new GitCommit("12"),
+                new GitCommit("11"),
+                new GitCommit("10"),
+                new GitCommit("9"),
+                new GitCommit("8"),
+                new GitCommit("7"),
+                new GitCommit("6"),
+                new GitCommit("5"),
+                new GitCommit("4"),
+                new GitCommit("3"),
+                new GitCommit("2"),
+                new GitCommit("1")
+            };
+            var branches = new List<GitBranch>
+            {
+                new GitBranch(false,"",Constants.MasterBranchName,false,masterCommits),
+                new GitBranch(false,"",Constants.DevelopBranchName,false,developCommits),
+                new GitBranch(false,"",$"{Constants.FeatureBranchName}{Constants.BranchNameInfoDelimiter}test",true,featureCommits)
+            };
+            var tags = new List<GitTag>
+            {
+                new GitTag("0.0.0", "1")
+            };
+
+            return new GitRepository(branches, featureCommits, tags);
+        }
+
+        internal static GitRepository TwoCommitsOnDevelopWithoutCoreVersionRepository()
+        {
+            var masterCommits = new List<GitCommit>
+            {
+                new GitCommit("a")
+            };
+            var developCommits = new List<GitCommit>
+            {
+                new GitCommit("b"),
+                new GitCommit("a")
+            };
+            var branches = new List<GitBranch>
+            {
+                new GitBranch(false,"",Constants.MasterBranchName,false,masterCommits),
+                new GitBranch(false,"",Constants.DevelopBranchName,true,developCommits)
+            };
+
+            return new GitRepository(branches, developCommits, new List<GitTag>());
         }
 
         internal static GitRepository ReleaseBranchRepositoryWithoutTag()

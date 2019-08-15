@@ -21,10 +21,13 @@ using System.Text.RegularExpressions;
 namespace DashDashVersion
 {
     /// <summary>
-    /// This class is used to represent a single version number.
+    /// This class is used to represent a single [Semantic Versioning 2.0.0](https://semver.org) version number.
     /// </summary>
     public class VersionNumber : IComparable<VersionNumber>
     {
+        /// <summary>
+        /// Parse a semver 2.0.0 compliant string to a VersionNumber instance.
+        /// </summary>
         public static VersionNumber Parse(string version)
         {
             if (string.IsNullOrWhiteSpace(version))
@@ -45,38 +48,69 @@ namespace DashDashVersion
                 matches.Groups["PreReleaseLabelFeature"].Captures);
             var buildMetadata = matches.Groups["BuildMetadata"].Captures;
             var metadata = buildMetadata.Count > 0 ? buildMetadata[0].Value : string.Empty;
+            var debug = matches.Groups["CoreDebugLabel"].Success || matches.Groups["PreDebugLabel"].Success;
+
+            if (matches.Groups["CoreDebugLabel"].Success)
+            {
+                major = uint.Parse(matches.Groups["Major2"].Captures[0].Value);
+                minor = uint.Parse(matches.Groups["Minor2"].Captures[0].Value);
+                patch = uint.Parse(matches.Groups["Patch2"].Captures[0].Value);
+            }
+
             return new VersionNumber(
                 major,
                 minor,
                 patch,
                 preReleaseLabel,
-                metadata);
+                metadata,
+                debug);
         }
 
-        internal VersionNumber(
+        public VersionNumber(
             uint major,
             uint minor,
             uint patch,
             PreReleaseLabel? preReleaseTag = null,
-            string metadata = "")
+            string metadata = "",
+            bool debugVersion = false)
         {
             Major = major;
             Minor = minor;
             Patch = patch;
             PreReleaseLabel = preReleaseTag;
             Metadata = metadata;
+            DebugVersion = debugVersion;
         }
 
+        /// <summary>
+        /// The major version number.
+        /// </summary>
         public uint Major { get; }
 
+        /// <summary>
+        /// The minor version number.
+        /// </summary>
         public uint Minor { get; }
 
+        /// <summary>
+        /// The patch number.
+        /// </summary>
         public uint Patch { get; }
 
+        /// <summary>
+        /// The (optional) pre-release label.
+        /// </summary>
         public PreReleaseLabel? PreReleaseLabel { get; }
 
+        /// <summary>
+        /// This property contains the possibly empty build metadata.
+        /// </summary>
         public string Metadata { get; }
 
+        /// <summary>
+        /// This method determines the ordering of VersionNumber instances.
+        /// </summary>
+        /// <see cref="IComparable{T}.CompareTo"/>
         public int CompareTo(VersionNumber other)
         {
             var compare = Major.CompareTo(other.Major);
@@ -111,10 +145,23 @@ namespace DashDashVersion
             return 0;
         }
 
+        /// <summary>
+        /// A string representation of this VersionNumber that can be used as the constructor parameter of the [AssemblyVersionAttribute](https://docs.microsoft.com/en-us/dotnet/api/system.reflection.assemblyversionattribute?view=netstandard-2.0).
+        /// </summary>
+        /// <see cref="System.Reflection.AssemblyVersionAttribute"/>
         public string AssemblyVersion => $"{Major}{Constants.ParticleDelimiter}{Minor}{Constants.ParticleDelimiter}{Patch}{Constants.ParticleDelimiter}{PreReleaseLabel?.CalculatedRevision ?? 0}";
 
+        /// <returns>The full semantic version string of the version number including a pre-release label (if present) and the build meta data.</returns>
         public override string ToString() => FullSemVer;
 
+        /// <summary>
+        /// This property conveys whether the debug flag should be added to the version number.
+        /// </summary>
+        public bool DebugVersion { get; set; }
+
+        /// <summary>
+        /// The full semantic version string of the version number including a pre-release label (if present) and the build meta data.
+        /// </summary>
         public string FullSemVer
         {
             get
@@ -126,13 +173,30 @@ namespace DashDashVersion
             }
         }
 
+        /// <summary>
+        /// The semantic version string of the version number including a pre-release label (if present), but without the build meta data.
+        /// </summary>
         public string SemVer
         {
             get
             {
-                var toReturn = $"{Major}{Constants.ParticleDelimiter}{Minor}{Constants.ParticleDelimiter}{Patch}";
+                var toReturn = $"{Major}{Constants.ParticleDelimiter}{Minor}{Constants.ParticleDelimiter}";
                 if (PreReleaseLabel != null)
-                    toReturn = $"{toReturn}{Constants.PreReleaseLabelDelimiter}{PreReleaseLabel}";
+                {
+                    toReturn = $"{toReturn}{Patch}{Constants.PreReleaseLabelDelimiter}{PreReleaseLabel}";
+                    if (DebugVersion)
+                    {
+                        toReturn = $"{toReturn}{Constants.ParticleDelimiter}{Constants.DebugPreReleaseLabel}";
+                    }
+                }
+                else if (DebugVersion)
+                {
+                    toReturn = $"{toReturn}{Patch + 1}{Constants.PreReleaseLabelDelimiter}{Constants.DebugPreReleaseLabel}{Constants.ParticleDelimiter}{toReturn}{Patch}";
+                }
+                else
+                {
+                    toReturn = $"{toReturn}{Patch}";
+                }
                 return toReturn;
             }
         }
@@ -149,7 +213,6 @@ namespace DashDashVersion
             return featureLabel.Count > 0 ?
                 new FeaturePreReleaseLabel(baseParticle, SplitLabel(featureLabel[0].Value)) :
                 new PreReleaseLabel(baseParticle);
-
         }
 
         private static PreReleaseLabelParticle SplitLabel(string label)

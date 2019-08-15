@@ -24,10 +24,10 @@ along with DashDashVersion. If not, see<https://www.gnu.org/licenses/>.
     <Description>This libary can generate a version numbers for a git flow repository.</Description>
     <IsPackable>true</IsPackable>
     <LangVersion>8.0</LangVersion>
-    <NullableContextOptions>enable</NullableContextOptions>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="LibGit2Sharp" Version="0.26.0" />
+    <PackageReference Include="LibGit2Sharp" Version="0.26.1" />
     <PackageReference Include="System.Linq" Version="4.3.0" />
   </ItemGroup>
 </Project>
