@@ -157,12 +157,7 @@ namespace DashDashVersion
         /// <summary>
         /// This property conveys whether the debug flag should be added to the version number.
         /// </summary>
-        public bool DebugVersion { get; private set; }
-
-        public void SetDebugVersion(bool isDebugVersion)
-        {
-            DebugVersion = isDebugVersion;
-        }
+        public bool DebugVersion { get; set; }
 
         /// <summary>
         /// The full semantic version string of the version number including a pre-release label (if present) and the build meta data.
