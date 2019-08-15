@@ -23,7 +23,7 @@ namespace DashDashVersionTests
 {
     public static class TestRepositories
     {
-        internal static GitRepository MasterOnlyRepository()
+        internal static GitRepository MasterRepository()
         {
             var commits = new List<GitCommit>
             {
@@ -32,7 +32,9 @@ namespace DashDashVersionTests
 
             var branches = new List<GitBranch>
             {
-                new GitBranch(false,"",Constants.MasterBranchName,true,commits)
+                new GitBranch(false,"",Constants.MasterBranchName,true,commits),
+                new GitBranch(false,"",Constants.DevelopBranchName,false,commits)
+
             };
             var tags = new List<GitTag>
             {

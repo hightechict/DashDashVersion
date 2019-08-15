@@ -115,7 +115,7 @@ namespace DashDashVersionTests
         [Fact]
         public void MasterRepoVersionTest()
         {
-            var version = GenerateVersionNumber(TestRepositories.MasterOnlyRepository());
+            var version = GenerateVersionNumber(TestRepositories.MasterRepository());
             version.SemVer.Should().Be("1.0.0");
         }
 
