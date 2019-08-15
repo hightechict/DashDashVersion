@@ -33,7 +33,7 @@ namespace DashDashVersion.RepositoryAbstraction
             string remoteName,
             string friendlyName,
             bool isCurrentRepositoryHead,
-            List<GitCommit> commits)
+            IReadOnlyCollection<GitCommit> commits)
         {
             if (commits.Count == 0)
             {
@@ -44,7 +44,7 @@ namespace DashDashVersion.RepositoryAbstraction
             FriendlyName = friendlyName;
             IsCurrentRepositoryHead = isCurrentRepositoryHead;
             _commits = new Lazy<ListOfCommits>(() => new ListOfCommits(commits));
-            Head = commits[0];
+            Head = commits.First();
         }
 
         public bool IsRemote { get; }
