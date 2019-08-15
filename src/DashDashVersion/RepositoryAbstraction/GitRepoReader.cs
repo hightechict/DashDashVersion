@@ -134,6 +134,7 @@ namespace DashDashVersion.RepositoryAbstraction
                 .OrderByDescending(pair => pair.VersionNumber)
                 .ToList();
 
+            var CoreVersionTagNotOnMaster = coreVersionTagsAndVersions.Select(pair => pair.Tag).FirstOrDefault(tag => !_repository.Master.Commits.Contains(tag.Sha));
             if (!coreVersionTagsAndVersions.Any())
             {
                 var sha = _repository.CurrentBranch.First.Sha;
@@ -142,7 +143,10 @@ namespace DashDashVersion.RepositoryAbstraction
 @$"Warning you currently have no core version tag on master like '0.0.0'.
 You could use 'git tag 0.0.0 {sha}' to place a tag.");
             }
-
+            else if (CoreVersionTagNotOnMaster != null)
+            {
+                throw new InvalidOperationException($"The tag: {CoreVersionTagNotOnMaster.FriendlyName} is not on master, if this is on a build server maybe the remote refs have not been fetched? all core tags must be on master for this program to function");
+            }
             var highestVersion = coreVersionTagsAndVersions.First().VersionNumber;
 
             return coreVersionTagsAndVersions
@@ -219,8 +223,6 @@ You could use 'git tag 0.0.0 {sha}' to place a tag.");
             _repository.Tags.Where(
                 tag => _repository.CurrentBranch.Contains(tag.Sha))
                 .ToList();
-
-
 
         private GitBranch BranchForRepositoryHead() =>
             _repository.Branches
