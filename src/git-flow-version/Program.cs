@@ -63,7 +63,7 @@ namespace GitFlowVersion
             var newVersion = version;
             var writer = new JsonTextWriter(Console.Out) { Formatting = Formatting.Indented };
 
-            newVersion.SetDebugVersion(debugVersion);
+            newVersion.DebugVersion = debugVersion;
 
             writer.WriteStartObject();
 
