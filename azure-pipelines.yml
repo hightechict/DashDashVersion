@@ -50,7 +50,7 @@ steps:
 - task: DotNetCoreInstaller@0
   inputs:
     packageType: 'sdk'
-    version: '2.2.300'
+    version: '2.2.401'
   displayName: Install .NET Core 2 latest
   env:
    DOTNET_CLI_TELEMETRY_OPTOUT: false
