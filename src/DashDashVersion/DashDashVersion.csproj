@@ -27,7 +27,7 @@ along with DashDashVersion. If not, see<https://www.gnu.org/licenses/>.
     <Nullable>enable</Nullable>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="LibGit2Sharp" Version="0.26.0" />
+    <PackageReference Include="LibGit2Sharp" Version="0.26.1" />
     <PackageReference Include="System.Linq" Version="4.3.0" />
   </ItemGroup>
 </Project>

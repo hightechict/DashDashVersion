@@ -27,13 +27,13 @@ namespace DashDashVersion.RepositoryAbstraction
         string HeadCommitHash { get; }
 
         VersionNumber CurrentCoreVersion { get; }
-        
+
         GitTag TagOnHead { get; }
 
         VersionNumber? HighestMatchingTagForReleaseCandidate { get; }
 
         uint CommitCountSinceLastMinorVersion { get; }
 
-        uint CommitCountSinceBranchOffFromDevelop { get; }
+        uint CommitCountUniqueToFeature { get; }
     }
 }

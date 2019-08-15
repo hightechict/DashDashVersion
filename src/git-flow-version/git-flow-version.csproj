@@ -29,9 +29,13 @@ along with DashDashVersion. If not, see<https://www.gnu.org/licenses/>.
     <NullableContextOptions>enable</NullableContextOptions>
     <NullableReferenceTypes>true</NullableReferenceTypes>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="..\..\built\SharedAssemblyInfo.cs" />
+  </ItemGroup>
     
   <ItemGroup>
-    <PackageReference Include="LibGit2Sharp" Version="0.26.0" />
+    <PackageReference Include="LibGit2Sharp" Version="0.26.1" />
     <PackageReference Include="Microsoft.Extensions.CommandLineUtils" Version="1.1.1" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="2.2.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.CommandLine" Version="2.2.0" />

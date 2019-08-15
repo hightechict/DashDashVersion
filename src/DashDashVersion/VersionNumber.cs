@@ -48,26 +48,38 @@ namespace DashDashVersion
                 matches.Groups["PreReleaseLabelFeature"].Captures);
             var buildMetadata = matches.Groups["BuildMetadata"].Captures;
             var metadata = buildMetadata.Count > 0 ? buildMetadata[0].Value : string.Empty;
+            var debug = matches.Groups["CoreDebugLabel"].Success || matches.Groups["PreDebugLabel"].Success;
+
+            if (matches.Groups["CoreDebugLabel"].Success)
+            {
+                major = uint.Parse(matches.Groups["Major2"].Captures[0].Value);
+                minor = uint.Parse(matches.Groups["Minor2"].Captures[0].Value);
+                patch = uint.Parse(matches.Groups["Patch2"].Captures[0].Value);
+            }
+
             return new VersionNumber(
                 major,
                 minor,
                 patch,
                 preReleaseLabel,
-                metadata);
+                metadata,
+                debug);
         }
 
-        internal VersionNumber(
+        public VersionNumber(
             uint major,
             uint minor,
             uint patch,
             PreReleaseLabel? preReleaseTag = null,
-            string metadata = "")
+            string metadata = "",
+            bool debugVersion = false)
         {
             Major = major;
             Minor = minor;
             Patch = patch;
             PreReleaseLabel = preReleaseTag;
             Metadata = metadata;
+            DebugVersion = debugVersion;
         }
 
         /// <summary>
@@ -143,6 +155,11 @@ namespace DashDashVersion
         public override string ToString() => FullSemVer;
 
         /// <summary>
+        /// This property conveys whether the debug flag should be added to the version number.
+        /// </summary>
+        public bool DebugVersion { get; set; }
+
+        /// <summary>
         /// The full semantic version string of the version number including a pre-release label (if present) and the build meta data.
         /// </summary>
         public string FullSemVer
@@ -163,9 +180,23 @@ namespace DashDashVersion
         {
             get
             {
-                var toReturn = $"{Major}{Constants.ParticleDelimiter}{Minor}{Constants.ParticleDelimiter}{Patch}";
+                var toReturn = $"{Major}{Constants.ParticleDelimiter}{Minor}{Constants.ParticleDelimiter}";
                 if (PreReleaseLabel != null)
-                    toReturn = $"{toReturn}{Constants.PreReleaseLabelDelimiter}{PreReleaseLabel}";
+                {
+                    toReturn = $"{toReturn}{Patch}{Constants.PreReleaseLabelDelimiter}{PreReleaseLabel}";
+                    if (DebugVersion)
+                    {
+                        toReturn = $"{toReturn}{Constants.ParticleDelimiter}{Constants.DebugPreReleaseLabel}";
+                    }
+                }
+                else if (DebugVersion)
+                {
+                    toReturn = $"{toReturn}{Patch + 1}{Constants.PreReleaseLabelDelimiter}{Constants.DebugPreReleaseLabel}{Constants.ParticleDelimiter}{toReturn}{Patch}";
+                }
+                else
+                {
+                    toReturn = $"{toReturn}{Patch}";
+                }
                 return toReturn;
             }
         }
@@ -182,7 +213,6 @@ namespace DashDashVersion
             return featureLabel.Count > 0 ?
                 new FeaturePreReleaseLabel(baseParticle, SplitLabel(featureLabel[0].Value)) :
                 new PreReleaseLabel(baseParticle);
-
         }
 
         private static PreReleaseLabelParticle SplitLabel(string label)
