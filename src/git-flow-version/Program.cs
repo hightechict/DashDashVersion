@@ -27,7 +27,7 @@ namespace GitFlowVersion
     {
         private static int Main(string[] args)
         {
-            var app = new CommandLineApplication
+            using var app = new CommandLineApplication
             {
                 Name = "git-flow-version"
             };
