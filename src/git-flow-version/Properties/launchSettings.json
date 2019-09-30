@@ -2,8 +2,7 @@
   "profiles": {
     "git-flow-version": {
       "commandName": "Project",
-      "commandLineArgs": "-d",
-      "workingDirectory": "D:\\Repos\\Hightech\\QuickConnect"
+      "workingDirectory": "D:\\Repos\\Hightech\\vlow.support.web"
     }
   }
 }

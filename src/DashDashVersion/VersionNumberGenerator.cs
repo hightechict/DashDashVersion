@@ -49,7 +49,7 @@ namespace DashDashVersion
             return currentBranch switch
             {
                 FeatureBranchInfo feature => GenerateFeatureVersionNumber(repo, feature, headCommitHash),
-                ReleaseCandidateBranchInfo releaseCandidate => GenerateReleaseVersionNumber(repo, releaseCandidate, headCommitHash),
+                ReleaseCandidateBranchInfo releaseCandidate => GenerateReleaseCanditateVersionNumber(repo, releaseCandidate, headCommitHash),
                 DevelopBranchInfo develop => GenerateDevelopVersionNumber(repo, develop, headCommitHash),
                 MasterBranchInfo _ when TagOnHeadIsMajorMinorPatch(tagOnHead) => VersionNumber.Parse(tagOnHead.FriendlyName),
                 _ => throw new ArgumentOutOfRangeException(
@@ -66,10 +66,10 @@ namespace DashDashVersion
                 repo.CurrentCoreVersion.Major,
                 repo.CurrentCoreVersion.Minor + 1,
                 0,
-                develop.DeterminePreReleaseLabel(repo.CommitCountSinceLastMinorVersion),
+                develop.DeterminePreReleaseLabel(repo.CommitCountDevelopSinceLastMinorCoreVersion),
                 headCommitHash);
 
-        private static VersionNumber GenerateReleaseVersionNumber(
+        private static VersionNumber GenerateReleaseCanditateVersionNumber(
             IGitRepoReader repo,
             ReleaseCandidateBranchInfo releaseCandidate,
             string headCommitHash)
@@ -91,9 +91,8 @@ namespace DashDashVersion
             FeatureBranchInfo feature,
             string headCommitHash)
         {
-            var developOrdinal = repo.CommitCountSinceLastMinorVersion - repo.CommitCountUniqueToFeature;
             var preReleaseLabel = feature.DeterminePreReleaseLabel(
-                developOrdinal,
+                repo.CommitCountDevelopSinceLastMinorCoreVersion,
                 repo.CommitCountUniqueToFeature);
             return new VersionNumber(
                 repo.CurrentCoreVersion.Major,

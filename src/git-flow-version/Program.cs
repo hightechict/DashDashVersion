@@ -18,7 +18,7 @@
 using System;
 using System.Reflection;
 using DashDashVersion;
-using Microsoft.Extensions.CommandLineUtils;
+using McMaster.Extensions.CommandLineUtils;
 using Newtonsoft.Json;
 
 namespace GitFlowVersion
@@ -27,7 +27,7 @@ namespace GitFlowVersion
     {
         private static int Main(string[] args)
         {
-            var app = new CommandLineApplication
+            using var app = new CommandLineApplication
             {
                 Name = "git-flow-version"
             };
@@ -39,14 +39,14 @@ namespace GitFlowVersion
 
             app.OnExecute(() =>
             {
-                if (optionVersion.Value() == "on")
+                if (optionVersion.HasValue())
                 {
                     WriteGitFlowVersion();
                     return 0;
                 }
                 try
                 {
-                    OutputJsonToConsole(VersionNumberGenerator.GenerateVersionNumber(Environment.CurrentDirectory, optionBranch.Value()), optionDebug.Value() == "on");
+                    OutputJsonToConsole(VersionNumberGenerator.GenerateVersionNumber(Environment.CurrentDirectory, optionBranch.Value()), optionDebug.HasValue());
                     return 0;
                 }
                 catch (Exception e)
@@ -61,8 +61,7 @@ namespace GitFlowVersion
         private static void OutputJsonToConsole(VersionNumber version, bool debugVersion)
         {
             var newVersion = version;
-            var writer = new JsonTextWriter(Console.Out) { Formatting = Formatting.Indented };
-
+            using var writer = new JsonTextWriter(Console.Out) { Formatting = Formatting.Indented };
             newVersion.DebugVersion = debugVersion;
 
             writer.WriteStartObject();

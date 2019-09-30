@@ -57,7 +57,7 @@ namespace DashDashVersion.RepositoryAbstraction
 
         public GitCommit Head { get; }
 
-        public ListOfCommits Commits => _commits.Value;
+        public ListOfCommits ListOfCommits => _commits.Value;
 
         public override string ToString() => $"branch: {FriendlyName}";
     }

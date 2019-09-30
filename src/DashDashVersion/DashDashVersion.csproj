@@ -19,7 +19,7 @@ along with DashDashVersion. If not, see<https://www.gnu.org/licenses/>.
 
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFramework>netstandard2.1</TargetFramework>
     <Title>DashDashVersion</Title>
     <Description>This libary can generate a version numbers for a git flow repository.</Description>
     <IsPackable>true</IsPackable>

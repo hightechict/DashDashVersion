@@ -30,7 +30,7 @@ namespace DashDashVersion.RepositoryAbstraction
     {
         private readonly IGitRepository _repository;
         private readonly Lazy<uint> _commitCountUniqueToFeature;
-        private readonly Lazy<uint> _commitCountSinceLastMinorVersion;
+        private readonly Lazy<uint> _commitCountDevelopSinceLastMinorVersion;
         private readonly Lazy<VersionNumber> _currentCoreVersion;
         private readonly Lazy<List<(GitTag tag, VersionNumber versionNumber)>> _highestCoreVersionListHighToLow;
         private readonly Lazy<List<GitTag>> _visibleTags;
@@ -74,7 +74,7 @@ namespace DashDashVersion.RepositoryAbstraction
             _commitCountUniqueToFeature = new Lazy<uint>(CalculateCommitCountUniqueToFeature);
             _highestCoreVersionListHighToLow = new Lazy<List<(GitTag tag, VersionNumber versionNumber)>>(HighestCoreVersionsMajorMinor);
             _currentCoreVersion = new Lazy<VersionNumber>(CalculateCurrentCoreVersion);
-            _commitCountSinceLastMinorVersion = new Lazy<uint>(CalculateCommitCountSinceLastMinorVersion);
+            _commitCountDevelopSinceLastMinorVersion = new Lazy<uint>(CalculateCommitCountDevelopSinceMaster);
             _tagOnHead = new Lazy<GitTag>(() => CalculateTagOnHead);
         }
 
@@ -85,8 +85,6 @@ namespace DashDashVersion.RepositoryAbstraction
         public VersionNumber CurrentCoreVersion => _currentCoreVersion.Value;
 
         public BranchInfo CurrentBranch { get; }
-
-        public uint CommitCountSinceLastMinorVersion => _commitCountSinceLastMinorVersion.Value;
 
         public VersionNumber? HighestMatchingTagForReleaseCandidate
         {
@@ -106,14 +104,28 @@ namespace DashDashVersion.RepositoryAbstraction
 
         public uint CommitCountUniqueToFeature => _commitCountUniqueToFeature.Value;
 
+        public uint CommitCountDevelopSinceLastMinorCoreVersion => _commitCountDevelopSinceLastMinorVersion.Value;
+
         private VersionNumber CalculateCurrentCoreVersion() => _highestCoreVersionListHighToLow.Value.First().versionNumber;
 
         private uint CalculateCommitCountUniqueToFeature()
         {
-            var toReturn = (uint)_repository.CurrentBranch.Except(_repository.Develop.Commits).Count();
-            if (!_repository.CurrentBranch.Overlaps(_repository.Develop.Commits))
+            var toReturn = (uint)_repository.CurrentBranch.Except(_repository.Develop.ListOfCommits).Count();
+            if (!_repository.CurrentBranch.Overlaps(_repository.Develop.ListOfCommits))
                 throw new InvalidOperationException($"Git repository does not contain a common ancestor between '{Constants.DevelopBranchName}' and the current HEAD.");
             return toReturn;
+        }
+
+        private uint CalculateCommitCountDevelopSinceMaster()
+        {
+            var versionTagSha = _highestCoreVersionListHighToLow.Value
+                        .Last()
+                        .tag
+                        .Sha;
+
+            return FindAncestor(
+                 versionTagSha,
+                 _repository.Develop.ListOfCommits.IntersectWith(_repository.CurrentBranch));
         }
 
         private string? HighestMatchingTag(string toMatch) =>
@@ -128,12 +140,12 @@ namespace DashDashVersion.RepositoryAbstraction
         {
             var coreVersionTagsAndVersions = _visibleTags.Value
                 .Where(tag => Patterns.IsCoreVersionTag.IsMatch(tag.FriendlyName))
-                .Where(tag => _repository.Master.Commits.Contains(tag.Sha))
+                .Where(tag => _repository.Master.ListOfCommits.Contains(tag.Sha))
                 .Select(tag => (Tag: tag, VersionNumber: VersionNumber.Parse(tag.FriendlyName)))
                 .OrderByDescending(pair => pair.VersionNumber)
                 .ToList();
 
-            var CoreVersionTagNotOnMaster = coreVersionTagsAndVersions.Select(pair => pair.Tag).FirstOrDefault(tag => !_repository.Master.Commits.Contains(tag.Sha));
+            var CoreVersionTagNotOnMaster = coreVersionTagsAndVersions.Select(pair => pair.Tag).FirstOrDefault(tag => !_repository.Master.ListOfCommits.Contains(tag.Sha));
             if (!coreVersionTagsAndVersions.Any())
             {
                 var sha = _repository.CurrentBranch.First.Sha;
@@ -152,18 +164,6 @@ You could use 'git tag 0.0.0 {sha}' to place a tag.");
                 .Where(
                     pair => pair.VersionNumber.Major == highestVersion.Major &&
                     pair.VersionNumber.Minor == highestVersion.Minor).ToList();
-        }
-
-        private uint CalculateCommitCountSinceLastMinorVersion()
-        {
-            var versionTagSha = _highestCoreVersionListHighToLow.Value
-                        .Last()
-                        .tag
-                        .Sha;
-
-            return FindAncestor(
-                 versionTagSha,
-                 _repository.CurrentBranch.Commits);
         }
 
         private static uint FindAncestor(
