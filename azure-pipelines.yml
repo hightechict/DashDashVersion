@@ -32,40 +32,51 @@ variables:
 steps:
 
 - task: PowerShell@2
+  displayName: Install docfx
   condition: and(eq(variables.imageName, 'windows-latest'),contains(variables['Build.SourceBranch'],'/master'))
   inputs:
     targetType: inline
     pwsh: true
     script: 'choco install -y docfx'
-  displayName: Install docfx
 
 - task: PowerShell@2
+  displayName: Install codecov
   condition: and(eq(variables.imageName, 'windows-latest'),ne(variables['Build.SourceBranchName'], 'merge'))
   inputs:
     targetType: inline
     pwsh: true
     script: 'choco install codecov'
-  displayName: Install codecov
 
 - task: DotNetCoreInstaller@0
+  displayName: Install .NET Core 2.2.401
+  inputs:
+    packageType: 'sdk'
+    version: '2.2.401'
+  env:
+   DOTNET_CLI_TELEMETRY_OPTOUT: false
+   DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
+   
+- task: DotNetCoreInstaller@0
+  displayName: Install .NET Core 3.0.100
   inputs:
     packageType: 'sdk'
     version: '3.0.100'
-  displayName: Install .NET Core 3.0.100
   env:
    DOTNET_CLI_TELEMETRY_OPTOUT: false
    DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
 
 - task: PowerShell@2
+  displayName: Install coverlet
   inputs:
     targetType: inline
     pwsh: true
     script: 'dotnet tool install --global coverlet.console'
   env:
    DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
-  displayName: Install coverlet
+
 
 - task: PowerShell@2
+  displayName: Install git-flow-version
   condition: ne(variables['Build.SourceBranchName'], 'merge')
   inputs:
     targetType: inline
@@ -73,54 +84,57 @@ steps:
     script: 'dotnet tool install --global git-flow-version'
   env:
    DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
-  displayName: Install git-flow-version
 
 - task: NuGetToolInstaller@1
+  displayName: Install NuGet
   inputs:
     versionSpec: '5.1.0'
     checkLatest: true
   env:
    DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
-  displayName: Install NuGet
+
 
 - task: InstallSSHKey@0
+  displayName: Install sshKey for documentation publishing
   condition: and(eq(variables.imageName, 'windows-latest'),contains(variables['Build.SourceBranch'],'/master'))
   inputs:
     knownHostsEntry: 'github.com, ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAq2A7hRGmdnm9tUDbO9IDSwBK6TbQa+PXYPCPy6rbTrTtw7PHkccKrpp0yVhp5HdEIcKr6pLlVDBfOLX9QUsyCOV0wzfjIJNlGEYsdlLJizHhbn2mUjvSAHQqZETYP81eFzLQNnPHt4EVVUh7VfDESU84KezmD5QlWpXLmvU31/yMf+Se8xhHTvKSCZIFImWwoG6mbUoWf9nzpIoaSjB+weqqUUmpaaasXVal72J+UX2B+2RPW3RcT0eOzQgqlJL3RKrTJvdsjE3JEAvGq3lGHSZXy28G3skua2SmVi/w4yCE6gbODqnTWlg7+wC604ydGXA8VJiS5ap43JXiUFFAaQ=='
     sshPublicKey: 'secdsa-sha2-nistp521 AAAAE2VjZHNhLXNoYTItbmlzdHA1MjEAAAAIbmlzdHA1MjEAAACFBAAvZmttHSrJ2SHfXJJImvVWn70vLDh9jetSBwBsjK3MEEES7CBAabuJvPtXqPLQxDngkW4GJTqbrqDzp2YDHejhTAA8trE+sbFUXHDNbC3lwFdyeLA5YD0Kmmq7V7UIpK0h3khjowu4Ivgp6yP1bXl/3iOyVBENkK+Gx6aryPVkRN9ipQ== Azure-pipeline-site'
     sshKeySecureFile: 'DashDashVersionSiteAzurePipeline'
-  displayName: Install sshKey for documentation publishing
+
 
 - task: InstallSSHKey@0
+  displayName: Install sshKey for tagging
   condition: eq(variables.imageName, 'ubuntu-latest')
   inputs:
     knownHostsEntry: 'github.com, ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAq2A7hRGmdnm9tUDbO9IDSwBK6TbQa+PXYPCPy6rbTrTtw7PHkccKrpp0yVhp5HdEIcKr6pLlVDBfOLX9QUsyCOV0wzfjIJNlGEYsdlLJizHhbn2mUjvSAHQqZETYP81eFzLQNnPHt4EVVUh7VfDESU84KezmD5QlWpXLmvU31/yMf+Se8xhHTvKSCZIFImWwoG6mbUoWf9nzpIoaSjB+weqqUUmpaaasXVal72J+UX2B+2RPW3RcT0eOzQgqlJL3RKrTJvdsjE3JEAvGq3lGHSZXy28G3skua2SmVi/w4yCE6gbODqnTWlg7+wC604ydGXA8VJiS5ap43JXiUFFAaQ=='
     sshPublicKey: 'ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIF6/HvdVdOqxei+waWEWBR9u3zwx9TZtyeYuIqs2uBL0 Azure-pipeline'
     sshKeySecureFile: 'GithubDeploymentKey'
-  displayName: Install sshKey for tagging
+
 
 - task: DotNetCoreCLI@2
+  displayName: Dotnet Restore
   inputs:
     command: 'restore'
     feedsToUse: 'select'
-  displayName: Dotnet Restore
 
 - task: PowerShell@2
+  displayName: Create built folder
   condition: and(eq(variables.imageName, 'windows-latest'),ne(variables['Build.SourceBranchName'], 'merge'))
   inputs:
     targetType: inline
     pwsh: true
     script: 'New-Item -ItemType Directory "built"'
-  displayName: Create built folder
 
 - task: DotNetCoreCLI@2
+  displayName: Running Tests
   inputs:
     command: 'test'
     arguments: '/p:CollectCoverage=true /p:Exclude=[xunit.*]* /p:CoverletOutput=''../../built/DashDashVersion.xml'' /p:CoverletOutputFormat=cobertura'
     testRunTitle: 'Running tests'
-  displayName: Running Tests
 
 - task: PowerShell@2
+  displayName: Publish code coverage
   condition: and(eq(variables.imageName, 'windows-latest'),ne(variables['Build.SourceBranchName'], 'merge'))
   inputs:
     targetType: inline
@@ -129,11 +143,10 @@ steps:
   env:
     CodecovToken: $(CodecovToken)
     DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
-  displayName: Publish code coverage
 
 - task: PowerShell@2
-  condition: ne(variables['Build.SourceBranchName'], 'merge')
   displayName: Calculating version
+  condition: ne(variables['Build.SourceBranchName'], 'merge')
   inputs:
     targetType: 'inline'
     script: |
@@ -145,8 +158,8 @@ steps:
       echo "##vso[task.setvariable variable=AssemblyVersion]$($version.AssemblyVersion)"
 
 - task: PowerShell@2
-  condition: and(eq(variables.imageName, 'windows-latest'),ne(variables['Build.SourceBranchName'], 'merge'))
   displayName: Create assembly info
+  condition: and(eq(variables.imageName, 'windows-latest'),ne(variables['Build.SourceBranchName'], 'merge'))
   inputs:
     targetType: 'inline'
     script: |
@@ -166,6 +179,7 @@ steps:
     AssemblyVersion: $(AssemblyVersion)
 
 - task: DotNetCoreCLI@2
+  displayName: Creating packages dotnet task
   condition: and(eq(variables.imageName, 'windows-latest'),ne(variables['Build.SourceBranchName'], 'merge'))
   inputs:
     command: 'pack'
@@ -173,11 +187,10 @@ steps:
     packDirectory: './built'
     versioningScheme: 'byEnvVar'
     versionEnvVar: 'FullSemVer'
-  displayName: Creating packages dotnet task
 
 - task: PowerShell@2
-  condition: and(eq(variables.imageName, 'ubuntu-latest'),ne(variables['Build.SourceBranchName'], 'merge'))
   displayName: Tagging build
+  condition: and(eq(variables.imageName, 'ubuntu-latest'),ne(variables['Build.SourceBranchName'], 'merge'))
   inputs:
     targetType: 'inline'
     script: |
@@ -195,8 +208,8 @@ steps:
     SemVer: $(SemVer)
 
 - task: PowerShell@2
-  condition: and(eq(variables.imageName, 'windows-latest'),not(contains(variables['Build.SourceBranch'],'/feature/')),ne(variables['Build.SourceBranchName'], 'merge'))
   displayName: Pushing NuGet package
+  condition: and(eq(variables.imageName, 'windows-latest'),not(contains(variables['Build.SourceBranch'],'/feature/')),ne(variables['Build.SourceBranchName'], 'merge'))
   inputs:
     targetType: 'inline'
     script: |
@@ -209,8 +222,8 @@ steps:
     DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
 
 - task: PowerShell@2
-  condition: and(eq(variables.imageName, 'windows-latest'),contains(variables['Build.SourceBranch'],'/master'))
   displayName: Generating documentation
+  condition: and(eq(variables.imageName, 'windows-latest'),contains(variables['Build.SourceBranch'],'/master'))
   inputs:
     targetType: 'inline'
     script: |
@@ -231,8 +244,8 @@ steps:
       os.system('git clone --progress -v git@github.com:hightechict/DashDashVersion_site.git --branch master')
 
 - task: PowerShell@2
-  condition: and(eq(variables.imageName, 'windows-latest'),contains(variables['Build.SourceBranch'],'/master'))
   displayName: Prepairing repo
+  condition: and(eq(variables.imageName, 'windows-latest'),contains(variables['Build.SourceBranch'],'/master'))
   inputs:
     targetType: 'inline'
     script: |
