@@ -32,8 +32,8 @@ namespace DashDashVersion.RepositoryAbstraction
 
         VersionNumber? HighestMatchingTagForReleaseCandidate { get; }
 
-        uint CommitCountSinceLastMinorVersion { get; }
-
         uint CommitCountUniqueToFeature { get; }
+
+        uint CommitCountDevelopSinceLastMinorCoreVersion { get; }
     }
 }

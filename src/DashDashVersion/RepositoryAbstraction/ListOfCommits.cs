@@ -42,5 +42,12 @@ namespace DashDashVersion.RepositoryAbstraction
 
         public IEnumerable<string> Except(ListOfCommits commits) => _hashset.Except(commits._hashset);
 
+        public IEnumerable<GitCommit> IntersectWith(ListOfCommits commits)
+        {
+            var result = new HashSet<string>(_hashset);
+            result.IntersectWith(commits._hashset);
+
+            return Commits.Where(commit => commits.Contains(commit.Sha));
+        }
     }
 }

@@ -54,7 +54,7 @@ namespace DashDashVersionTests
         {
             _mock.Setup(f => f.CurrentBranch).Returns(BranchInfoFactory.CreateBranchInfo(Constants.DevelopBranchName));
             _mock.Setup(f => f.CurrentCoreVersion).Returns(VersionNumber.Parse(highestAnnotatedTag));
-            _mock.Setup(f => f.CommitCountSinceLastMinorVersion).Returns(commitsSinceAnnotatedTag);
+            _mock.Setup(f => f.CommitCountDevelopSinceLastMinorCoreVersion).Returns(commitsSinceAnnotatedTag);
             _mock.Setup(f => f.HeadCommitHash).Returns(hash);
 
             var version = VersionNumberGenerator.GenerateVersionNumber(_mock.Object);
@@ -63,21 +63,21 @@ namespace DashDashVersionTests
         }
 
         [Theory]
-        [InlineData("1.0.0", "feature/a", 6, 1, "aa34232", "1.1.0-dev.5.a.1+aa34232")]
-        [InlineData("1.0.0", "feature/Bert", 6, 1, "aa34232", "1.1.0-dev.5.Bert.1+aa34232")]
-        [InlineData("1.0.0", "feature/b", 6, 1, "aa34232", "1.1.0-dev.5.b.1+aa34232")]
+        [InlineData("1.0.0", "feature/a", 5, 1, "aa34232", "1.1.0-dev.5.a.1+aa34232")]
+        [InlineData("1.0.0", "feature/Bert", 5, 1, "aa34232", "1.1.0-dev.5.Bert.1+aa34232")]
+        [InlineData("1.0.0", "feature/b", 5, 1, "aa34232", "1.1.0-dev.5.b.1+aa34232")]
         public void VersionNumberFeatureVersion(
             string highestAnnotatedTag,
             string branchName,
-            uint commitsSinceAnnotatedTag,
-            uint commitsSinceBranchOff,
+            uint commitsOnDevelopSinsLastMinorCoreVersion,
+            uint commitsUniqueToFeature,
             string hash,
             string expectedVersion)
         {
             _mock.Setup(f => f.CurrentBranch).Returns(BranchInfoFactory.CreateBranchInfo(branchName));
             _mock.Setup(f => f.CurrentCoreVersion).Returns(VersionNumber.Parse(highestAnnotatedTag));
-            _mock.Setup(f => f.CommitCountSinceLastMinorVersion).Returns(commitsSinceAnnotatedTag);
-            _mock.Setup(f => f.CommitCountUniqueToFeature).Returns(commitsSinceBranchOff);
+            _mock.Setup(f => f.CommitCountDevelopSinceLastMinorCoreVersion).Returns(commitsOnDevelopSinsLastMinorCoreVersion);
+            _mock.Setup(f => f.CommitCountUniqueToFeature).Returns(commitsUniqueToFeature);
             _mock.Setup(f => f.HeadCommitHash).Returns(hash);
 
             var version = VersionNumberGenerator.GenerateVersionNumber(_mock.Object);
