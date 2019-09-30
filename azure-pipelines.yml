@@ -50,8 +50,8 @@ steps:
 - task: DotNetCoreInstaller@0
   inputs:
     packageType: 'sdk'
-    version: '2.2.401'
-  displayName: Install .NET Core 2 latest
+    version: '3.0.100'
+  displayName: Install .NET Core 3.0.100
   env:
    DOTNET_CLI_TELEMETRY_OPTOUT: false
    DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
