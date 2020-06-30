@@ -38,6 +38,7 @@ namespace DashDashVersion
         internal const string HotfixBranchName = "hotfix";
         internal const string FeatureBranchName = "feature";
         internal const string MasterBranchName = "master";
+        internal const string MainBranchName = "main";
         internal const string SupportBranchName = "support";
 
         internal const string DefaultRemoteName = "origin";

@@ -44,6 +44,27 @@ namespace DashDashVersionTests
             return new GitRepository(branches, commits, tags);
         }
 
+        internal static GitRepository MainRepository()
+        {
+            var commits = new List<GitCommit>
+            {
+                new GitCommit("a")
+            };
+
+            var branches = new List<GitBranch>
+            {
+                new GitBranch(false,"",Constants.MainBranchName,true,commits),
+                new GitBranch(false,"",Constants.DevelopBranchName,false,commits)
+
+            };
+            var tags = new List<GitTag>
+            {
+                new GitTag("1.0.0", "a")
+            };
+
+            return new GitRepository(branches, commits, tags);
+        }
+
         internal static GitRepository TwoCommitsOnDevelopRepository()
         {
             var masterCommits = new List<GitCommit>
