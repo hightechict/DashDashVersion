@@ -34,6 +34,16 @@ namespace DashDashVersionTests
         }
 
         [Fact]
+        public void MainRepoTest()
+        {
+            var repoReader = new GitRepoReader(TestRepositories.MainRepository(), string.Empty);
+            repoReader.CurrentBranch.Name.Should().Be(DashDashVersion.Constants.MainBranchName);
+            repoReader.CommitCountDevelopSinceLastMinorCoreVersion.Should().Be(0);
+            repoReader.HeadCommitHash.Should().Be("a");
+            repoReader.CurrentCoreVersion.SemVer.Should().Be("1.0.0");
+        }
+
+        [Fact]
         public void MasterPastDevelopTest()
         {
             var repoReader = new GitRepoReader(TestRepositories.MasterAheadOfDevelopRepository(), string.Empty);

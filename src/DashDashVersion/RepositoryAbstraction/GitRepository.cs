@@ -99,11 +99,13 @@ namespace DashDashVersion.RepositoryAbstraction
         }
 
         private static bool IsMaster(GitBranch branch) =>
-            branch.FriendlyName.Equals(Constants.MasterBranchName);
+            (branch.FriendlyName.Equals(Constants.MasterBranchName) ||
+            branch.FriendlyName.Equals(Constants.MainBranchName));
 
         private static bool IsOriginMaster(GitBranch branch) =>
             branch.IsRemote &&
-            branch.FriendlyName.Equals(Constants.OriginMaster);
+            (branch.FriendlyName.Equals(Constants.OriginMaster) ||
+            branch.FriendlyName.Equals(Constants.OriginMain));
 
         private static bool IsDevelop(GitBranch branch) =>
             branch.FriendlyName.Equals(Constants.DevelopBranchName);

@@ -396,5 +396,36 @@ namespace DashDashVersionTests
 
             return new GitRepository(branches, supportCommits, tags);
         }
+
+        internal static GitRepository BugfixRepository()
+        {
+            var masterCommits = new List<GitCommit>
+            {
+                new GitCommit("a")
+            };
+            var developCommits = new List<GitCommit>
+            {
+                new GitCommit("b"),
+                new GitCommit("a")
+            };
+            var bugfixCommits = new List<GitCommit>
+            {
+                new GitCommit("d"),
+                new GitCommit("b"),
+                new GitCommit("a")
+            };
+            var branches = new List<GitBranch>
+            {
+                new GitBranch(false,"",Constants.MasterBranchName,false,masterCommits),
+                new GitBranch(false,"",Constants.DevelopBranchName,false,developCommits),
+                new GitBranch(false,"",$"{Constants.BugFixBranchName}{Constants.BranchNameInfoDelimiter}test",true,bugfixCommits)
+            };
+            var tags = new List<GitTag>
+            {
+                new GitTag("0.0.0", "a")
+            };
+
+            return new GitRepository(branches, bugfixCommits, tags);
+        }
     }
 }
