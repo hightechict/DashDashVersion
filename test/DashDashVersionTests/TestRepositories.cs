@@ -287,6 +287,7 @@ namespace DashDashVersionTests
 
             return new GitRepository(branches, developCommits, tags);
         }
+
         internal static GitRepository DeteachedHeadRepo()
         {
             var commits = new List<GitCommit>
@@ -340,6 +341,39 @@ namespace DashDashVersionTests
             };
 
             return new GitRepository(branches, developCommits, tags);
+        }
+
+        internal static GitRepository ServiceRepository()
+        {
+            var masterCommits = new List<GitCommit>
+            {
+                new GitCommit("d"),
+                new GitCommit("c"),
+                new GitCommit("b"),
+                new GitCommit("a")
+            };
+            var supportCommits = new List<GitCommit>
+            {
+                new GitCommit("e"),
+                new GitCommit("c"),
+                new GitCommit("b"),
+                new GitCommit("a")
+            };
+            var branches = new List<GitBranch>
+            {
+                new GitBranch(false,"",Constants.MasterBranchName,false,masterCommits),
+                new GitBranch(false,"",Constants.DevelopBranchName,false,masterCommits),
+                new GitBranch(true,"",$"{Constants.DefaultRemoteName}{Constants.BranchNameInfoDelimiter}"+Constants.SupportBranchName+$"{Constants.BranchNameInfoDelimiter}1.1.0",true,supportCommits)
+            };
+            var tags = new List<GitTag>
+            {
+                new GitTag("0.0.0", "a"),
+                new GitTag("1.0.0", "b"),
+                new GitTag("2.0.0", "d"),
+                new GitTag("1.1.0", "e")
+            };
+
+            return new GitRepository(branches, supportCommits, tags);
         }
     }
 }

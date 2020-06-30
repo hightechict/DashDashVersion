@@ -31,6 +31,12 @@ namespace DashDashVersion
             {
                 return new DevelopBranchInfo(name);
             }
+
+            if (name.Equals(Constants.MasterBranchName) || name.StartsWith(Constants.SupportBranchName))
+            {
+                return new MasterBranchInfo(name);
+            }
+
             if (IsSingleSuffixBranch(name))
             {
                 var versionNumber = Patterns.ContainsVersionNumber.Match(name);
@@ -49,10 +55,7 @@ namespace DashDashVersion
                 throw new ArgumentException($"This branch : {name} is a 'feature' branch, only feature branches of the format '{Constants.FeatureBranchName}/<name>' are supported.", nameof(name));
             }
 
-            if (name.Equals(Constants.MasterBranchName) || name.StartsWith(Constants.SupportBranchName))
-            {
-                return new MasterBranchInfo(name);
-            }
+
             throw new ArgumentException($"This branch : {name} is not any of the supported branch types, only [{string.Join(", ", Constants.GitFlowBranchTypes)}] branches are supported.", nameof(name));
         }
 

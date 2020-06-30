@@ -17,6 +17,7 @@
 
 using DashDashVersion.RepositoryAbstraction;
 using FluentAssertions;
+using FluentAssertions.Extensions;
 using Xunit;
 
 namespace DashDashVersionTests
@@ -118,6 +119,14 @@ namespace DashDashVersionTests
             var repoReader = new GitRepoReader(TestRepositories.FeatureDebugMergedRepository(), string.Empty);
             repoReader.CommitCountDevelopSinceLastMinorCoreVersion.Should().Be(4);
             repoReader.CommitCountUniqueToFeature.Should().Be(7);
+        }
+
+        [Fact]
+        public void ServiceBranchSeenAsMaster()
+        {
+            var repoReader = new GitRepoReader(TestRepositories.ServiceRepository(), string.Empty);
+            repoReader.CurrentCoreVersion.SemVer.Should().Be("1.0.0");
+            repoReader.HeadCommitHash.Should().Be("e");
         }
     }
 }
