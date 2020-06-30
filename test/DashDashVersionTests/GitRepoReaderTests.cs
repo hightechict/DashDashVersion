@@ -17,7 +17,6 @@
 
 using DashDashVersion.RepositoryAbstraction;
 using FluentAssertions;
-using FluentAssertions.Extensions;
 using Xunit;
 
 namespace DashDashVersionTests

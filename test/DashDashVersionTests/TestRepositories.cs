@@ -391,7 +391,7 @@ namespace DashDashVersionTests
                 new GitTag("0.0.0", "a"),
                 new GitTag("1.0.0", "b"),
                 new GitTag("2.0.0", "d"),
-                new GitTag("1.1.0", "e")
+                new GitTag("1.5.0", "e")
             };
 
             return new GitRepository(branches, supportCommits, tags);
