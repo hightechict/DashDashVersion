@@ -24,16 +24,16 @@ namespace DashDashVersion
     /// </summary>
     internal class Patterns
     {
-        internal static Regex IsCoreVersionTag = new Regex(@"^(?<BaseVersion>(?<Major>\d+)\.(?<Minor>\d+)\.(?<Patch>\d+))$", RegexOptions.Compiled);
+        internal static readonly Regex IsCoreVersionTag = new Regex(@"^(?<BaseVersion>(?<Major>\d+)\.(?<Minor>\d+)\.(?<Patch>\d+))$", RegexOptions.Compiled);
 
-        internal static Regex ContainsVersionNumber = new Regex(@"(?<BaseVersion>(?<Major>\d+)\.(?<Minor>\d+)\.(?<Patch>\d+))", RegexOptions.Compiled);
+        internal static readonly Regex ContainsVersionNumber = new Regex(@"(?<BaseVersion>(?<Major>\d+)\.(?<Minor>\d+)\.(?<Patch>\d+))", RegexOptions.Compiled);
 
-        internal static Regex SemverAllowedPreReleaseLabelCharacters = new Regex(@"^[A-Za-z0-9\-]*$", RegexOptions.Compiled);
+        internal static readonly Regex SemverAllowedPreReleaseLabelCharacters = new Regex(@"^[A-Za-z0-9\-]*$", RegexOptions.Compiled);
 
-        internal static Regex ValidVersionNumber = new Regex(
+        internal static readonly Regex ValidVersionNumber = new Regex(
             @"^(?<Major>\d+)\.(?<Minor>\d+)\.(?<Patch>\d+)(-((?<CoreDebugLabel>\.?debug\.(?<Major2>\d+)\.(?<Minor2>\d+)\.(?<Patch2>\d+))|(?<PreReleaseLabel>(?<PreReleaseLabelBase>[a-zA-Z0-9-]+\.\d+)(\.(?<PreReleaseLabelFeature>[a-zA-Z0-9-]+\.\d+))?)?(?<PreDebugLabel>\.debug)?))?(\+(?<BuildMetadata>[a-zA-Z0-9-]+))?$", RegexOptions.Compiled);
 
-        internal static Regex DetermineBranchType = new Regex(@$"\b(\/)?(?<branchType>({Constants.MasterBranchName}|{Constants.DevelopBranchName}|{Constants.FeatureBranchName}|{Constants.ReleaseBranchName}|{Constants.SupportBranchName}|{Constants.HotfixBranchName}))\b(\/)?", RegexOptions.Compiled);
+        internal static readonly Regex DetermineBranchType = new Regex(@$"\b(\/)?(?<branchType>({Constants.MasterBranchName}|{Constants.DevelopBranchName}|{Constants.FeatureBranchName}|{Constants.ReleaseBranchName}|{Constants.SupportBranchName}|{Constants.HotfixBranchName}))\b(\/)?", RegexOptions.Compiled);
     }
 
 }

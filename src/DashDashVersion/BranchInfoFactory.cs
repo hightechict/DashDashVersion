@@ -35,24 +35,28 @@ namespace DashDashVersion
             {
                 return new MasterBranchInfo(name);
             }
-            if (IsSingleSuffixBranch(name))
+
+            if (!IsSingleSuffixBranch(name))
             {
-                var versionNumber = Patterns.ContainsVersionNumber.Match(name);
-                if (versionNumber.Success)
-                {
-                    if (name.StartsWith(Constants.ReleaseBranchName) || name.StartsWith(Constants.HotfixBranchName))
-                    {
-                        return new ReleaseCandidateBranchInfo(name, versionNumber.Groups["BaseVersion"].Value);
-                    }
-                    throw new ArgumentException($"This branch : {name} is not one of the supported release candidate branches, only '{Constants.ReleaseBranchName}' and '{Constants.HotfixBranchName}' are supported.", nameof(name));
-                }
-                if (name.StartsWith(Constants.FeatureBranchName) || name.StartsWith(Constants.BugFixBranchName))
-                {
-                    return new FeatureBranchInfo(name, name.Split(Constants.BranchNameInfoDelimiter)[1]);
-                }
-                throw new ArgumentException($"This branch : {name} is a 'feature' branch, only feature branches of the format '{Constants.FeatureBranchName}/<name>' and '{Constants.BugFixBranchName}/<name>' are supported.", nameof(name));
+                throw new ArgumentException(
+                    $"This branch : {name} is not any of the supported branch types, only [{string.Join(", ", Constants.GitFlowBranchTypes)}] branches are supported.",
+                    nameof(name));
             }
-            throw new ArgumentException($"This branch : {name} is not any of the supported branch types, only [{string.Join(", ", Constants.GitFlowBranchTypes)}] branches are supported.", nameof(name));
+
+            var versionNumber = Patterns.ContainsVersionNumber.Match(name);
+            if (versionNumber.Success)
+            {
+                if (name.StartsWith(Constants.ReleaseBranchName) || name.StartsWith(Constants.HotfixBranchName))
+                {
+                    return new ReleaseCandidateBranchInfo(name, versionNumber.Groups["BaseVersion"].Value);
+                }
+                throw new ArgumentException($"This branch : {name} is not one of the supported release candidate branches, only '{Constants.ReleaseBranchName}' and '{Constants.HotfixBranchName}' are supported.", nameof(name));
+            }
+            if (name.StartsWith(Constants.FeatureBranchName) || name.StartsWith(Constants.BugFixBranchName))
+            {
+                return new FeatureBranchInfo(name, name.Split(Constants.BranchNameInfoDelimiter)[1]);
+            }
+            throw new ArgumentException($"This branch : {name} is a 'feature' branch, only feature branches of the format '{Constants.FeatureBranchName}/<name>' and '{Constants.BugFixBranchName}/<name>' are supported.", nameof(name));
         }
 
         private static bool IsSingleSuffixBranch(string name) =>

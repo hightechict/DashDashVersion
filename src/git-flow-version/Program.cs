@@ -23,7 +23,7 @@ using Newtonsoft.Json;
 
 namespace GitFlowVersion
 {
-    internal class Program
+    internal static class Program
     {
         private static int Main(string[] args)
         {

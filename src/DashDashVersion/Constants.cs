@@ -49,7 +49,7 @@ namespace DashDashVersion
         internal static string OriginMaster => $"{DefaultRemoteName}{BranchNameInfoDelimiter}{MasterBranchName}";
         internal static string OriginMain => $"{DefaultRemoteName}{BranchNameInfoDelimiter}{MainBranchName}";
 
-        internal static string[] GitFlowBranchTypes =
+        internal static readonly string[] GitFlowBranchTypes =
         {
             DevelopBranchName,
             ReleaseBranchName,

@@ -27,6 +27,8 @@ namespace DashDashVersion.RepositoryAbstraction
     /// </summary>
     internal sealed class GitRepository : IGitRepository
     {
+        private readonly IReadOnlyCollection<GitCommit> _commits;
+
         public static GitRepository FromRepository(IRepository repository) =>
           new GitRepository(
               repository.Branches.Select(
@@ -49,6 +51,7 @@ namespace DashDashVersion.RepositoryAbstraction
             IReadOnlyCollection<GitCommit> commits,
             IReadOnlyCollection<GitTag> tags)
         {
+            _commits = commits;
             Branches = branches;
             Master = OriginMasterOrMasterCommits(branches);
             Develop = OriginDevelopOrDevelopCommits(branches);
@@ -68,34 +71,35 @@ namespace DashDashVersion.RepositoryAbstraction
 
         private static GitBranch OriginDevelopOrDevelopCommits(IEnumerable<GitBranch> branches)
         {
+            branches = branches.ToList();
             var develop = branches.FirstOrDefault(IsOriginDevelop);
+            if (develop != null)
+            {
+                return develop;
+            }
+            
+            develop = branches.FirstOrDefault(IsDevelop);
             if (develop == null)
             {
-                // ReSharper disable once PossibleMultipleEnumeration
-                develop = branches.FirstOrDefault(IsDevelop);
-                if (develop == null)
-                {
-                    throw new InvalidOperationException(
-                        $"Git repository does not contain a branch named '{Constants.DevelopBranchName}' or '{Constants.OriginDevelop}'.");
-                }
+                throw new InvalidOperationException(
+                    $"Git repository does not contain a branch named '{Constants.DevelopBranchName}' or '{Constants.OriginDevelop}'.");
             }
             return develop;
         }
 
         private static GitBranch OriginMasterOrMasterCommits(IEnumerable<GitBranch> branches)
         {
-            var develop = branches.FirstOrDefault(IsOriginMaster);
-            if (develop == null)
-            {
-                // ReSharper disable once PossibleMultipleEnumeration
-                develop = branches.FirstOrDefault(IsMaster);
-                if (develop == null)
-                {
-                    throw new InvalidOperationException(
-                        $"Git repository does not contain a branch named '{Constants.MasterBranchName}' or '{Constants.OriginMaster}'.");
-                }
-            }
-            return develop;
+            branches = branches.ToList();
+            var master = branches.FirstOrDefault(IsOriginMaster);
+            if (master != null)
+                return master;
+            
+            master = branches.FirstOrDefault(IsMaster);
+            if (master == null)
+                throw new InvalidOperationException(
+                    $"Git repository does not contain a branch named '{Constants.MasterBranchName}', '{Constants.MainBranchName}', '{Constants.OriginMaster} or '{Constants.OriginMain}'.");
+            
+            return master;
         }
 
         private static bool IsMaster(GitBranch branch) =>
