@@ -15,6 +15,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with DashDashVersion. If not, see<https://www.gnu.org/licenses/>.
 
+using System;
 using DashDashVersion.RepositoryAbstraction;
 using FluentAssertions;
 using Xunit;
@@ -136,6 +137,26 @@ namespace DashDashVersionTests
             var repoReader = new GitRepoReader(TestRepositories.ServiceRepository(), string.Empty);
             repoReader.CurrentCoreVersion.SemVer.Should().Be("1.0.0");
             repoReader.HeadCommitHash.Should().Be("e");
+        }
+        
+        [Fact]
+        public void OutOfSyncMasterThrows()
+        {
+            Action action = () =>
+            {
+                new GitRepoReader(TestRepositories.MasterOutOfSyncRepository(), string.Empty);
+            };
+            action.Should().Throw<InvalidOperationException>();
+        }
+        
+        [Fact]
+        public void OutOfSyncDevelopThrows()
+        {
+            Action action = () =>
+            {
+                new GitRepoReader(TestRepositories.MasterOutOfSyncRepository(), string.Empty);
+            };
+            action.Should().Throw<InvalidOperationException>();
         }
     }
 }

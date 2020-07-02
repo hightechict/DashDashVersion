@@ -427,5 +427,52 @@ namespace DashDashVersionTests
 
             return new GitRepository(branches, bugfixCommits, tags);
         }
+        internal static GitRepository MasterOutOfSyncRepository()
+        {
+            var masterCommits = new List<GitCommit>
+            {
+                new GitCommit("b"),
+                new GitCommit("a")
+            };
+            var originMaster = new List<GitCommit>
+            {
+                new GitCommit("a")
+            };
+            var branches = new List<GitBranch>
+            {
+                new GitBranch(false,"",Constants.MasterBranchName,false,masterCommits),
+                new GitBranch(true,"",Constants.OriginMaster,false,originMaster),
+            };
+            var tags = new List<GitTag>
+            {
+                new GitTag("0.0.0", "a")
+            };
+
+            return new GitRepository(branches, masterCommits, tags);
+        }
+        internal static GitRepository DevelopOutOfSyncRepository()
+        {
+            var masterCommits = new List<GitCommit>
+            {
+                new GitCommit("a")
+            };
+            var develop = new List<GitCommit>
+            {
+                new GitCommit("b"),
+                new GitCommit("a")
+            };
+            var branches = new List<GitBranch>
+            {
+                new GitBranch(false,"",Constants.MasterBranchName,false,masterCommits),
+                new GitBranch(true,"",Constants.OriginDevelop,false,masterCommits),
+                new GitBranch(false,"",Constants.OriginMaster,false,develop),
+            };
+            var tags = new List<GitTag>
+            {
+                new GitTag("0.0.0", "a")
+            };
+
+            return new GitRepository(branches, masterCommits, tags);
+        }
     }
 }

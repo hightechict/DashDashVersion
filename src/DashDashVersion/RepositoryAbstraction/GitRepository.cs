@@ -72,34 +72,38 @@ namespace DashDashVersion.RepositoryAbstraction
         private static GitBranch OriginDevelopOrDevelopCommits(IEnumerable<GitBranch> branches)
         {
             branches = branches.ToList();
-            var develop = branches.FirstOrDefault(IsOriginDevelop);
-            if (develop != null)
+            var remoteDevelopBranch = branches.FirstOrDefault(IsOriginDevelop);
+            var localDevelopBranch = branches.FirstOrDefault(IsDevelop);
+            if (remoteDevelopBranch != null)
             {
-                return develop;
+                if(localDevelopBranch != null && !remoteDevelopBranch.ListOfCommits.SetEquals(localDevelopBranch.ListOfCommits))
+                    throw new InvalidOperationException($"Git repository is out of sync, the local and remote {Constants.DevelopBranchName} are in a different state");
+                return remoteDevelopBranch;
             }
-            
-            develop = branches.FirstOrDefault(IsDevelop);
-            if (develop == null)
-            {
-                throw new InvalidOperationException(
-                    $"Git repository does not contain a branch named '{Constants.DevelopBranchName}' or '{Constants.OriginDevelop}'.");
-            }
-            return develop;
+            if (localDevelopBranch != null)
+                return localDevelopBranch;
+
+            throw new InvalidOperationException(
+                $"Git repository does not contain a branch named '{Constants.DevelopBranchName}' or '{Constants.OriginDevelop}'.");
         }
 
         private static GitBranch OriginMasterOrMasterCommits(IEnumerable<GitBranch> branches)
         {
             branches = branches.ToList();
-            var master = branches.FirstOrDefault(IsOriginMaster);
-            if (master != null)
-                return master;
+            var remoteMasterBranch = branches.FirstOrDefault(IsOriginMaster);
+            var localMasterBranch = branches.FirstOrDefault(IsMaster);
+            if (remoteMasterBranch != null)
+            {
+                if(localMasterBranch != null && !remoteMasterBranch.ListOfCommits.SetEquals(localMasterBranch.ListOfCommits))
+                    throw new InvalidOperationException($"Git repository is out of sync, the local and remote {Constants.MasterBranchName} or {Constants.MainBranchName} are in a different state");
+                return remoteMasterBranch;
+            }
             
-            master = branches.FirstOrDefault(IsMaster);
-            if (master == null)
-                throw new InvalidOperationException(
-                    $"Git repository does not contain a branch named '{Constants.MasterBranchName}', '{Constants.MainBranchName}', '{Constants.OriginMaster} or '{Constants.OriginMain}'.");
-            
-            return master;
+            if (localMasterBranch != null)
+                return localMasterBranch;
+
+            throw new InvalidOperationException(
+                $"Git repository does not contain a branch named '{Constants.MasterBranchName}', '{Constants.MainBranchName}', '{Constants.OriginMaster} or '{Constants.OriginMain}'.");
         }
 
         private static bool IsMaster(GitBranch branch) =>
