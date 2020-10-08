@@ -20,7 +20,7 @@ namespace DashDashVersion
     /// <summary>
     /// All constants that are regularly used in the program.
     /// </summary>
-    internal class Constants
+    internal static class Constants
     {
         internal const int BuildMetadataHashLength = 7;
 

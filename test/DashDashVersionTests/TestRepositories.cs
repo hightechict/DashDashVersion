@@ -41,7 +41,7 @@ namespace DashDashVersionTests
                 new GitTag("1.0.0", "a")
             };
 
-            return new GitRepository(branches, commits, tags);
+            return new GitRepository(branches, commits, tags, false);
         }
 
         internal static GitRepository MainRepository()
@@ -62,7 +62,7 @@ namespace DashDashVersionTests
                 new GitTag("1.0.0", "a")
             };
 
-            return new GitRepository(branches, commits, tags);
+            return new GitRepository(branches, commits, tags, false);
         }
 
         internal static GitRepository TwoCommitsOnDevelopRepository()
@@ -86,7 +86,7 @@ namespace DashDashVersionTests
                 new GitTag("0.0.0", "a")
             };
 
-            return new GitRepository(branches, developCommits, tags);
+            return new GitRepository(branches, developCommits, tags, false);
         }
 
         internal static GitRepository FeatureDebugMergedRepository()
@@ -129,7 +129,7 @@ namespace DashDashVersionTests
                 new GitTag("0.0.0", "1")
             };
 
-            return new GitRepository(branches, featureCommits, tags);
+            return new GitRepository(branches, featureCommits, tags, false);
         }
 
         internal static GitRepository TwoCommitsOnDevelopWithoutCoreVersionRepository()
@@ -149,7 +149,7 @@ namespace DashDashVersionTests
                 new GitBranch(false,"",Constants.DevelopBranchName,true,developCommits)
             };
 
-            return new GitRepository(branches, developCommits, new List<GitTag>());
+            return new GitRepository(branches, developCommits, new List<GitTag>(), false);
         }
 
         internal static GitRepository ReleaseBranchRepositoryWithoutTag()
@@ -180,7 +180,7 @@ namespace DashDashVersionTests
                 new GitTag("0.0.0", "a")
             };
 
-            return new GitRepository(branches, releaseCommits, tags);
+            return new GitRepository(branches, releaseCommits, tags, false);
         }
 
         internal static GitRepository ReleaseBranchRepositoryWithTaggedRc()
@@ -216,7 +216,7 @@ namespace DashDashVersionTests
                 new GitTag("0.0.0", "a")
             };
 
-            return new GitRepository(branches, releaseCommits, tags);
+            return new GitRepository(branches, releaseCommits, tags, false);
         }
 
         internal static GitRepository FeatureBranchOnFeatureBranchRepository()
@@ -256,7 +256,7 @@ namespace DashDashVersionTests
                 new GitTag("0.0.0", "a")
             };
 
-            return new GitRepository(branches, featureBCommits, tags);
+            return new GitRepository(branches, featureBCommits, tags, false);
         }
 
         internal static GitRepository MasterAheadOfDevelopRepository()
@@ -282,7 +282,7 @@ namespace DashDashVersionTests
                 new GitTag("0.1.0", "c")
             };
 
-            return new GitRepository(branches, developCommits, tags);
+            return new GitRepository(branches, developCommits, tags, false);
         }
 
         internal static GitRepository RemoteDevelopRepository()
@@ -306,7 +306,7 @@ namespace DashDashVersionTests
                 new GitTag("0.0.0", "a")
             };
 
-            return new GitRepository(branches, developCommits, tags);
+            return new GitRepository(branches, developCommits, tags, false);
         }
 
         internal static GitRepository DeteachedHeadRepo()
@@ -329,7 +329,7 @@ namespace DashDashVersionTests
                 new GitTag("0.0.0", "a")
             };
 
-            return new GitRepository(branches, commits, tags);
+            return new GitRepository(branches, commits, tags, false);
         }
 
         internal static GitRepository PatchReleaseRepository()
@@ -361,7 +361,7 @@ namespace DashDashVersionTests
                 new GitTag("0.1.1", "d"),
             };
 
-            return new GitRepository(branches, developCommits, tags);
+            return new GitRepository(branches, developCommits, tags, false);
         }
 
         internal static GitRepository ServiceRepository()
@@ -394,7 +394,7 @@ namespace DashDashVersionTests
                 new GitTag("1.5.0", "e")
             };
 
-            return new GitRepository(branches, supportCommits, tags);
+            return new GitRepository(branches, supportCommits, tags, false);
         }
 
         internal static GitRepository BugfixRepository()
@@ -425,7 +425,7 @@ namespace DashDashVersionTests
                 new GitTag("0.0.0", "a")
             };
 
-            return new GitRepository(branches, bugfixCommits, tags);
+            return new GitRepository(branches, bugfixCommits, tags, false);
         }
         internal static GitRepository MasterOutOfSyncRepository()
         {
@@ -448,7 +448,7 @@ namespace DashDashVersionTests
                 new GitTag("0.0.0", "a")
             };
 
-            return new GitRepository(branches, masterCommits, tags);
+            return new GitRepository(branches, masterCommits, tags, false);
         }
         internal static GitRepository DevelopOutOfSyncRepository()
         {
@@ -472,7 +472,7 @@ namespace DashDashVersionTests
                 new GitTag("0.0.0", "a")
             };
 
-            return new GitRepository(branches, masterCommits, tags);
+            return new GitRepository(branches, masterCommits, tags, false);
         }
     }
 }

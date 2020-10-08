@@ -36,6 +36,7 @@ namespace GitFlowVersion
             var optionBranch = app.Option("-b|--branch", "Manually set the branch to use, for determining the branch 'type' and pre-release label. This can be a full or partial name.", CommandOptionType.SingleValue);
             var optionVersion = app.Option("-v|--version", "Returns the currently installed version of git-flow-version.", CommandOptionType.NoValue);
             var optionDebug = app.Option("-d|--debug", "Adds a debug prerelease label to the version number.", CommandOptionType.NoValue);
+            var optionForce = app.Option("-f|--force", "Calculate the version even if the repository is not in a clean state.", CommandOptionType.NoValue);
 
             app.OnExecute(() =>
             {
@@ -46,7 +47,11 @@ namespace GitFlowVersion
                 }
                 try
                 {
-                    OutputJsonToConsole(VersionNumberGenerator.GenerateVersionNumber(Environment.CurrentDirectory, optionBranch.Value()), optionDebug.HasValue());
+                    OutputJsonToConsole(VersionNumberGenerator.GenerateVersionNumber(
+                            Environment.CurrentDirectory, 
+                            optionBranch.Value() ?? string.Empty,
+                            optionForce.HasValue()), 
+                        optionDebug.HasValue());
                     return 0;
                 }
                 catch (Exception e)

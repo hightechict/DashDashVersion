@@ -16,6 +16,7 @@
 // along with DashDashVersion. If not, see<https://www.gnu.org/licenses/>.
 
 using System;
+using System.IO;
 using DashDashVersion.RepositoryAbstraction;
 
 namespace DashDashVersion
@@ -30,12 +31,16 @@ namespace DashDashVersion
         /// </summary>
         /// <param name="path">The path to the git repository.</param>
         /// <param name="branch">The name of the branch to consider when generating the version number.</param>
+        /// <param name="checkIfRepoIsClean">Whether or not the repository needs to be in a clean state.</param>
         /// <returns></returns>
         public static VersionNumber GenerateVersionNumber(
             string path,
-            string branch)
+            string branch,
+            bool checkIfRepoIsClean)
         {
             var repo = GitRepoReader.Load(path, branch);
+            if(checkIfRepoIsClean && repo.RepoIsDirty)
+                throw new  InvalidDataException("The repository is not in a clean state, please commit all changes or disable this check.");
             return GenerateVersionNumber(repo);
         }
 
@@ -49,7 +54,7 @@ namespace DashDashVersion
             return currentBranch switch
             {
                 FeatureBranchInfo feature => GenerateFeatureVersionNumber(repo, feature, headCommitHash),
-                ReleaseCandidateBranchInfo releaseCandidate => GenerateReleaseCanditateVersionNumber(repo, releaseCandidate, headCommitHash),
+                ReleaseCandidateBranchInfo releaseCandidate => GenerateReleaseCandidateVersionNumber(repo, releaseCandidate, headCommitHash),
                 DevelopBranchInfo develop => GenerateDevelopVersionNumber(repo, develop, headCommitHash),
                 MasterBranchInfo _ when TagOnHeadIsMajorMinorPatch(tagOnHead) => VersionNumber.Parse(tagOnHead.FriendlyName),
                 _ => throw new ArgumentOutOfRangeException(
@@ -69,7 +74,7 @@ namespace DashDashVersion
                 develop.DeterminePreReleaseLabel(repo.CommitCountDevelopSinceLastMinorCoreVersion),
                 headCommitHash);
 
-        private static VersionNumber GenerateReleaseCanditateVersionNumber(
+        private static VersionNumber GenerateReleaseCandidateVersionNumber(
             IGitRepoReader repo,
             ReleaseCandidateBranchInfo releaseCandidate,
             string headCommitHash)
@@ -103,7 +108,6 @@ namespace DashDashVersion
         }
 
         private static bool TagOnHeadIsMajorMinorPatch(GitTag tagOnHead) =>
-            tagOnHead != null &&
             Patterns.IsCoreVersionTag.IsMatch(tagOnHead.FriendlyName);
     }
 }

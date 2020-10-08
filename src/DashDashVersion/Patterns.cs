@@ -22,7 +22,7 @@ namespace DashDashVersion
     /// <summary>
     /// This class contains the patterns used for input validation and value extraction.
     /// </summary>
-    internal class Patterns
+    internal static class Patterns
     {
         internal static readonly Regex IsCoreVersionTag = new Regex(@"^(?<BaseVersion>(?<Major>\d+)\.(?<Minor>\d+)\.(?<Patch>\d+))$", RegexOptions.Compiled);
 

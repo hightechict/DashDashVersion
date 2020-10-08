@@ -33,5 +33,7 @@ namespace DashDashVersion.RepositoryAbstraction
         ListOfCommits CurrentBranch { get; }
 
         IReadOnlyCollection<GitTag> Tags { get; }
+        
+        bool IsDirty { get; }
     }
 }
