@@ -30,26 +30,29 @@ namespace DashDashVersion.RepositoryAbstraction
         private readonly IReadOnlyCollection<GitCommit> _commits;
 
         public static GitRepository FromRepository(IRepository repository) =>
-          new GitRepository(
-              repository.Branches.Select(
-                  branch => new GitBranch(
-                      branch.IsRemote,
-                      branch.RemoteName,
-                      branch.FriendlyName,
-                      branch.IsCurrentRepositoryHead,
-                      branch.Commits.Select(
-                          commit => new GitCommit(commit.Sha)).ToList())).ToList(),
-              repository.Commits.OrderTopological().Select(
-                  commit => new GitCommit(commit.Sha)).ToList(),
-              repository.Tags.Select(
-                  tag => new GitTag(
-                      tag.FriendlyName,
-                      tag.PeeledTarget.Sha)).ToList());
+            new GitRepository(
+                repository.Branches.Select(
+                    branch => new GitBranch(
+                        branch.IsRemote,
+                        branch.RemoteName,
+                        branch.FriendlyName,
+                        branch.IsCurrentRepositoryHead,
+                        branch.Commits.Select(
+                            commit => new GitCommit(commit.Sha)).ToList())).ToList(),
+                repository.Commits.OrderTopological().Select(
+                    commit => new GitCommit(commit.Sha)).ToList(),
+                repository.Tags.Select(
+                    tag => new GitTag(
+                        tag.FriendlyName,
+                        tag.PeeledTarget.Sha)).ToList(),
+                repository.RetrieveStatus().IsDirty);
+
 
         public GitRepository(
             IReadOnlyCollection<GitBranch> branches,
             IReadOnlyCollection<GitCommit> commits,
-            IReadOnlyCollection<GitTag> tags)
+            IReadOnlyCollection<GitTag> tags,
+            bool isRepoDirty)
         {
             _commits = commits;
             Branches = branches;
@@ -57,6 +60,7 @@ namespace DashDashVersion.RepositoryAbstraction
             Develop = OriginDevelopOrDevelopCommits(branches);
             CurrentBranch = new ListOfCommits(commits);
             Tags = tags;
+            IsDirty = isRepoDirty;
         }
 
         public IReadOnlyCollection<GitBranch> Branches { get; }
@@ -68,7 +72,9 @@ namespace DashDashVersion.RepositoryAbstraction
         public ListOfCommits CurrentBranch { get; }
 
         public IReadOnlyCollection<GitTag> Tags { get; }
-
+        
+        public bool IsDirty { get; }
+        
         private static GitBranch OriginDevelopOrDevelopCommits(IEnumerable<GitBranch> branches)
         {
             branches = branches.ToList();

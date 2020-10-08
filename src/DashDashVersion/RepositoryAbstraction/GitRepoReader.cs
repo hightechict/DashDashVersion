@@ -106,6 +106,8 @@ namespace DashDashVersion.RepositoryAbstraction
 
         public uint CommitCountDevelopSinceLastMinorCoreVersion => _commitCountDevelopSinceLastMinorVersion.Value;
 
+        public bool RepoIsDirty => _repository.IsDirty;
+
         private VersionNumber CalculateCurrentCoreVersion() => _highestCoreVersionListHighToLow.Value.First().versionNumber;
 
         private uint CalculateCommitCountUniqueToFeature()

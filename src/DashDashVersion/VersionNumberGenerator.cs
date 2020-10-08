@@ -16,6 +16,7 @@
 // along with DashDashVersion. If not, see<https://www.gnu.org/licenses/>.
 
 using System;
+using System.ComponentModel.DataAnnotations;
 using DashDashVersion.RepositoryAbstraction;
 
 namespace DashDashVersion
@@ -30,12 +31,16 @@ namespace DashDashVersion
         /// </summary>
         /// <param name="path">The path to the git repository.</param>
         /// <param name="branch">The name of the branch to consider when generating the version number.</param>
+        /// <param name="checkIfRepoIsClean">Whether or not the repository needs to be in a clean state.</param>
         /// <returns></returns>
         public static VersionNumber GenerateVersionNumber(
             string path,
-            string branch)
+            string branch,
+            bool checkIfRepoIsClean)
         {
             var repo = GitRepoReader.Load(path, branch);
+            if(checkIfRepoIsClean && repo.RepoIsDirty)
+                throw new ValidationException("The repository is not in a clean state, please commit all changes or disable this check.");
             return GenerateVersionNumber(repo);
         }
 
