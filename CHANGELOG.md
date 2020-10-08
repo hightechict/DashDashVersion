@@ -12,3 +12,10 @@ Change log entries should be formulated in the imperative present tense.
 # Changelog
 
 ## [Unreleased]
+
+## [0.16.0]
+
+* adds support for main branch
+* adds support for bugfix branch
+* adds a check that makes sure master and develop are up to date
+* adds a check that the repository is clean
