@@ -41,7 +41,28 @@ namespace DashDashVersionTests
                 new GitTag("1.0.0", "a")
             };
 
-            return new GitRepository(branches, commits, tags);
+            return new GitRepository(branches, commits, tags, false);
+        }
+
+        internal static GitRepository MainRepository()
+        {
+            var commits = new List<GitCommit>
+            {
+                new GitCommit("a")
+            };
+
+            var branches = new List<GitBranch>
+            {
+                new GitBranch(false,"",Constants.MainBranchName,true,commits),
+                new GitBranch(false,"",Constants.DevelopBranchName,false,commits)
+
+            };
+            var tags = new List<GitTag>
+            {
+                new GitTag("1.0.0", "a")
+            };
+
+            return new GitRepository(branches, commits, tags, false);
         }
 
         internal static GitRepository TwoCommitsOnDevelopRepository()
@@ -65,7 +86,7 @@ namespace DashDashVersionTests
                 new GitTag("0.0.0", "a")
             };
 
-            return new GitRepository(branches, developCommits, tags);
+            return new GitRepository(branches, developCommits, tags, false);
         }
 
         internal static GitRepository FeatureDebugMergedRepository()
@@ -108,7 +129,7 @@ namespace DashDashVersionTests
                 new GitTag("0.0.0", "1")
             };
 
-            return new GitRepository(branches, featureCommits, tags);
+            return new GitRepository(branches, featureCommits, tags, false);
         }
 
         internal static GitRepository TwoCommitsOnDevelopWithoutCoreVersionRepository()
@@ -128,7 +149,7 @@ namespace DashDashVersionTests
                 new GitBranch(false,"",Constants.DevelopBranchName,true,developCommits)
             };
 
-            return new GitRepository(branches, developCommits, new List<GitTag>());
+            return new GitRepository(branches, developCommits, new List<GitTag>(), false);
         }
 
         internal static GitRepository ReleaseBranchRepositoryWithoutTag()
@@ -159,7 +180,7 @@ namespace DashDashVersionTests
                 new GitTag("0.0.0", "a")
             };
 
-            return new GitRepository(branches, releaseCommits, tags);
+            return new GitRepository(branches, releaseCommits, tags, false);
         }
 
         internal static GitRepository ReleaseBranchRepositoryWithTaggedRc()
@@ -195,7 +216,7 @@ namespace DashDashVersionTests
                 new GitTag("0.0.0", "a")
             };
 
-            return new GitRepository(branches, releaseCommits, tags);
+            return new GitRepository(branches, releaseCommits, tags, false);
         }
 
         internal static GitRepository FeatureBranchOnFeatureBranchRepository()
@@ -235,7 +256,7 @@ namespace DashDashVersionTests
                 new GitTag("0.0.0", "a")
             };
 
-            return new GitRepository(branches, featureBCommits, tags);
+            return new GitRepository(branches, featureBCommits, tags, false);
         }
 
         internal static GitRepository MasterAheadOfDevelopRepository()
@@ -261,7 +282,7 @@ namespace DashDashVersionTests
                 new GitTag("0.1.0", "c")
             };
 
-            return new GitRepository(branches, developCommits, tags);
+            return new GitRepository(branches, developCommits, tags, false);
         }
 
         internal static GitRepository RemoteDevelopRepository()
@@ -285,8 +306,9 @@ namespace DashDashVersionTests
                 new GitTag("0.0.0", "a")
             };
 
-            return new GitRepository(branches, developCommits, tags);
+            return new GitRepository(branches, developCommits, tags, false);
         }
+
         internal static GitRepository DeteachedHeadRepo()
         {
             var commits = new List<GitCommit>
@@ -307,7 +329,7 @@ namespace DashDashVersionTests
                 new GitTag("0.0.0", "a")
             };
 
-            return new GitRepository(branches, commits, tags);
+            return new GitRepository(branches, commits, tags, false);
         }
 
         internal static GitRepository PatchReleaseRepository()
@@ -339,7 +361,118 @@ namespace DashDashVersionTests
                 new GitTag("0.1.1", "d"),
             };
 
-            return new GitRepository(branches, developCommits, tags);
+            return new GitRepository(branches, developCommits, tags, false);
+        }
+
+        internal static GitRepository ServiceRepository()
+        {
+            var masterCommits = new List<GitCommit>
+            {
+                new GitCommit("d"),
+                new GitCommit("c"),
+                new GitCommit("b"),
+                new GitCommit("a")
+            };
+            var supportCommits = new List<GitCommit>
+            {
+                new GitCommit("e"),
+                new GitCommit("c"),
+                new GitCommit("b"),
+                new GitCommit("a")
+            };
+            var branches = new List<GitBranch>
+            {
+                new GitBranch(false,"",Constants.MasterBranchName,false,masterCommits),
+                new GitBranch(false,"",Constants.DevelopBranchName,false,masterCommits),
+                new GitBranch(true,"",$"{Constants.DefaultRemoteName}{Constants.BranchNameInfoDelimiter}"+Constants.SupportBranchName+$"{Constants.BranchNameInfoDelimiter}1.1.0",true,supportCommits)
+            };
+            var tags = new List<GitTag>
+            {
+                new GitTag("0.0.0", "a"),
+                new GitTag("1.0.0", "b"),
+                new GitTag("2.0.0", "d"),
+                new GitTag("1.5.0", "e")
+            };
+
+            return new GitRepository(branches, supportCommits, tags, false);
+        }
+
+        internal static GitRepository BugfixRepository()
+        {
+            var masterCommits = new List<GitCommit>
+            {
+                new GitCommit("a")
+            };
+            var developCommits = new List<GitCommit>
+            {
+                new GitCommit("b"),
+                new GitCommit("a")
+            };
+            var bugfixCommits = new List<GitCommit>
+            {
+                new GitCommit("d"),
+                new GitCommit("b"),
+                new GitCommit("a")
+            };
+            var branches = new List<GitBranch>
+            {
+                new GitBranch(false,"",Constants.MasterBranchName,false,masterCommits),
+                new GitBranch(false,"",Constants.DevelopBranchName,false,developCommits),
+                new GitBranch(false,"",$"{Constants.BugFixBranchName}{Constants.BranchNameInfoDelimiter}test",true,bugfixCommits)
+            };
+            var tags = new List<GitTag>
+            {
+                new GitTag("0.0.0", "a")
+            };
+
+            return new GitRepository(branches, bugfixCommits, tags, false);
+        }
+        internal static GitRepository MasterOutOfSyncRepository()
+        {
+            var masterCommits = new List<GitCommit>
+            {
+                new GitCommit("b"),
+                new GitCommit("a")
+            };
+            var originMaster = new List<GitCommit>
+            {
+                new GitCommit("a")
+            };
+            var branches = new List<GitBranch>
+            {
+                new GitBranch(false,"",Constants.MasterBranchName,false,masterCommits),
+                new GitBranch(true,"",Constants.OriginMaster,false,originMaster),
+            };
+            var tags = new List<GitTag>
+            {
+                new GitTag("0.0.0", "a")
+            };
+
+            return new GitRepository(branches, masterCommits, tags, false);
+        }
+        internal static GitRepository DevelopOutOfSyncRepository()
+        {
+            var masterCommits = new List<GitCommit>
+            {
+                new GitCommit("a")
+            };
+            var develop = new List<GitCommit>
+            {
+                new GitCommit("b"),
+                new GitCommit("a")
+            };
+            var branches = new List<GitBranch>
+            {
+                new GitBranch(false,"",Constants.MasterBranchName,false,masterCommits),
+                new GitBranch(true,"",Constants.OriginDevelop,false,masterCommits),
+                new GitBranch(false,"",Constants.OriginMaster,false,develop),
+            };
+            var tags = new List<GitTag>
+            {
+                new GitTag("0.0.0", "a")
+            };
+
+            return new GitRepository(branches, masterCommits, tags, false);
         }
     }
 }

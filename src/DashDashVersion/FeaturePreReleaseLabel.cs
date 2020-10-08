@@ -25,7 +25,7 @@ namespace DashDashVersion
     internal class FeaturePreReleaseLabel : PreReleaseLabel
     {
         internal const int NumberOfBitsAllocatedForFeatureRevision = 6;
-        internal const ushort FeatureRevisionMaxValue = 0b0000_0000_00_11_1110;
+        private const ushort FeatureRevisionMaxValue = 0b0000_0000_00_11_1110;
 
         internal FeaturePreReleaseLabel(PreReleaseLabelParticle branchLabel, PreReleaseLabelParticle featureBranchLabel) : base(branchLabel)
         {

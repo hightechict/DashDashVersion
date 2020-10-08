@@ -15,6 +15,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with DashDashVersion. If not, see<https://www.gnu.org/licenses/>.
 
+using System;
 using DashDashVersion.RepositoryAbstraction;
 using FluentAssertions;
 using Xunit;
@@ -28,6 +29,16 @@ namespace DashDashVersionTests
         {
             var repoReader = new GitRepoReader(TestRepositories.MasterRepository(), string.Empty);
             repoReader.CurrentBranch.Name.Should().Be(DashDashVersion.Constants.MasterBranchName);
+            repoReader.CommitCountDevelopSinceLastMinorCoreVersion.Should().Be(0);
+            repoReader.HeadCommitHash.Should().Be("a");
+            repoReader.CurrentCoreVersion.SemVer.Should().Be("1.0.0");
+        }
+
+        [Fact]
+        public void MainRepoTest()
+        {
+            var repoReader = new GitRepoReader(TestRepositories.MainRepository(), string.Empty);
+            repoReader.CurrentBranch.Name.Should().Be(DashDashVersion.Constants.MainBranchName);
             repoReader.CommitCountDevelopSinceLastMinorCoreVersion.Should().Be(0);
             repoReader.HeadCommitHash.Should().Be("a");
             repoReader.CurrentCoreVersion.SemVer.Should().Be("1.0.0");
@@ -118,6 +129,34 @@ namespace DashDashVersionTests
             var repoReader = new GitRepoReader(TestRepositories.FeatureDebugMergedRepository(), string.Empty);
             repoReader.CommitCountDevelopSinceLastMinorCoreVersion.Should().Be(4);
             repoReader.CommitCountUniqueToFeature.Should().Be(7);
+        }
+
+        [Fact]
+        public void ServiceBranchSeenAsMaster()
+        {
+            var repoReader = new GitRepoReader(TestRepositories.ServiceRepository(), string.Empty);
+            repoReader.CurrentCoreVersion.SemVer.Should().Be("1.0.0");
+            repoReader.HeadCommitHash.Should().Be("e");
+        }
+        
+        [Fact]
+        public void OutOfSyncMasterThrows()
+        {
+            Action action = () =>
+            {
+                new GitRepoReader(TestRepositories.MasterOutOfSyncRepository(), string.Empty);
+            };
+            action.Should().Throw<InvalidOperationException>();
+        }
+        
+        [Fact]
+        public void OutOfSyncDevelopThrows()
+        {
+            Action action = () =>
+            {
+                new GitRepoReader(TestRepositories.MasterOutOfSyncRepository(), string.Empty);
+            };
+            action.Should().Throw<InvalidOperationException>();
         }
     }
 }

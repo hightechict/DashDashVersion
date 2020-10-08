@@ -27,33 +27,40 @@ namespace DashDashVersion.RepositoryAbstraction
     /// </summary>
     internal sealed class GitRepository : IGitRepository
     {
+        private readonly IReadOnlyCollection<GitCommit> _commits;
+
         public static GitRepository FromRepository(IRepository repository) =>
-          new GitRepository(
-              repository.Branches.Select(
-                  branch => new GitBranch(
-                      branch.IsRemote,
-                      branch.RemoteName,
-                      branch.FriendlyName,
-                      branch.IsCurrentRepositoryHead,
-                      branch.Commits.Select(
-                          commit => new GitCommit(commit.Sha)).ToList())).ToList(),
-              repository.Commits.OrderTopological().Select(
-                  commit => new GitCommit(commit.Sha)).ToList(),
-              repository.Tags.Select(
-                  tag => new GitTag(
-                      tag.FriendlyName,
-                      tag.PeeledTarget.Sha)).ToList());
+            new GitRepository(
+                repository.Branches.Select(
+                    branch => new GitBranch(
+                        branch.IsRemote,
+                        branch.RemoteName,
+                        branch.FriendlyName,
+                        branch.IsCurrentRepositoryHead,
+                        branch.Commits.Select(
+                            commit => new GitCommit(commit.Sha)).ToList())).ToList(),
+                repository.Commits.OrderTopological().Select(
+                    commit => new GitCommit(commit.Sha)).ToList(),
+                repository.Tags.Select(
+                    tag => new GitTag(
+                        tag.FriendlyName,
+                        tag.PeeledTarget.Sha)).ToList(),
+                repository.RetrieveStatus().IsDirty);
+
 
         public GitRepository(
             IReadOnlyCollection<GitBranch> branches,
             IReadOnlyCollection<GitCommit> commits,
-            IReadOnlyCollection<GitTag> tags)
+            IReadOnlyCollection<GitTag> tags,
+            bool isRepoDirty)
         {
+            _commits = commits;
             Branches = branches;
             Master = OriginMasterOrMasterCommits(branches);
             Develop = OriginDevelopOrDevelopCommits(branches);
             CurrentBranch = new ListOfCommits(commits);
             Tags = tags;
+            IsDirty = isRepoDirty;
         }
 
         public IReadOnlyCollection<GitBranch> Branches { get; }
@@ -65,45 +72,54 @@ namespace DashDashVersion.RepositoryAbstraction
         public ListOfCommits CurrentBranch { get; }
 
         public IReadOnlyCollection<GitTag> Tags { get; }
-
+        
+        public bool IsDirty { get; }
+        
         private static GitBranch OriginDevelopOrDevelopCommits(IEnumerable<GitBranch> branches)
         {
-            var develop = branches.FirstOrDefault(IsOriginDevelop);
-            if (develop == null)
+            branches = branches.ToList();
+            var remoteDevelopBranch = branches.FirstOrDefault(IsOriginDevelop);
+            var localDevelopBranch = branches.FirstOrDefault(IsDevelop);
+            if (remoteDevelopBranch != null)
             {
-                // ReSharper disable once PossibleMultipleEnumeration
-                develop = branches.FirstOrDefault(IsDevelop);
-                if (develop == null)
-                {
-                    throw new InvalidOperationException(
-                        $"Git repository does not contain a branch named '{Constants.DevelopBranchName}' or '{Constants.OriginDevelop}'.");
-                }
+                if(localDevelopBranch != null && !remoteDevelopBranch.ListOfCommits.SetEquals(localDevelopBranch.ListOfCommits))
+                    throw new InvalidOperationException($"Git repository is out of sync, the local and remote {Constants.DevelopBranchName} are in a different state");
+                return remoteDevelopBranch;
             }
-            return develop;
+            if (localDevelopBranch != null)
+                return localDevelopBranch;
+
+            throw new InvalidOperationException(
+                $"Git repository does not contain a branch named '{Constants.DevelopBranchName}' or '{Constants.OriginDevelop}'.");
         }
 
         private static GitBranch OriginMasterOrMasterCommits(IEnumerable<GitBranch> branches)
         {
-            var develop = branches.FirstOrDefault(IsOriginMaster);
-            if (develop == null)
+            branches = branches.ToList();
+            var remoteMasterBranch = branches.FirstOrDefault(IsOriginMaster);
+            var localMasterBranch = branches.FirstOrDefault(IsMaster);
+            if (remoteMasterBranch != null)
             {
-                // ReSharper disable once PossibleMultipleEnumeration
-                develop = branches.FirstOrDefault(IsMaster);
-                if (develop == null)
-                {
-                    throw new InvalidOperationException(
-                        $"Git repository does not contain a branch named '{Constants.MasterBranchName}' or '{Constants.OriginMaster}'.");
-                }
+                if(localMasterBranch != null && !remoteMasterBranch.ListOfCommits.SetEquals(localMasterBranch.ListOfCommits))
+                    throw new InvalidOperationException($"Git repository is out of sync, the local and remote {Constants.MasterBranchName} or {Constants.MainBranchName} are in a different state");
+                return remoteMasterBranch;
             }
-            return develop;
+            
+            if (localMasterBranch != null)
+                return localMasterBranch;
+
+            throw new InvalidOperationException(
+                $"Git repository does not contain a branch named '{Constants.MasterBranchName}', '{Constants.MainBranchName}', '{Constants.OriginMaster} or '{Constants.OriginMain}'.");
         }
 
         private static bool IsMaster(GitBranch branch) =>
-            branch.FriendlyName.Equals(Constants.MasterBranchName);
+            (branch.FriendlyName.Equals(Constants.MasterBranchName) ||
+            branch.FriendlyName.Equals(Constants.MainBranchName));
 
         private static bool IsOriginMaster(GitBranch branch) =>
             branch.IsRemote &&
-            branch.FriendlyName.Equals(Constants.OriginMaster);
+            (branch.FriendlyName.Equals(Constants.OriginMaster) ||
+            branch.FriendlyName.Equals(Constants.OriginMain));
 
         private static bool IsDevelop(GitBranch branch) =>
             branch.FriendlyName.Equals(Constants.DevelopBranchName);

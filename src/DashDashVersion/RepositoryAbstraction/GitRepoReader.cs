@@ -106,6 +106,8 @@ namespace DashDashVersion.RepositoryAbstraction
 
         public uint CommitCountDevelopSinceLastMinorCoreVersion => _commitCountDevelopSinceLastMinorVersion.Value;
 
+        public bool RepoIsDirty => _repository.IsDirty;
+
         private VersionNumber CalculateCurrentCoreVersion() => _highestCoreVersionListHighToLow.Value.First().versionNumber;
 
         private uint CalculateCommitCountUniqueToFeature()
@@ -145,7 +147,7 @@ namespace DashDashVersion.RepositoryAbstraction
                 .OrderByDescending(pair => pair.VersionNumber)
                 .ToList();
 
-            var CoreVersionTagNotOnMaster = coreVersionTagsAndVersions.Select(pair => pair.Tag).FirstOrDefault(tag => !_repository.Master.ListOfCommits.Contains(tag.Sha));
+            var coreVersionTagNotOnMaster = coreVersionTagsAndVersions.Select(pair => pair.Tag).FirstOrDefault(tag => !_repository.Master.ListOfCommits.Contains(tag.Sha));
             if (!coreVersionTagsAndVersions.Any())
             {
                 var sha = _repository.CurrentBranch.First.Sha;
@@ -154,9 +156,9 @@ namespace DashDashVersion.RepositoryAbstraction
 @$"Warning you currently have no core version tag on master like '0.0.0'.
 You could use 'git tag 0.0.0 {sha}' to place a tag.");
             }
-            else if (CoreVersionTagNotOnMaster != null)
+            else if (coreVersionTagNotOnMaster != null)
             {
-                throw new InvalidOperationException($"The tag: {CoreVersionTagNotOnMaster.FriendlyName} is not on master, if this is on a build server maybe the remote refs have not been fetched? all core tags must be on master for this program to function");
+                throw new InvalidOperationException($"The tag: {coreVersionTagNotOnMaster.FriendlyName} is not on master, if this is on a build server maybe the remote refs have not been fetched? all core tags must be on master for this program to function");
             }
             var highestVersion = coreVersionTagsAndVersions.First().VersionNumber;
 
@@ -198,7 +200,7 @@ You could use 'git tag 0.0.0 {sha}' to place a tag.");
                 return perfectMatch;
             }
 
-            var branches = _repository.Branches.Where(b => b.FriendlyName.EndsWith(branchName) && Patterns.DetermineBranchType.IsMatch(b.FriendlyName));
+            var branches = _repository.Branches.Where(b => b.FriendlyName.EndsWith(branchName) && Patterns.DetermineBranchType.IsMatch(b.FriendlyName)).ToList();
             if (!branches.Any())
             {
                 throw new ArgumentException($"The branch '{branchName}' could not be found in the repository, or it was not of any of the supported types.", nameof(branchName));

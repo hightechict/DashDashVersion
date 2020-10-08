@@ -20,7 +20,7 @@ namespace DashDashVersion
     /// <summary>
     /// All constants that are regularly used in the program.
     /// </summary>
-    internal class Constants
+    internal static class Constants
     {
         internal const int BuildMetadataHashLength = 7;
 
@@ -36,8 +36,10 @@ namespace DashDashVersion
         internal const string DevelopBranchName = "develop";
         internal const string ReleaseBranchName = "release";
         internal const string HotfixBranchName = "hotfix";
+        internal const string BugFixBranchName = "bugfix";
         internal const string FeatureBranchName = "feature";
         internal const string MasterBranchName = "master";
+        internal const string MainBranchName = "main";
         internal const string SupportBranchName = "support";
 
         internal const string DefaultRemoteName = "origin";
@@ -45,8 +47,9 @@ namespace DashDashVersion
         internal static string OriginDevelop => $"{DefaultRemoteName}{BranchNameInfoDelimiter}{DevelopBranchName}";
 
         internal static string OriginMaster => $"{DefaultRemoteName}{BranchNameInfoDelimiter}{MasterBranchName}";
+        internal static string OriginMain => $"{DefaultRemoteName}{BranchNameInfoDelimiter}{MainBranchName}";
 
-        internal static string[] GitFlowBranchTypes =
+        internal static readonly string[] GitFlowBranchTypes =
         {
             DevelopBranchName,
             ReleaseBranchName,

@@ -57,10 +57,10 @@ steps:
    DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
    
 - task: DotNetCoreInstaller@0
-  displayName: Install .NET Core 3.0.100
+  displayName: Install .NET Core 3.1.301
   inputs:
     packageType: 'sdk'
-    version: '3.0.100'
+    version: '3.1.301'
   env:
    DOTNET_CLI_TELEMETRY_OPTOUT: false
    DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true

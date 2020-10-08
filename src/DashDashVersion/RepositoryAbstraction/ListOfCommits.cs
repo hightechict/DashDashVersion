@@ -40,6 +40,8 @@ namespace DashDashVersion.RepositoryAbstraction
 
         public bool Overlaps(ListOfCommits commits) => _hashset.Overlaps(commits._hashset);
 
+        public bool SetEquals(ListOfCommits commits) => _hashset.SetEquals(commits._hashset);
+
         public IEnumerable<string> Except(ListOfCommits commits) => _hashset.Except(commits._hashset);
 
         public IEnumerable<GitCommit> IntersectWith(ListOfCommits commits)

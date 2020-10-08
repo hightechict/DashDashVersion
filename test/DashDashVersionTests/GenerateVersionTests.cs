@@ -208,9 +208,22 @@ namespace DashDashVersionTests
         [Fact]
         public void PatchReleaseTest()
         {
-
             var version = GenerateVersionNumber(TestRepositories.PatchReleaseRepository());
             version.SemVer.Should().Be("0.2.0-dev.3");
+        }
+
+        [Fact]
+        public void ServiceRepositoryTest()
+        {
+            var version = GenerateVersionNumber(TestRepositories.ServiceRepository());
+            version.SemVer.Should().Be("1.5.0");
+        }
+
+        [Fact]
+        public void BugfixRepositoryTest()
+        {
+            var version = GenerateVersionNumber(TestRepositories.BugfixRepository());
+            version.SemVer.Should().Be("0.1.0-dev.1.test.1");
         }
 
         private static VersionNumber GenerateVersionNumber(IGitRepository gitRepository, string branchName = "") =>

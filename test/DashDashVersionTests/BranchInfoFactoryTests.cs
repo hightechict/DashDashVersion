@@ -25,11 +25,15 @@ namespace DashDashVersionTests
     public class BranchInfoFactoryTests
     {
         [Theory]
+        [InlineData("master")]
+        [InlineData("main")]
+        [InlineData("support/1.0")]
         [InlineData("develop")]
         [InlineData("hotfix/1.0.0")]
         [InlineData("release/0.1.0")]
         [InlineData("feature/a")]
         [InlineData("feature/b")]
+        [InlineData("bugfix/a")]
         public void BranchInfoCreation(string name)
         {
             var branch = BranchInfoFactory.CreateBranchInfo(name);
@@ -81,6 +85,7 @@ namespace DashDashVersionTests
         [Theory]
         [InlineData("feature/a", 1, 1, "a")]
         [InlineData("feature/DivDev12", 1, 2, "DivDev12")]
+        [InlineData("bugfix/a", 1, 1, "a")]
         public void BranchInfoPreReleaseFeatureMod(string name, uint devCount, uint featureCount, string label)
         {
             var branch = (FeatureBranchInfo)BranchInfoFactory.CreateBranchInfo(name);

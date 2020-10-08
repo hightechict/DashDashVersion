@@ -25,7 +25,7 @@ namespace DashDashVersion
     /// </summary>
     public class PreReleaseLabel : IComparable<PreReleaseLabel>
     {
-        internal const ushort DevelopRevisionMaxValue = 0b1111_1111_1100_0000;
+        private const ushort DevelopRevisionMaxValue = 0b1111_1111_1100_0000;
 
         internal PreReleaseLabel(PreReleaseLabelParticle branchLabel)
         {
