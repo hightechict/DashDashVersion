@@ -55,15 +55,6 @@ steps:
   env:
    DOTNET_CLI_TELEMETRY_OPTOUT: false
    DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
-   
-- task: DotNetCoreInstaller@0
-  displayName: Install .NET Core 3.1.301
-  inputs:
-    packageType: 'sdk'
-    version: '3.1.301'
-  env:
-   DOTNET_CLI_TELEMETRY_OPTOUT: false
-   DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
 
 - task: PowerShell@2
   displayName: Install coverlet
@@ -73,7 +64,6 @@ steps:
     script: 'dotnet tool install --global coverlet.console'
   env:
    DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
-
 
 - task: PowerShell@2
   displayName: Install git-flow-version
@@ -93,7 +83,6 @@ steps:
   env:
    DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
 
-
 - task: InstallSSHKey@0
   displayName: Install sshKey for documentation publishing
   condition: and(eq(variables.imageName, 'windows-latest'),contains(variables['Build.SourceBranch'],'/master'))
@@ -102,7 +91,6 @@ steps:
     sshPublicKey: 'secdsa-sha2-nistp521 AAAAE2VjZHNhLXNoYTItbmlzdHA1MjEAAAAIbmlzdHA1MjEAAACFBAAvZmttHSrJ2SHfXJJImvVWn70vLDh9jetSBwBsjK3MEEES7CBAabuJvPtXqPLQxDngkW4GJTqbrqDzp2YDHejhTAA8trE+sbFUXHDNbC3lwFdyeLA5YD0Kmmq7V7UIpK0h3khjowu4Ivgp6yP1bXl/3iOyVBENkK+Gx6aryPVkRN9ipQ== Azure-pipeline-site'
     sshKeySecureFile: 'DashDashVersionSiteAzurePipeline'
 
-
 - task: InstallSSHKey@0
   displayName: Install sshKey for tagging
   condition: eq(variables.imageName, 'ubuntu-latest')
@@ -110,7 +98,6 @@ steps:
     knownHostsEntry: 'github.com, ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAq2A7hRGmdnm9tUDbO9IDSwBK6TbQa+PXYPCPy6rbTrTtw7PHkccKrpp0yVhp5HdEIcKr6pLlVDBfOLX9QUsyCOV0wzfjIJNlGEYsdlLJizHhbn2mUjvSAHQqZETYP81eFzLQNnPHt4EVVUh7VfDESU84KezmD5QlWpXLmvU31/yMf+Se8xhHTvKSCZIFImWwoG6mbUoWf9nzpIoaSjB+weqqUUmpaaasXVal72J+UX2B+2RPW3RcT0eOzQgqlJL3RKrTJvdsjE3JEAvGq3lGHSZXy28G3skua2SmVi/w4yCE6gbODqnTWlg7+wC604ydGXA8VJiS5ap43JXiUFFAaQ=='
     sshPublicKey: 'ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIF6/HvdVdOqxei+waWEWBR9u3zwx9TZtyeYuIqs2uBL0 Azure-pipeline'
     sshKeySecureFile: 'GithubDeploymentKey'
-
 
 - task: DotNetCoreCLI@2
   displayName: Dotnet Restore
@@ -215,7 +202,7 @@ steps:
     script: |
       Write-Host "Publishing NuGet package"
       pushd built
-      dotnet nuget push *.nupkg --api-key $env:NuGet_APIKEY --no-symbols true --source https://api.nuget.org/v3/index.json
+      dotnet nuget push *.nupkg --api-key $env:NuGet_APIKEY --no-symbols true --source https://api.nuget.org/v3/index.json --skip-duplicate
       popd
   env:
     NuGet_APIKEY: $(nuget.APIKEY)
