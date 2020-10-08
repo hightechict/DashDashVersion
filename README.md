@@ -106,10 +106,11 @@ $ git-flow-version --version
 
 DashDashVersion only supports repositories that strictly follow the [git flow][gitFlow] conventions with the branch names:
 
-* `master`
+* `master` or `main`
 * `develop`
 * `release/<major>.<minor>.<patch>`
 * `feature/<feature name>`
+* `bugfix/<bugfix name>`
 * `hotfix/<major>.<minor>.<patch>`
 * `support/<support branch name>`
 
