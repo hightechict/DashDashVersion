@@ -16,7 +16,7 @@
 // along with DashDashVersion. If not, see<https://www.gnu.org/licenses/>.
 
 using System;
-using System.ComponentModel.DataAnnotations;
+using System.IO;
 using DashDashVersion.RepositoryAbstraction;
 
 namespace DashDashVersion
@@ -40,7 +40,7 @@ namespace DashDashVersion
         {
             var repo = GitRepoReader.Load(path, branch);
             if(checkIfRepoIsClean && repo.RepoIsDirty)
-                throw new ValidationException("The repository is not in a clean state, please commit all changes or disable this check.");
+                throw new  InvalidDataException("The repository is not in a clean state, please commit all changes or disable this check.");
             return GenerateVersionNumber(repo);
         }
 
