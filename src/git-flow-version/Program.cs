@@ -46,7 +46,7 @@ namespace GitFlowVersion
                 }
                 try
                 {
-                    OutputJsonToConsole(VersionNumberGenerator.GenerateVersionNumber(Environment.CurrentDirectory, optionBranch.Value()), optionDebug.HasValue());
+                    OutputJsonToConsole(VersionNumberGenerator.GenerateVersionNumber(Environment.CurrentDirectory, optionBranch.Value() ?? string.Empty), optionDebug.HasValue());
                     return 0;
                 }
                 catch (Exception e)

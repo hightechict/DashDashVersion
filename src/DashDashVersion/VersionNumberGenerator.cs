@@ -49,7 +49,7 @@ namespace DashDashVersion
             return currentBranch switch
             {
                 FeatureBranchInfo feature => GenerateFeatureVersionNumber(repo, feature, headCommitHash),
-                ReleaseCandidateBranchInfo releaseCandidate => GenerateReleaseCanditateVersionNumber(repo, releaseCandidate, headCommitHash),
+                ReleaseCandidateBranchInfo releaseCandidate => GenerateReleaseCandidateVersionNumber(repo, releaseCandidate, headCommitHash),
                 DevelopBranchInfo develop => GenerateDevelopVersionNumber(repo, develop, headCommitHash),
                 MasterBranchInfo _ when TagOnHeadIsMajorMinorPatch(tagOnHead) => VersionNumber.Parse(tagOnHead.FriendlyName),
                 _ => throw new ArgumentOutOfRangeException(
@@ -69,7 +69,7 @@ namespace DashDashVersion
                 develop.DeterminePreReleaseLabel(repo.CommitCountDevelopSinceLastMinorCoreVersion),
                 headCommitHash);
 
-        private static VersionNumber GenerateReleaseCanditateVersionNumber(
+        private static VersionNumber GenerateReleaseCandidateVersionNumber(
             IGitRepoReader repo,
             ReleaseCandidateBranchInfo releaseCandidate,
             string headCommitHash)
@@ -103,7 +103,6 @@ namespace DashDashVersion
         }
 
         private static bool TagOnHeadIsMajorMinorPatch(GitTag tagOnHead) =>
-            tagOnHead != null &&
             Patterns.IsCoreVersionTag.IsMatch(tagOnHead.FriendlyName);
     }
 }
