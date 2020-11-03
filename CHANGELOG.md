@@ -13,6 +13,10 @@ Change log entries should be formulated in the imperative present tense.
 
 ## [Unreleased]
 
+## [0.16.2]
+
+* fix a test in the test suit
+
 ## [0.16.1]
 
 * fix a issue with remote bugfix branches
