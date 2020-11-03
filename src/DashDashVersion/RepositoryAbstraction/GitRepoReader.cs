@@ -194,16 +194,21 @@ You could use 'git tag 0.0.0 {sha}' to place a tag.");
 
         private GitBranch FindBranch(string branchName)
         {
-            var perfectMatch = _repository.Branches.FirstOrDefault(b => b.FriendlyName.Equals(branchName));
+            var perfectMatch = _repository.Branches.FirstOrDefault(branch => branch.FriendlyName.Equals(branchName));
             if (perfectMatch != null)
             {
                 return perfectMatch;
             }
 
-            var branches = _repository.Branches.Where(b => b.FriendlyName.EndsWith(branchName) && Patterns.DetermineBranchType.IsMatch(b.FriendlyName)).ToList();
+            var branches = _repository.Branches.Where(branch => branch.FriendlyName.EndsWith(branchName)).ToList();
             if (!branches.Any())
             {
-                throw new ArgumentException($"The branch '{branchName}' could not be found in the repository, or it was not of any of the supported types.", nameof(branchName));
+                throw new ArgumentException($"The branch '{branchName}' could not be found in the repository.", nameof(branchName));
+            }
+            var branchType = branches.Where(branch => Patterns.DetermineBranchType.IsMatch(branch.FriendlyName)).ToList();
+            if (!branchType.Any())
+            {
+                throw new ArgumentException($"The branch '{branchName}' is not of any of the supported branch types.", nameof(branchName));
             }
 
             var distinctBranchTypes = branches.Select(b => Patterns.DetermineBranchType.Match(b.FriendlyName).Groups["branchType"].Captures[0]?.Value).Distinct();

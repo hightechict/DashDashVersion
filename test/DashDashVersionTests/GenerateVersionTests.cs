@@ -225,6 +225,13 @@ namespace DashDashVersionTests
             var version = GenerateVersionNumber(TestRepositories.BugfixRepository());
             version.SemVer.Should().Be("0.1.0-dev.1.test.1");
         }
+        
+        [Fact]
+        public void RemoteBugfixRepositoryTest()
+        {
+            var version = GenerateVersionNumber(TestRepositories.RemoteBugfixRepository(),"bugfix/test");
+            version.SemVer.Should().Be("0.1.0-dev.1.test.1");
+        }
 
         private static VersionNumber GenerateVersionNumber(IGitRepository gitRepository, string branchName = "") =>
             VersionNumberGenerator.GenerateVersionNumber(
