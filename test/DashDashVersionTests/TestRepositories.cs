@@ -299,7 +299,7 @@ namespace DashDashVersionTests
             var branches = new List<GitBranch>
             {
                 new GitBranch(false,"",Constants.MasterBranchName,false,masterCommits),
-                new GitBranch(true,"","origin/"+Constants.DevelopBranchName,true,developCommits)
+                new GitBranch(true,"",$"{Constants.DefaultRemoteName}{Constants.BranchNameInfoDelimiter}{Constants.DevelopBranchName}",true,developCommits)
             };
             var tags = new List<GitTag>
             {
@@ -352,7 +352,7 @@ namespace DashDashVersionTests
             var branches = new List<GitBranch>
             {
                 new GitBranch(false,"",Constants.MasterBranchName,false,masterCommits),
-                new GitBranch(true,"",$"{Constants.DefaultRemoteName}{Constants.ParticleDelimiter}{Constants.DevelopBranchName}",true,developCommits)
+                new GitBranch(true,"",$"{Constants.DefaultRemoteName}{Constants.BranchNameInfoDelimiter}{Constants.DevelopBranchName}",true,developCommits)
             };
             var tags = new List<GitTag>
             {
@@ -384,7 +384,7 @@ namespace DashDashVersionTests
             {
                 new GitBranch(false,"",Constants.MasterBranchName,false,masterCommits),
                 new GitBranch(false,"",Constants.DevelopBranchName,false,masterCommits),
-                new GitBranch(true,"",$"{Constants.DefaultRemoteName}{Constants.BranchNameInfoDelimiter}"+Constants.SupportBranchName+$"{Constants.BranchNameInfoDelimiter}1.1.0",true,supportCommits)
+                new GitBranch(true,"",$"{Constants.DefaultRemoteName}{Constants.BranchNameInfoDelimiter}{Constants.SupportBranchName}{Constants.BranchNameInfoDelimiter}1.1.0",true,supportCommits)
             };
             var tags = new List<GitTag>
             {
