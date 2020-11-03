@@ -19,7 +19,7 @@
     <RepositoryType>git</RepositoryType>
     <Copyright>Copyright 2019 Hightech ICT</Copyright>
     <Authors>Hightech ICT and authors</Authors>
-    <PackageIconUrl>https://raw.githubusercontent.com/hightechict/DashDashVersion/develop/doc/images/HightechICT.png</PackageIconUrl>
+    <icon>/doc/images/HightechICT.png</icon>
     <PackageTags>Git;GitFlow;Versioning;SemVer;Continuous,Integration;SemanticVersioning</PackageTags>	
   </PropertyGroup>
 
