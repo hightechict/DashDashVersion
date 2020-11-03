@@ -449,7 +449,7 @@ namespace DashDashVersionTests
             {
                 new GitBranch(false,"",Constants.MasterBranchName,false,masterCommits),
                 new GitBranch(false,"",Constants.DevelopBranchName,false,developCommits),
-                new GitBranch(true,"",$"{Constants.DefaultRemoteName}{Constants.ParticleDelimiter}{Constants.BugFixBranchName}{Constants.BranchNameInfoDelimiter}test",false,bugfixCommits)
+                new GitBranch(true,"",$"{Constants.DefaultRemoteName}{Constants.BranchNameInfoDelimiter}{Constants.BugFixBranchName}{Constants.BranchNameInfoDelimiter}test",false,bugfixCommits)
             };
             var tags = new List<GitTag>
             {
