@@ -56,7 +56,8 @@ namespace DashDashVersion
             HotfixBranchName,
             FeatureBranchName,
             MasterBranchName,
-            SupportBranchName
+            SupportBranchName,
+            BugFixBranchName
         };
     }
 }
