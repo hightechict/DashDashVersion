@@ -43,7 +43,7 @@ namespace DashDashVersionTests
 
             return new GitRepository(branches, commits, tags, false);
         }
-
+        
         internal static GitRepository MainRepository()
         {
             var commits = new List<GitCommit>
