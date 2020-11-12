@@ -107,7 +107,10 @@ namespace DashDashVersion
                 headCommitHash);
         }
 
-        private static bool TagOnHeadIsMajorMinorPatch(GitTag tagOnHead) =>
-            Patterns.IsCoreVersionTag.IsMatch(tagOnHead.FriendlyName);
+        private static bool TagOnHeadIsMajorMinorPatch(GitTag tagOnHead)
+        {
+            return tagOnHead != null && Patterns.IsCoreVersionTag.IsMatch(tagOnHead.FriendlyName);
+        }
+            
     }
 }

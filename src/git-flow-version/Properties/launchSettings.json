@@ -2,7 +2,7 @@
   "profiles": {
     "git-flow-version": {
       "commandName": "Project",
-      "workingDirectory": "D:\\Repos\\Hightech\\vlow.support.web"
+      "workingDirectory": "C:\\test\\repo"
     }
   }
 }

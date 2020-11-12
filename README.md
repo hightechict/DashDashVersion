@@ -167,7 +167,7 @@ If there exists a tag on the release branch that has the form `0.2.0-rc.<a=highe
 So if the last tag was `0.2.0-rc.4` the next version number would be `0.2.0-rc.5`.  
 ![release branch](https://raw.githubusercontent.com/hightechict/DashDashVersion/develop/doc/images/release.svg?sanitize=true)
 
-### On `master`
+### On `master`, `main` or `support`
 
 The version number of the tag on `HEAD` will be returned if it can be found and parsed otherwise an error is generated.
 
@@ -182,7 +182,7 @@ This work is licensed under the LGPL license, refer to the [COPYING.md][license]
 
 ## Repository
 
-The source code of this projecte can be found on [github](https://github.com/hightechict/DashDashVersion).
+The source code of this project can be found on [github](https://github.com/hightechict/DashDashVersion).
 
 [license]: https://raw.githubusercontent.com/hightechict/DashDashVersion/develop/COPYING
 [licenseExtension]: https://raw.githubusercontent.com/hightechict/DashDashVersion/develop/COPYING.LESSER
