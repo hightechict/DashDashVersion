@@ -182,7 +182,7 @@ This work is licensed under the LGPL license, refer to the [COPYING.md][license]
 
 ## Repository
 
-The source code of this projecte can be found on [github](https://github.com/hightechict/DashDashVersion).
+The source code of this project can be found on [github](https://github.com/hightechict/DashDashVersion).
 
 [license]: https://raw.githubusercontent.com/hightechict/DashDashVersion/develop/COPYING
 [licenseExtension]: https://raw.githubusercontent.com/hightechict/DashDashVersion/develop/COPYING.LESSER
