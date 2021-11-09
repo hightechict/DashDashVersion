@@ -48,19 +48,19 @@ steps:
     script: 'choco install codecov'
 
 - task: DotNetCoreInstaller@0
-  displayName: Install .NET Core 2.2.401
+  displayName: Install .NET 6.0
   inputs:
     packageType: 'sdk'
-    version: '2.2.401'
+    version: '6.0.x'
   env:
    DOTNET_CLI_TELEMETRY_OPTOUT: false
    DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
 
 - task: DotNetCoreInstaller@0
-  displayName: Install .NET Core 3.1.402
+  displayName: Install .NET Core 3.1
   inputs:
     packageType: 'sdk'
-    version: '3.1.402'
+    version: '3.1.x'
   env:
     DOTNET_CLI_TELEMETRY_OPTOUT: false
     DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
