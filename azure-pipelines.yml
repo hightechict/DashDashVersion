@@ -74,16 +74,6 @@ steps:
   env:
    DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
 
-- task: PowerShell@2
-  displayName: Install git-flow-version
-  condition: ne(variables['Build.SourceBranchName'], 'merge')
-  inputs:
-    targetType: inline
-    pwsh: true
-    script: 'dotnet tool install --global git-flow-version'
-  env:
-   DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
-
 - task: NuGetToolInstaller@1
   displayName: Install NuGet
   inputs:
