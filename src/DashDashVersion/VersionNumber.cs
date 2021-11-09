@@ -70,7 +70,7 @@ namespace DashDashVersion
             uint major,
             uint minor,
             uint patch,
-            PreReleaseLabel? preReleaseTag = null,
+            PreReleaseLabel preReleaseTag = null,
             string metadata = "",
             bool debugVersion = false)
         {
@@ -100,7 +100,7 @@ namespace DashDashVersion
         /// <summary>
         /// The (optional) pre-release label.
         /// </summary>
-        public PreReleaseLabel? PreReleaseLabel { get; }
+        public PreReleaseLabel PreReleaseLabel { get; }
 
         /// <summary>
         /// This property contains the possibly empty build metadata.
@@ -201,7 +201,7 @@ namespace DashDashVersion
             }
         }
 
-        private static PreReleaseLabel? SplitPreReleaseLabel(
+        private static PreReleaseLabel SplitPreReleaseLabel(
             CaptureCollection baseLabel,
             CaptureCollection featureLabel)
         {
