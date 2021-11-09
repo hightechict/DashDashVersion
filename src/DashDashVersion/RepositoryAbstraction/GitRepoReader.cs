@@ -86,7 +86,7 @@ namespace DashDashVersion.RepositoryAbstraction
 
         public BranchInfo CurrentBranch { get; }
 
-        public VersionNumber? HighestMatchingTagForReleaseCandidate
+        public VersionNumber HighestMatchingTagForReleaseCandidate
         {
             get
             {
@@ -130,7 +130,7 @@ namespace DashDashVersion.RepositoryAbstraction
                  _repository.Develop.ListOfCommits.IntersectWith(_repository.CurrentBranch));
         }
 
-        private string? HighestMatchingTag(string toMatch) =>
+        private string HighestMatchingTag(string toMatch) =>
                _repository.Tags
                     .Where(tag => tag.FriendlyName.StartsWith(toMatch))
                     .Where(tag => Patterns.ValidVersionNumber.IsMatch(tag.FriendlyName))

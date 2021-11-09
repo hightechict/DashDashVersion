@@ -30,7 +30,7 @@ namespace DashDashVersion.RepositoryAbstraction
 
         GitTag TagOnHead { get; }
 
-        VersionNumber? HighestMatchingTagForReleaseCandidate { get; }
+        VersionNumber HighestMatchingTagForReleaseCandidate { get; }
 
         uint CommitCountUniqueToFeature { get; }
 
