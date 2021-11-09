@@ -57,10 +57,10 @@ steps:
    DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
 
 - task: DotNetCoreInstaller@0
-  displayName: Install .NET 5.0 runtime
+  displayName: Install .NET 5.0
   inputs:
-    packageType: 'runtime'
-    version: '5.0.12'
+    packageType: 'sdk'
+    version: '5.0.403'
   env:
    DOTNET_CLI_TELEMETRY_OPTOUT: false
    DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
