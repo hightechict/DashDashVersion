@@ -51,7 +51,7 @@ steps:
   displayName: Install .NET 6.0
   inputs:
     packageType: 'sdk'
-    version: '6.0.x'
+    version: '6.0.100'
   env:
    DOTNET_CLI_TELEMETRY_OPTOUT: false
    DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
