@@ -47,25 +47,7 @@ steps:
     pwsh: true
     script: 'choco install codecov'
 
-- task: DotNetCoreInstaller@0
-  displayName: Install .NET 6.0
-  inputs:
-    packageType: 'sdk'
-    version: '6.0.100'
-  env:
-   DOTNET_CLI_TELEMETRY_OPTOUT: false
-   DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
-
-- task: DotNetCoreInstaller@0
-  displayName: Install .NET 5.0
-  inputs:
-    packageType: 'sdk'
-    version: '5.0.403'
-  env:
-   DOTNET_CLI_TELEMETRY_OPTOUT: false
-   DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
-
-- task: DotNetCoreInstaller@0
+- task: UseDotNet@2
   displayName: Install .NET Core 3.1
   inputs:
     packageType: 'sdk'
@@ -73,6 +55,15 @@ steps:
   env:
     DOTNET_CLI_TELEMETRY_OPTOUT: false
     DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
+
+- task: UseDotNet@2
+  displayName: Install .NET 6.0
+  inputs:
+    packageType: 'sdk'
+    version: '6.0.100'
+  env:
+   DOTNET_CLI_TELEMETRY_OPTOUT: false
+   DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
 
 - task: PowerShell@2
   displayName: Install coverlet
