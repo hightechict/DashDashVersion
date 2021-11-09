@@ -23,7 +23,6 @@ along with DashDashVersion. If not, see<https://www.gnu.org/licenses/>.
     <Title>DashDashVersion</Title>
     <Description>This libary can generate a version numbers for a git flow repository.</Description>
     <IsPackable>true</IsPackable>
-    <LangVersion>8.0</LangVersion>
     <Nullable>disable</Nullable>
   </PropertyGroup>
   <ItemGroup>
